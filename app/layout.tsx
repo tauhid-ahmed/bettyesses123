@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { Nunito } from "next/font/google";
 import "@/styles/globals.css";
 import { Toaster } from "@/components/ui/sonner";
+import ScreenshotGuard from "@/components/ScreenshotGuard";
 
 export const metadata: Metadata = {
   title: "Create Next App",
@@ -21,7 +22,7 @@ export default function RootLayout({ children }: Readonly<LayoutProps>) {
   return (
     <html lang="en">
       <body className={`${sans.variable} ${sans.className} antialiased`}>
-        {children}
+        <ScreenshotGuard>{children}</ScreenshotGuard>
 
         <Toaster
           position="top-right"
