@@ -32,7 +32,7 @@ const VARIANT_CLASSES: Record<BlobVariant, string> = {
 const SIZE_CLASSES: Record<BlobSize, string> = {
   sm: "w-[25vw]",
   md: "w-[40vw]",
-  lg: "w-[70vw]",
+  lg: "w-[90vw]",
 };
 
 const INTENT_CLASSES: Record<BlobIntent, string> = {
