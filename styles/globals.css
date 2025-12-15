@@ -1,0 +1,247 @@
+@import "tailwindcss";
+
+@custom-variant dark (&:is(.dark *));
+
+@theme inline {
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --color-card: var(--card);
+  --color-card-foreground: var(--card-foreground);
+  --color-popover: var(--popover);
+  --color-popover-foreground: var(--popover-foreground);
+  --color-primary: var(--primary);
+  --color-primary-foreground: var(--primary-foreground);
+  --color-secondary: var(--secondary);
+  --color-secondary-foreground: var(--secondary-foreground);
+  --color-muted: var(--muted);
+  --color-muted-foreground: var(--muted-foreground);
+  --color-accent: var(--accent);
+  --color-accent-foreground: var(--accent-foreground);
+  --color-destructive: var(--destructive);
+  --color-destructive-foreground: var(--destructive-foreground);
+  --color-border: var(--border);
+  --color-input: var(--input);
+  --color-ring: var(--ring);
+  --color-chart-1: var(--chart-1);
+  --color-chart-2: var(--chart-2);
+  --color-chart-3: var(--chart-3);
+  --color-chart-4: var(--chart-4);
+  --color-chart-5: var(--chart-5);
+  --color-sidebar: var(--sidebar);
+  --color-sidebar-foreground: var(--sidebar-foreground);
+  --color-sidebar-primary: var(--sidebar-primary);
+  --color-sidebar-primary-foreground: var(--sidebar-primary-foreground);
+  --color-sidebar-accent: var(--sidebar-accent);
+  --color-sidebar-accent-foreground: var(--sidebar-accent-foreground);
+  --color-sidebar-border: var(--sidebar-border);
+  --color-sidebar-ring: var(--sidebar-ring);
+
+  /* Primary scale - based on #6C8CFF */
+  --color-primary-50: #fafcff;
+  --color-primary-100: #eef2ff;
+  --color-primary-200: #e0e7ff;
+  --color-primary-300: #c7d2fe;
+  --color-primary-400: #a5b4fc;
+  --color-primary-500: #6c8cff;
+  --color-primary-600: #635bff;
+  --color-primary-700: #4d00ff;
+  --color-primary-800: #3a3b7b;
+  --color-primary-900: #00244a;
+  --color-primary-950: #1f2937;
+
+  /* Secondary scale - based on #CE6FFF */
+  --color-secondary-50: #fafcff;
+  --color-secondary-100: #f3e3fe;
+  --color-secondary-200: #e3c7fe;
+  --color-secondary-300: #d8a5fd;
+  --color-secondary-400: #ce6fff;
+  --color-secondary-500: #ad1ef6;
+  --color-secondary-600: #9935e5;
+  --color-secondary-700: #8a38f5;
+  --color-secondary-800: #4d00ff;
+  --color-secondary-900: #3a3b7b;
+  --color-secondary-950: #2e2e2e;
+
+  /* Cyan/Teal scale */
+  --color-cyan-50: #ecfeff;
+  --color-cyan-100: #cffafe;
+  --color-cyan-200: #a5f3fc;
+  --color-cyan-300: #67e8f9;
+  --color-cyan-400: #44c3bd;
+  --color-cyan-500: #108981;
+  --color-cyan-600: #0e7490;
+  --color-cyan-700: #0c5563;
+  --color-cyan-800: #0a3f4a;
+  --color-cyan-900: #082a31;
+  --color-cyan-950: #061a1f;
+
+  /* Green scale */
+  --color-green-50: #f0fdf4;
+  --color-green-100: #dcfce7;
+  --color-green-200: #bbf7d0;
+  --color-green-300: #86efac;
+  --color-green-400: #28f647;
+  --color-green-500: #00ff44;
+  --color-green-600: #52c41a;
+  --color-green-700: #00ba00;
+  --color-green-800: #00a800;
+  --color-green-900: #008a00;
+  --color-green-950: #006600;
+
+  /* Orange/Amber scale */
+  --color-orange-50: #fffbeb;
+  --color-orange-100: #fef3c7;
+  --color-orange-200: #fde68a;
+  --color-orange-300: #fcd34d;
+  --color-orange-400: #ffbd00;
+  --color-orange-500: #ffb000;
+  --color-orange-600: #ff3f00;
+  --color-orange-700: #e63900;
+  --color-orange-800: #cc3300;
+  --color-orange-900: #b32d00;
+  --color-orange-950: #992600;
+
+  /* Red scale */
+  --color-red-50: #fef2f2;
+  --color-red-100: #fee2e2;
+  --color-red-200: #fecaca;
+  --color-red-300: #fca5a5;
+  --color-red-400: #ff5e5e;
+  --color-red-500: #ff0000;
+  --color-red-600: #ef4444;
+  --color-red-700: #e63946;
+  --color-red-800: #dc2826;
+  --color-red-900: #b91c1c;
+  --color-red-950: #991b1b;
+
+  /* Pink scale */
+  --color-pink-50: #fdf2f8;
+  --color-pink-100: #fce7f3;
+  --color-pink-200: #fbcfe8;
+  --color-pink-300: #f9a8d4;
+  --color-pink-400: #ffa4d4;
+  --color-pink-500: #ff008c;
+  --color-pink-600: #f28097;
+  --color-pink-700: #e8554f;
+  --color-pink-800: #d94660;
+  --color-pink-900: #c13651;
+  --color-pink-950: #a92842;
+
+  /* Slate/Neutral scale */
+  --color-slate-50: #fafcff;
+  --color-slate-100: #fafaaf;
+  --color-slate-200: #f9fafb;
+  --color-slate-300: #f6f6f6;
+  --color-slate-400: #e3e3e3;
+  --color-slate-500: #d9d9d9;
+  --color-slate-600: #b6bec8;
+  --color-slate-700: #98a6b8;
+  --color-slate-800: #757d83;
+  --color-slate-900: #636f85;
+  --color-slate-950: #4a5565;
+
+  /* Gray scale */
+  --color-gray-50: #fefefe;
+  --color-gray-100: #f2f3f4;
+  --color-gray-200: #eef2ff;
+  --color-gray-300: #d5d5d5;
+  --color-gray-400: #9ba2b3;
+  --color-gray-500: #61758a;
+  --color-gray-600: #4b5563;
+  --color-gray-700: #374151;
+  --color-gray-800: #212731;
+  --color-gray-900: #1c1c1c;
+  --color-gray-950: #0d0d0d;
+
+  /* Dark scale */
+  --color-dark-50: #f6f6f6;
+  --color-dark-100: #e3e3e3;
+  --color-dark-200: #d4d4d4;
+  --color-dark-300: #4e4e4e;
+  --color-dark-400: #2e2e2e;
+  --color-dark-500: #2d2d2d;
+  --color-dark-600: #1f2937;
+  --color-dark-700: #101010;
+  --color-dark-800: #000407;
+  --color-dark-900: #000000;
+  --color-dark-950: #000000;
+
+  --radius-sm: calc(var(--radius) - 4px);
+  --radius-md: calc(var(--radius) - 2px);
+  --radius-lg: var(--radius);
+  --radius-xl: calc(var(--radius) + 4px);
+  --radius-2xl: calc(var(--radius) + 8px);
+  --radius-3xl: calc(var(--radius) + 12px);
+  --radius-4xl: calc(var(--radius) + 16px);
+}
+
+:root {
+  --radius: 0.625rem;
+
+  /* Light theme */
+  --background: #ffffff;
+  --foreground: #1c1c1c;
+
+  --card: #ffffff;
+  --card-foreground: #1c1c1c;
+
+  --popover: #ffffff;
+  --popover-foreground: #1c1c1c;
+
+  --primary: #6c8cff;
+  --primary-foreground: #ffffff;
+
+  --secondary: #ce6fff;
+  --secondary-foreground: #ffffff;
+
+  --muted: #f9fafb;
+  --muted-foreground: #636f85;
+
+  --accent: #f9fafb;
+  --accent-foreground: #1c1c1c;
+
+  --destructive: #ef4444;
+  --destructive-foreground: #ffffff;
+
+  --border: #e3e3e3;
+  --input: #e3e3e3;
+  --ring: #6c8cff;
+
+  --chart-1: #6c8cff;
+  --chart-2: #ce6fff;
+  --chart-3: #44c3bd;
+  --chart-4: #00ff44;
+  --chart-5: #ff3f00;
+
+  --sidebar: #fafcff;
+  --sidebar-foreground: #1c1c1c;
+  --sidebar-primary: #6c8cff;
+  --sidebar-primary-foreground: #ffffff;
+  --sidebar-accent: #f9fafb;
+  --sidebar-accent-foreground: #1c1c1c;
+  --sidebar-border: #e3e3e3;
+  --sidebar-ring: #6c8cff;
+}
+
+@layer base {
+  * {
+    @apply border-border outline-ring/50;
+  }
+
+  body {
+    @apply bg-background text-foreground overflow-x-clip;
+  }
+}
+
+@layer utilities {
+  .primary-gradient {
+    background: linear-gradient(90deg, #6c8cff 0%, #ce6fff 50%, #6c8cff 100%);
+    background-size: 200% 100%;
+    background-position: left center;
+    transition: background-position 300ms ease;
+  }
+
+  .primary-gradient:hover {
+    background-position: right center;
+  }
+}
