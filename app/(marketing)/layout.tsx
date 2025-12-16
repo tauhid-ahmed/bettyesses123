@@ -13,7 +13,7 @@ export default function MarketingLayout({ children }: React.PropsWithChildren) {
 
 function BlobContainer() {
   return (
-    <div className="absolute inset-0">
+    <div className="absolute inset-0 overflow-hidden">
       <Blob variant="primary" size="lg" position="top-right" intent="strong" />
       <Blob
         variant="secondary"

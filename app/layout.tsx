@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import { Nunito } from "next/font/google";
 import "@/styles/globals.css";
 import { Toaster } from "@/components/ui/sonner";
-import ScreenshotGuard from "@/components/ScreenshotGuard";
+import { Suspense } from "react";
 
 export const metadata: Metadata = {
   title: "Create Next App",
@@ -22,8 +22,7 @@ export default function RootLayout({ children }: Readonly<LayoutProps>) {
   return (
     <html lang="en">
       <body className={`${sans.variable} ${sans.className} antialiased`}>
-        {/* <ScreenshotGuard></ScreenshotGuard> */}
-        {children}
+        <Suspense fallback={<div>Loading...</div>}>{children}</Suspense>
         <Toaster
           position="top-right"
           closeButton
