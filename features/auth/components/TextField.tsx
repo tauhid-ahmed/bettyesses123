@@ -46,7 +46,7 @@ export default function TextField({
               {label}
             </Label>
             <div className="relative">
-              <div className="flex flex-col items-center">
+              <div className="flex flex-col items-center relative">
                 <Input
                   {...field}
                   id={id}
@@ -61,18 +61,19 @@ export default function TextField({
                     errorMessage && "border-danger-500"
                   )}
                 />
+                {isPassword && (
+                  <Button
+                    type="button"
+                    className="absolute right-0 top-1/2 -translate-y-1/2 text-gray-500"
+                    variant="ghost"
+                    size="icon"
+                    onClick={() => setIsToggled((toggle) => !toggle)}
+                  >
+                    {isToggled ? <LucideEyeOff /> : <LucideEye />}
+                  </Button>
+                )}
               </div>
-              {isPassword && (
-                <Button
-                  type="button"
-                  className="absolute right-0 top-1/2 -translate-y-1/2 text-gray-500"
-                  variant="ghost"
-                  size="icon"
-                  onClick={() => setIsToggled((toggle) => !toggle)}
-                >
-                  {isToggled ? <LucideEyeOff /> : <LucideEye />}
-                </Button>
-              )}
+
               {errorMessage && (
                 <motion.span
                   initial={{ opacity: 0, y: -10 }}
