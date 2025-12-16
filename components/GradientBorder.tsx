@@ -13,10 +13,11 @@ type GradientBorderProps = {
   padding?: PaddingSize;
 };
 
+// Responsive padding classes: mobile (default) -> desktop (md breakpoint)
 const paddingMap: Record<PaddingSize, string> = {
-  sm: "0.75rem",
-  md: "1.25rem",
-  lg: "1.75rem",
+  sm: "p-2 md:p-3", // 8px -> 12px (0.75rem max)
+  md: "p-3 md:p-5", // 12px -> 20px (1.25rem max)
+  lg: "p-4 md:p-7", // 16px -> 28px (1.75rem max)
 };
 
 export default function GradientBorder({
@@ -25,7 +26,7 @@ export default function GradientBorder({
   borderSize = 1,
   borderRadius = 24,
   gradient = "primary-gradient",
-  innerBg = "bg-gray-100",
+  innerBg = "bg-primary-100",
   padding = "md",
 }: GradientBorderProps) {
   return (
@@ -37,12 +38,9 @@ export default function GradientBorder({
       }}
     >
       <div
-        className={innerBg}
+        className={cn(innerBg, paddingMap[padding], "w-full h-full")}
         style={{
           borderRadius: `${borderRadius - borderSize}px`,
-          padding: paddingMap[padding],
-          width: "100%",
-          height: "100%",
         }}
       >
         {children}

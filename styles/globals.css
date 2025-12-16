@@ -140,19 +140,6 @@
   --color-slate-900: #636f85;
   --color-slate-950: #4a5565;
 
-  /* Gray scale */
-  --color-gray-50: #fefefe;
-  --color-gray-100: #f2f3f4;
-  --color-gray-200: #eef2ff;
-  --color-gray-300: #d5d5d5;
-  --color-gray-400: #9ba2b3;
-  --color-gray-500: #61758a;
-  --color-gray-600: #4b5563;
-  --color-gray-700: #374151;
-  --color-gray-800: #212731;
-  --color-gray-900: #1c1c1c;
-  --color-gray-950: #0d0d0d;
-
   /* Dark scale */
   --color-dark-50: #f6f6f6;
   --color-dark-100: #e3e3e3;
@@ -386,12 +373,14 @@
       var(--color-primary-500) -10%,
       var(--color-secondary-400) 110%
     );
-    background-size: 200% 100%;
+    background-size: 100% 100%;
     background-position: left center;
     transition: background-position 300ms ease;
+    background-repeat: repeat-x;
   }
 
   .primary-gradient:hover {
+    background-size: 200% 100%;
     background-position: right center;
   }
 
