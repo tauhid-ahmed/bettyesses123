@@ -4,7 +4,7 @@ type SectionProps = {
   eyebrow?: React.ReactNode;
   title?: React.ReactNode;
   description?: React.ReactNode;
-  padding: "none" | "sm" | "md" | "lg";
+  padding?: "none" | "sm" | "md" | "lg";
   children: React.ReactNode;
 };
 
@@ -13,7 +13,7 @@ export default function Section({
   eyebrow,
   title,
   description,
-  padding,
+  padding = "lg",
 }: SectionProps) {
   return (
     <section

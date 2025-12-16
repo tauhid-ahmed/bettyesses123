@@ -3,10 +3,12 @@ import FeatureCard from "@/components/FeatureCard";
 import TestimonialCard from "@/components/TestimonialCard";
 import BookCardHorizontal from "@/features/books/components/BookCardHorizontal";
 import BookCardVertical from "@/features/books/components/BookCardVertical";
+import Intro from "./_components/Intro";
 
 export default function page() {
   return (
     <div className="h-[600vh] relative  overflow-hidden">
+      <Intro />
       <div className="relative">
         <h1 className="primary-gradient-text text-3xl inline-block">
           Give a thoughtful Gift <br /> to a child you love 🎁

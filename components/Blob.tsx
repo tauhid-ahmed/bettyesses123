@@ -31,13 +31,13 @@ const VARIANT_CLASSES: Record<BlobVariant, string> = {
 };
 
 const SIZE_CLASSES: Record<BlobSize, string> = {
-  sm: "w-[30vh]",
-  md: "w-[50vh]",
+  sm: "w-[40vh]",
+  md: "w-[60vh]",
   lg: "w-[100vh]",
 };
 
 const INTENT_CLASSES: Record<BlobIntent, string> = {
-  strong: "blur-[350px]",
+  strong: "blur-[300px]",
   weak: "blur-[150px]",
 };
 
