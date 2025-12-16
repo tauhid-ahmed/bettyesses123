@@ -7,11 +7,13 @@ import ideaIcon from "@/images/icons/idea.webp";
 import printerIcon from "@/images/icons/printer.webp";
 import handIcon from "@/images/icons/hand.webp";
 import Heading from "./Heading";
+import Rating from "./Rating";
 
 type Props = {
   icon: string;
   title: string;
   description: string;
+  age: string | number;
 };
 
 const icons = {
@@ -23,12 +25,17 @@ const icons = {
   hand: handIcon,
 };
 
-export default function FeatureCard({ icon, title, description }: Props) {
+export default function TestimonialCard({
+  icon,
+  title,
+  description,
+  age,
+}: Props) {
   return (
     <GradientBorder
-      borderRadius={8}
+      borderRadius={24}
       className="w-full text-center mx-auto my-10"
-      padding="md"
+      padding="sm"
     >
       <div className="space-y-3 bg-primary-100 py-2">
         <Image
@@ -36,7 +43,7 @@ export default function FeatureCard({ icon, title, description }: Props) {
           alt="book"
           width={112}
           height={112}
-          className="w-fit mx-auto size-16 md:size-20 lg:size-28 mb-6"
+          className="w-fit mx-auto size-14 md:size-20 lg:size-25 rounded-full"
         />
         <Heading
           as="h3"
@@ -47,9 +54,19 @@ export default function FeatureCard({ icon, title, description }: Props) {
         >
           {title}
         </Heading>
-        <p className="text-gray-500 text-sm md:text-lg px-2 leading-snug">
+        <Heading
+          as="h4"
+          size="h6"
+          weight="semibold"
+          align="center"
+          className="text-gray-500"
+        >
+          Age: {age}
+        </Heading>
+        <p className="text-secondary-500 text-sm md:text-lg px-2 leading-snug">
           {description}
         </p>
+        <Rating className="mx-auto w-fit" value={3.5} readonly />
       </div>
     </GradientBorder>
   );

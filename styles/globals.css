@@ -390,11 +390,10 @@
       var(--color-primary-500) -10%,
       var(--color-secondary-400) 110%
     );
-    background-size: 150% 100%;
+    background-size: 100% 100%;
     background-clip: text;
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
-    animation: gradient 1s ease infinite;
   }
 
   /* User select utilities are built into Tailwind v4 */

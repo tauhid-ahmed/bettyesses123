@@ -1,31 +1,27 @@
 import Acc from "@/components/accordion/components/Accordion";
-import Blob from "@/components/Blob";
 import FeatureCard from "@/components/FeatureCard";
+import TestimonialCard from "@/components/TestimonialCard";
 import BookCardHorizontal from "@/features/books/components/BookCardHorizontal";
 import BookCardVertical from "@/features/books/components/BookCardVertical";
 
 export default function page() {
   return (
-    <div className="h-[600vh] relative bg-primary-100 overflow-hidden">
-      <Blob variant="primary" size="lg" position="top-right" intent="strong" />
-      <Blob
-        variant="secondary"
-        size="lg"
-        position="center-left"
-        intent="strong"
-      />
-      <Blob
-        variant="primary"
-        size="lg"
-        position="bottom-right"
-        intent="strong"
-      />
+    <div className="h-[600vh] relative  overflow-hidden">
       <div className="relative">
         <h1 className="primary-gradient-text text-3xl inline-block">
           Give a thoughtful Gift <br /> to a child you love 🎁
         </h1>
 
         <Acc />
+
+        <TestimonialCard
+          icon={"gift"}
+          title={"Aarav"}
+          age={"3"}
+          description={
+            "“This is the most amazing thing ever! I can’t believe how perfect it turned out!”"
+          }
+        />
 
         <FeatureCard
           icon={"camera"}

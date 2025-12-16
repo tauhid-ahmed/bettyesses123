@@ -22,8 +22,8 @@ export default function RootLayout({ children }: Readonly<LayoutProps>) {
   return (
     <html lang="en">
       <body className={`${sans.variable} ${sans.className} antialiased`}>
-        <ScreenshotGuard>{children}</ScreenshotGuard>
-
+        {/* <ScreenshotGuard></ScreenshotGuard> */}
+        {children}
         <Toaster
           position="top-right"
           closeButton

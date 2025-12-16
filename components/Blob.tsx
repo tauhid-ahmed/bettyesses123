@@ -31,13 +31,13 @@ const VARIANT_CLASSES: Record<BlobVariant, string> = {
 };
 
 const SIZE_CLASSES: Record<BlobSize, string> = {
-  sm: "w-[25vw]",
-  md: "w-[40vw]",
-  lg: "w-[80vw]",
+  sm: "w-[30vh]",
+  md: "w-[50vh]",
+  lg: "w-[100vh]",
 };
 
 const INTENT_CLASSES: Record<BlobIntent, string> = {
-  strong: "blur-[250px]",
+  strong: "blur-[350px]",
   weak: "blur-[150px]",
 };
 
@@ -45,17 +45,17 @@ const POSITION_CLASSES: Record<BlobPosition, string> = {
   // Top
   "top-left": "top-0 left-0 -translate-x-1/4 -translate-y-1/4",
   "top-center": "top-1/2 left-1/2",
-  "top-right": "top-0 right-0 translate-x-1/4 -translate-y-1/4",
+  "top-right": "top-0 right-0 translate-x-1/4",
 
   // Center
-  "center-left": "top-1/2 left-0 -translate-y-1/2 -translate-x-1/4",
+  "center-left": "top-1/2 left-0 -translate-y-1/2 -translate-x-1/6",
   center: "top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2",
   "center-right": "top-1/2 right-1/2 translate-x-1/2 -translate-y-1/2",
 
   // Bottom
   "bottom-left": "bottom-0 left-0",
   "bottom-center": "bottom-[-50%] left-1/2 -translate-x-1/2",
-  "bottom-right": "bottom-0 right-0 translate-x-1/4 translate-y-1/4",
+  "bottom-right": "bottom-0 right-0 translate-x-1/6",
 };
 
 export default function Blob({
@@ -64,7 +64,6 @@ export default function Blob({
   intent = "strong",
   position = "top-left",
   className,
-  animate = true,
 }: BlobProps) {
   return (
     <div
