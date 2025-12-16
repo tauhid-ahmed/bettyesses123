@@ -1,5 +1,6 @@
 import Navbar from "@/components/Navbar";
 import Blob from "@/components/Blob";
+import Footer from "@/components/Footer";
 
 export default function MarketingLayout({ children }: React.PropsWithChildren) {
   return (
@@ -7,13 +8,14 @@ export default function MarketingLayout({ children }: React.PropsWithChildren) {
       <BlobContainer />
       <Navbar />
       <main className="flex-1">{children}</main>
+      <Footer />
     </div>
   );
 }
 
 function BlobContainer() {
   return (
-    <div className="absolute inset-0 overflow-hidden">
+    <div className="absolute inset-0 overflow-hidden -z-10">
       <Blob variant="primary" size="lg" position="top-right" intent="strong" />
       <Blob
         variant="secondary"
