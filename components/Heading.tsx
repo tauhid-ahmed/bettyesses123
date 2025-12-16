@@ -35,7 +35,7 @@ export default function Heading({
   color = "text-black",
   ...props
 }: HeadingProps) {
-  const Component = asChild ? Slot : size; // if asChild, use Slot, else default to h1-h6
+  const Component = asChild ? Slot : size;
   return (
     <Component
       className={cn(

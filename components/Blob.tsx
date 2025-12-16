@@ -21,22 +21,23 @@ type BlobProps = {
   intent?: BlobIntent;
   position?: BlobPosition;
   className?: string;
+  animate?: boolean;
 };
 
 const VARIANT_CLASSES: Record<BlobVariant, string> = {
-  primary: "bg-primary-500/30",
-  secondary: "bg-secondary-500/30",
+  primary: "bg-primary-500/50",
+  secondary: "bg-secondary-500/50",
   tertiary: "bg-red-500/30",
 };
 
 const SIZE_CLASSES: Record<BlobSize, string> = {
   sm: "w-[25vw]",
   md: "w-[40vw]",
-  lg: "w-[90vw]",
+  lg: "w-[80vw]",
 };
 
 const INTENT_CLASSES: Record<BlobIntent, string> = {
-  strong: "blur-[200px]",
+  strong: "blur-[250px]",
   weak: "blur-[150px]",
 };
 
@@ -63,6 +64,7 @@ export default function Blob({
   intent = "strong",
   position = "top-left",
   className,
+  animate = true,
 }: BlobProps) {
   return (
     <div

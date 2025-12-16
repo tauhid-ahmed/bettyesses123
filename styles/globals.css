@@ -230,12 +230,162 @@
 
   body {
     @apply bg-background text-foreground overflow-x-clip;
+    /* Better font rendering */
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+  }
+
+  /* ========== SMOOTH SCROLLING ========== */
+  html {
+    scroll-behavior: smooth;
+    -webkit-text-size-adjust: 100%;
+  }
+
+  /* ========== SELECTION STYLES ========== */
+  ::selection {
+    background-color: var(--color-primary-400);
+    color: white;
+  }
+
+  ::-moz-selection {
+    background-color: var(--color-primary-400);
+    color: white;
+  }
+
+  /* ========== SCROLLBAR STYLING ========== */
+  ::-webkit-scrollbar {
+    width: 10px;
+    height: 10px;
+  }
+
+  ::-webkit-scrollbar-track {
+    background: var(--color-slate-200);
+  }
+
+  ::-webkit-scrollbar-thumb {
+    background: var(--color-slate-500);
+    border-radius: 5px;
+  }
+
+  ::-webkit-scrollbar-thumb:hover {
+    background: var(--color-slate-700);
+  }
+
+  /* Firefox scrollbar */
+  * {
+    scrollbar-width: thin;
+    scrollbar-color: var(--color-slate-500) var(--color-slate-200);
+  }
+
+  /* ========== FOCUS STYLES ========== */
+  *:focus {
+    outline: none;
+  }
+
+  *:focus-visible {
+    outline: 2px solid var(--color-primary-500);
+    outline-offset: 2px;
+  }
+
+  /* ========== IMAGES & MEDIA ========== */
+  img,
+  picture,
+  video,
+  canvas,
+  svg {
+    display: block;
+    max-width: 100%;
+    height: auto;
+  }
+
+  /* ========== FORM RESETS ========== */
+  input,
+  button,
+  textarea,
+  select {
+    font: inherit;
+    color: inherit;
+  }
+
+  /* Remove number input spinners */
+  input[type="number"]::-webkit-inner-spin-button,
+  input[type="number"]::-webkit-outer-spin-button {
+    -webkit-appearance: none;
+    margin: 0;
+  }
+
+  input[type="number"] {
+    -moz-appearance: textfield;
+  }
+
+  /* Remove search input decorations */
+  input[type="search"]::-webkit-search-decoration,
+  input[type="search"]::-webkit-search-cancel-button,
+  input[type="search"]::-webkit-search-results-button,
+  input[type="search"]::-webkit-search-results-decoration {
+    -webkit-appearance: none;
+  }
+
+  /* ========== DISABLED STATES ========== */
+  button:disabled,
+  input:disabled,
+  select:disabled,
+  textarea:disabled {
+    cursor: not-allowed;
+    opacity: 0.6;
+  }
+
+  /* ========== PRINT STYLES ========== */
+  @media print {
+    .no-print {
+      display: none !important;
+    }
+
+    body {
+      color: black;
+      background: white;
+    }
+
+    * {
+      box-shadow: none !important;
+      text-shadow: none !important;
+    }
+
+    a,
+    blockquote,
+    img,
+    pre,
+    tr {
+      page-break-inside: avoid;
+    }
+
+    h1,
+    h2,
+    h3,
+    h4,
+    h5,
+    h6 {
+      page-break-after: avoid;
+    }
+
+    a[href]:after {
+      content: " (" attr(href) ")";
+    }
+
+    a[href^="#"]:after,
+    a[href^="javascript:"]:after {
+      content: "";
+    }
   }
 }
 
 @layer utilities {
   .primary-gradient {
-    background: linear-gradient(90deg, #6c8cff 0%, #ce6fff 50%, #6c8cff 100%);
+    background: linear-gradient(
+      90deg,
+      var(--color-primary-500) -10%,
+      var(--color-secondary-400) 110%
+    );
     background-size: 200% 100%;
     background-position: left center;
     transition: background-position 300ms ease;
@@ -243,5 +393,63 @@
 
   .primary-gradient:hover {
     background-position: right center;
+  }
+
+  .primary-gradient-text {
+    background: linear-gradient(
+      90deg,
+      var(--color-primary-500) -10%,
+      var(--color-secondary-400) 110%
+    );
+    background-size: 150% 100%;
+    background-clip: text;
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    animation: gradient 1s ease infinite;
+  }
+
+  /* User select utilities are built into Tailwind v4 */
+
+  /* sr-only is built into Tailwind v4 */
+
+  /* ========== HIDE SCROLLBAR ========== */
+  .hide-scrollbar {
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+  }
+
+  .hide-scrollbar::-webkit-scrollbar {
+    display: none;
+  }
+
+  /* ========== GLASS MORPHISM ========== */
+  .glass {
+    background: rgba(255, 255, 255, 0.1);
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+  }
+
+  /* ========== TEXT GRADIENT ========== */
+  .text-gradient {
+    background-clip: text;
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+  }
+
+  /* Line clamp is built into Tailwind v4 */
+}
+
+@layer keyframes {
+  @keyframes gradient {
+    0% {
+      background-position: left center;
+    }
+    50% {
+      background-position: right center;
+    }
+    100% {
+      background-position: left center;
+    }
   }
 }
