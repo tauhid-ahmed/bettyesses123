@@ -13,6 +13,7 @@ import {
 } from "@/features/admin/dashboard/components/DashboardContainer";
 import DashboardNavigation from "@/features/admin/dashboard/components/DashboardNavigation";
 import {
+  BookOpenCheck,
   CirclePoundSterling,
   FileUser,
   LucideUser,
@@ -65,6 +66,12 @@ const navItems = [
     href: "/complaint-box",
     name: "Complaint Box",
     icon: <UserCog />,
+    children: [],
+  },
+  {
+    href: "/privacy-and-policy",
+    name: "Privacy Policy",
+    icon: <BookOpenCheck />,
     children: [],
   },
   {
