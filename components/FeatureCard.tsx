@@ -1,7 +1,7 @@
 import Image from "next/image";
 import GradientBorder from "./GradientBorder";
 import cameraIcon from "@/images/icons/camera.webp";
-import giftIcon from "@/images/icons/camera.webp";
+import giftIcon from "@/images/icons/gift.webp";
 import uploadIcon from "@/images/icons/upload.webp";
 import ideaIcon from "@/images/icons/idea.webp";
 import printerIcon from "@/images/icons/printer.webp";
@@ -27,8 +27,8 @@ export default function FeatureCard({ icon, title, description }: Props) {
   return (
     <GradientBorder
       borderRadius={8}
-      className="w-full text-center mx-auto my-10"
-      padding="md"
+      className="w-full text-center"
+      padding="sm"
     >
       <div className="space-y-3 bg-primary-100 py-2">
         <Image
@@ -43,7 +43,7 @@ export default function FeatureCard({ icon, title, description }: Props) {
           size="h4"
           weight="semibold"
           align="center"
-          className="text-gray-600"
+          className="text-gray-600 tracking-tight"
         >
           {title}
         </Heading>

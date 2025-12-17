@@ -54,7 +54,7 @@ export function Accordion({
         }}
         transition={{
           duration: 0.3,
-          ease: [0.4, 0, 0.2, 1], // Custom easing for smooth animation
+          ease: [0.4, 0, 0.2, 1],
         }}
         className="overflow-hidden"
       >
@@ -79,7 +79,7 @@ export function AccordionGroup({
   const [openIndex, setOpenIndex] = useState<number | null>(0);
 
   return (
-    <div className="space-y-2 lg:space-y-4">
+    <div className="space-y-4">
       {React.Children.map(children, (child, index) => {
         if (!React.isValidElement(child)) return child;
 
@@ -123,10 +123,10 @@ export function AccordionItem({
   const toggle = onToggle || internalToggle;
 
   return (
-    <div className="rounded-lg overflow-hidden bg-primary-100  shadow">
+    <div className="rounded-lg overflow-hidden bg-primary-100 shadow">
       <button
         onClick={toggle}
-        className="w-full px-6 py-4 hover:bg-primary-200/50 transition-colors flex items-center justify-between text-left"
+        className="w-full px-6 py-4 hover:bg-primary-200/50 transition-colors flex items-center justify-between text-left cursor-pointer"
       >
         <span className="lg:text-lg font-semibold text-gray-800">{title}</span>
         <motion.div
@@ -134,7 +134,7 @@ export function AccordionItem({
           transition={{ duration: 0.3, ease: "easeInOut" }}
           className="w-5 h-5 text-primary-500"
         >
-          {/* <LucideArrowDown /> */}
+          <LucideArrowDown />
         </motion.div>
       </button>
 
@@ -153,36 +153,6 @@ export function AccordionItem({
           {children}
         </div>
       </motion.div>
-    </div>
-  );
-}
-
-export default function Acc() {
-  return (
-    <div className="max-w-2xl mx-auto">
-      <AccordionGroup>
-        <AccordionItem defaultOpen={true} isOpen={true} title="Getting Started">
-          <p>
-            To get started, install the required dependencies and import the
-            accordion hook into your component.
-          </p>
-        </AccordionItem>
-        <AccordionItem title="API Reference">
-          <p>The useAccordion hook returns the following properties:</p>
-          <ul className="list-disc list-inside mt-2 space-y-1">
-            <li>isOpen: boolean</li>
-            <li>toggle: () =&gt; void</li>
-            <li>open: () =&gt; void</li>
-            <li>close: () =&gt; void</li>
-          </ul>
-        </AccordionItem>
-        <AccordionItem title="Advanced Usage">
-          <p>
-            You can customize the animation duration, easing, and control the
-            accordion state programmatically for advanced use cases.
-          </p>
-        </AccordionItem>
-      </AccordionGroup>
     </div>
   );
 }

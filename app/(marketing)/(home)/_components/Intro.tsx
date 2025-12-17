@@ -9,8 +9,8 @@ export default function Intro() {
   return (
     <Section padding="lg">
       <Container>
-        <div className="flex">
-          <div className="flex-1 space-y-4">
+        <div className="flex flex-col md:flex-row items-center">
+          <div className="flex-1 sm:min-w-96 space-y-4 order-2 md:order-1 md:-mt-8 lg:-mt-16">
             <Heading
               as="h1"
               size="h1"
@@ -27,7 +27,7 @@ export default function Intro() {
               Create Free Preview
             </Button>
           </div>
-          <div className="max-w-[600px]">
+          <div className="max-w-[600px] shrink-4 order-1 md:order-2 animate-float">
             <Image src={introImage} alt="Intro Image" />
           </div>
         </div>

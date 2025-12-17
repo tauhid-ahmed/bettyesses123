@@ -1,4 +1,6 @@
 import { cn } from "@/lib/utils";
+import Heading from "./Heading";
+import Container from "./Container";
 
 type SectionProps = {
   eyebrow?: React.ReactNode;
@@ -24,22 +26,35 @@ export default function Section({
         "py-0": padding === "none",
       })}
     >
-      <div className="space-y-2 text-center">
+      <Container className="space-y-4 text-center">
         {eyebrow && <Eyebrow>{eyebrow}</Eyebrow>}
         {title && <Title>{title}</Title>}
         {description && <Description>{description}</Description>}
-      </div>
+      </Container>
       <>{children}</>
     </section>
   );
 }
 
 function Eyebrow({ children }: React.PropsWithChildren) {
-  return <h2>{children}</h2>;
+  return (
+    <Heading as="h2" className="text-primary-500" size="h6" align="center">
+      {children}
+    </Heading>
+  );
 }
 
 function Title({ children }: React.PropsWithChildren) {
-  return <h2>{children}</h2>;
+  return (
+    <Heading
+      as="h2"
+      size="h1"
+      align="center"
+      className="text-gray-800 tracking-tight"
+    >
+      {children}
+    </Heading>
+  );
 }
 
 function Description({ children }: React.PropsWithChildren) {

@@ -1,13 +1,16 @@
 import Navbar from "@/components/Navbar";
 import Blob from "@/components/Blob";
 import Footer from "@/components/Footer";
+import SmoothScroll from "@/providers/SmoothScroll";
 
 export default function MarketingLayout({ children }: React.PropsWithChildren) {
   return (
     <div className="min-h-svh flex flex-col relative bg-primary-100x">
       <BlobContainer />
       <Navbar />
-      <main className="flex-1">{children}</main>
+      <main className="flex-1">
+        <SmoothScroll>{children}</SmoothScroll>
+      </main>
       <Footer />
     </div>
   );

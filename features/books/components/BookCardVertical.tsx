@@ -2,14 +2,7 @@ import Heading from "@/components/Heading";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import Image from "next/image";
-
-type Props = {
-  image: string;
-  title: string;
-  ageRange: string;
-  description: string;
-  lessons: string;
-};
+import { BooksCardVerticalProps } from "../types";
 
 export default function BookCardVertical({
   title,
@@ -17,15 +10,15 @@ export default function BookCardVertical({
   ageRange,
   description,
   lessons,
-}: Props) {
+}: BooksCardVerticalProps) {
   return (
-    <Card className="max-w-sm rounded-xl overflow-hidden border-none p-0 gap-0 shadow-xs hover:shadow-lg hover:shadow-primary-300 transition-shadow bg-primary-100">
-      <div className="aspect-4/2 sm:aspect-4/3 relative">
+    <Card className="rounded-xl overflow-hidden border-none p-0 gap-0 shadow-xs hover:shadow-lg hover:shadow-primary-300 transition-shadow bg-primary-100 group duration-300">
+      <div className="aspect-4/2 sm:aspect-4/3 relative overflow-hidden">
         <Image
           src={image}
           alt={title}
           fill
-          className="object-cover size-full"
+          className="object-cover size-full group-hover:scale-105 transition-transform duration-300"
         />
       </div>
       <div className="p-4 space-y-2">
