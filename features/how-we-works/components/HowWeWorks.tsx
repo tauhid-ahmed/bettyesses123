@@ -1,29 +1,14 @@
 import Container from "@/components/Container";
 import FeatureCard from "@/components/FeatureCard";
 import Section from "@/components/Section";
+import { howWeWorksData } from "../data";
+import { type Data } from "../types";
 
-const data = [
-  {
-    id: "1",
-    title: "Upload Your Child’s Photo",
-    image: "upload",
-    description: "Simply upload a clear photo of your child's smiling face",
-  },
-  {
-    id: "2",
-    title: "Personalize Information",
-    image: "idea",
-    description: "Choose their name, select gender and customize the adventure",
-  },
-  {
-    id: "3",
-    title: "Book Printing & Delivery",
-    image: "printer",
-    description: "Get your magical storybook delivered digitally or in print",
-  },
-];
-
-export default function HowItWorks() {
+export default function HowWeWorks({
+  data = howWeWorksData,
+}: {
+  data?: Data[];
+}) {
   return (
     <Section
       eyebrow="How It Works"

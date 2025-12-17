@@ -36,7 +36,10 @@ export default function BookCardVertical({
         <p className="text-gray-500 line-clamp-2">{description}</p>
         <div className="mt-4">
           <Button className="primary-gradient" size="lg">
-            Personalize This Book
+            <span>
+              Personalize{" "}
+              <span className="max-md:hidden md:inline-block">This Book</span>
+            </span>
           </Button>
         </div>
       </div>

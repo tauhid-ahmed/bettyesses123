@@ -2,6 +2,7 @@ import Image from "next/image";
 import Container from "./Container";
 import Heading from "./Heading";
 import Section from "./Section";
+import { useScreenSize } from "@/hooks/useScreenSize";
 
 type Props = {
   title: string;
@@ -16,14 +17,25 @@ export default function PageIntro({ title, description, image }: Props) {
         <div className="rounded-lg relative md:h-77.5 overflow-hidden flex">
           <Background />
 
-          <div className="flex justify-between items-center p-4 md:p-8 flex-1">
-            <div className="space-y-2">
-              <Heading as="h2" className="primary-gradient-text">
+          <div className="flex flex-col gap-4 md:flex-row justify-between items-center p-4 md:p-8 flex-1">
+            <div className="space-y-2 order-2">
+              <Heading
+                as="h2"
+                className="primary-gradient-text text-center md:text-left"
+              >
                 {title}
               </Heading>
-              <p className="text-lg text-gray-800">{description}</p>
+              <p className="text-lg text-gray-800 text-center md:text-left">
+                {description}
+              </p>
             </div>
-            <Image src={image} alt={title} height={240} width={340} />
+            <Image
+              className="order-1 md:order-2"
+              src={image}
+              alt={title}
+              height={240}
+              width={340}
+            />
           </div>
         </div>
       </Container>

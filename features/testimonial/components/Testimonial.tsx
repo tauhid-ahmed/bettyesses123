@@ -6,12 +6,13 @@ import {
   CarouselItem,
   useCarouselControls,
 } from "@/components/ui/carousel";
-import { Button } from "./ui/button";
+import { Button } from "@/components/ui/button";
 import { LucideArrowLeft, LucideArrowRight } from "lucide-react";
 import TestimonialCard from "@/features/testimonial/components/TestimonialCard";
 import { testimonialData } from "@/features/testimonial/data";
-import Section from "./Section";
-import Container from "./Container";
+import Section from "@/components/Section";
+import Container from "@/components/Container";
+import { TestimonialData } from "../types";
 
 function CustomControls() {
   const { next, previous } = useCarouselControls();
@@ -51,7 +52,11 @@ function CustomControls() {
   );
 }
 
-export default function CarouselDemo() {
+export default function Testimonial({
+  data = testimonialData,
+}: {
+  data?: TestimonialData[];
+}) {
   return (
     <Section title="Smiles Shared by Our Customers" eyebrow="Testimonials">
       <Container>
@@ -62,7 +67,7 @@ export default function CarouselDemo() {
           }}
         >
           <CarouselContent>
-            {testimonialData.map((testimonial, index) => (
+            {data.map((testimonial, index) => (
               <CarouselItem key={index} className="md:basis-1/2 lg:basis-1/3">
                 <TestimonialCard
                   age={testimonial.age}
