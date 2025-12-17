@@ -20,7 +20,7 @@ export default function Section({
   return (
     <section
       className={cn({
-        "py-6 md:py-10 lg:py-15 space-y-6 lg:space-y-10": padding === "lg",
+        "py-6 md:py-10 lg:py-20 space-y-6 lg:space-y-10": padding === "lg",
         "py-6 lg:py-10": padding === "md",
         "py-6": padding === "sm",
         "py-0": padding === "none",

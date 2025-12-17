@@ -3,6 +3,7 @@ import Section from "@/components/Section";
 import { Button } from "@/components/ui/button";
 import BookCardVertical from "@/features/books/components/BookCardVertical";
 import { verticalBooks } from "@/features/books/data";
+import Link from "next/link";
 
 export default function BooksList() {
   return (
@@ -24,8 +25,8 @@ export default function BooksList() {
           ))}
         </ul>
         <div className="max-w-sm mx-auto mt-8">
-          <Button className="w-full" size="lg">
-            See All Books
+          <Button className="w-full" size="lg" asChild>
+            <Link href="/books">See all books</Link>
           </Button>
         </div>
       </Container>

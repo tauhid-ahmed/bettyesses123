@@ -32,7 +32,7 @@ function Footer() {
   };
 
   return (
-    <footer>
+    <footer className="mt-10 lg:mt-20">
       <Container>
         <div className="flex flex-col lg:flex-row gap-8 lg:gap-20 py-6">
           {/* Logo and Description */}

@@ -20,7 +20,7 @@ export default function ActiveLink({
     <Link
       href={href}
       className={cn(
-        "flex items-center text-gray-700 text-base hover:text-primary-500 transition-colors duration-300",
+        "flex items-center text-gray-700 text-base hover:text-primary-500 transition-colors duration-300 font-semibold",
         isActive && "is-active-link text-primary-500 rounded",
         className
       )}

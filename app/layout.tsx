@@ -3,6 +3,7 @@ import { Nunito } from "next/font/google";
 import "@/styles/globals.css";
 import { Toaster } from "@/components/ui/sonner";
 import { Suspense } from "react";
+import QueryProvider from "@/providers/QueryProvider";
 
 export const metadata: Metadata = {
   title: "Create Next App",
@@ -22,7 +23,9 @@ export default function RootLayout({ children }: Readonly<LayoutProps>) {
   return (
     <html lang="en">
       <body className={`${sans.variable} ${sans.className} antialiased`}>
-        <Suspense fallback={<div>Loading...</div>}>{children}</Suspense>
+        <Suspense fallback={<div>Loading...</div>}>
+          <QueryProvider>{children}</QueryProvider>
+        </Suspense>
         <Toaster
           position="top-right"
           closeButton

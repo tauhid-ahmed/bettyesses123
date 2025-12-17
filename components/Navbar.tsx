@@ -83,7 +83,7 @@ export default function Navbar() {
   const [mobileMenuOpen, setMobileMenuOpen] = useState<boolean>(false);
 
   return (
-    <header className="sticky top-0 z-50 bg-background/95 backdrop-blur supports-backdrop-filter:bg-background/80 border-b">
+    <header className="sticky top-0 z-50 backdrop-blur-xs bg-white/20">
       <Container>
         {isLargeScreen ? (
           <DesktopNav />
