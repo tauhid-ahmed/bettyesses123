@@ -8,6 +8,7 @@ import ActiveLink from "./ActiveLink";
 import { Button } from "./ui/button";
 import { LucideShoppingBag, LucideMenu, LucideX } from "lucide-react";
 import { useScreenSize } from "@/hooks/useScreenSize";
+import Link from "next/link";
 
 interface NavItem {
   name: string;
@@ -121,15 +122,16 @@ function DesktopNav() {
         >
           <LucideShoppingBag className="w-5 h-5" />
         </Button>
-        <Button className="primary-gradient font-medium" size="lg">
-          Sign up
+        <Button className="primary-gradient font-medium" size="lg" asChild>
+          <Link href="/signup">Sign up</Link>
         </Button>
         <Button
           className="border-2 border-primary-500 text-primary-500 font-medium hover:bg-primary-500 hover:text-white transition-all duration-200"
           variant="ghost"
           size="lg"
+          asChild
         >
-          Log in
+          <Link href="/login">Log in</Link>
         </Button>
       </div>
     </nav>
@@ -240,15 +242,17 @@ function MobileNav({ isOpen, onOpenChange }: MobileNavProps) {
                 <Button
                   className="primary-gradient w-full font-medium shadow-sm hover:shadow-md transition-all"
                   size="lg"
+                  asChild
                 >
-                  Sign up
+                  <Link href="/signup">Sign up</Link>
                 </Button>
                 <Button
                   className="w-full border-2 border-primary-500 text-primary-500 font-medium hover:bg-primary-500 hover:text-white active:scale-95 transition-all duration-200"
                   variant="ghost"
                   size="lg"
+                  asChild
                 >
-                  Log in
+                  <Link href="/login">Log in</Link>
                 </Button>
               </motion.div>
             </motion.div>
