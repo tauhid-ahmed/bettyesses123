@@ -58,7 +58,7 @@ function TestimonialImage({ image, name }: { image?: string; name: string }) {
         alt={name}
         width={112}
         height={112}
-        className="w-fit mx-auto size-16 md:size-20  mb-6 rounded-full object-cover border border-primary-500"
+        className="mx-auto size-16 md:size-20  mb-6 rounded-full object-cover border border-primary-500 shrink-0"
       />
     );
   }

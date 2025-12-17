@@ -201,14 +201,14 @@ function MobileNav({ isOpen, onOpenChange }: MobileNavProps) {
             className="overflow-hidden -mx-10"
           >
             <motion.div
-              className="pb-6 pt-2 space-y-6 bg-linear-to-br from-primary-50 to-secondary-50 rounded-2xl shadow-lg border border-primary-100 mx-2 mb-4 px-6"
+              className="pb-6 pt-2 space-y-2 bg-linear-to-br from-primary-50 to-secondary-50 rounded-2xl shadow-lg border border-primary-100 mx-2 mb-4 px-6"
               initial={{ scale: 0.95 }}
               animate={{ scale: 1 }}
               exit={{ scale: 0.95 }}
               transition={{ duration: 0.2 }}
             >
               {/* Navigation Links */}
-              <nav className="px-3 pt-4">
+              <nav className="px-1 pt-2">
                 <ul className="space-y-1">
                   {navItems.map((item, index) => (
                     <motion.li
@@ -220,7 +220,7 @@ function MobileNav({ isOpen, onOpenChange }: MobileNavProps) {
                       exit="closed"
                     >
                       <ActiveLink
-                        className="block px-4 py-3.5 text-lg font-medium rounded-xl hover:bg-white/80 active:bg-white transition-all"
+                        className="block py-2 font-medium rounded-xl hover:bg-white/80 active:bg-white transition-all text-sm"
                         href={item.href}
                         onClick={handleClose}
                       >
@@ -237,11 +237,10 @@ function MobileNav({ isOpen, onOpenChange }: MobileNavProps) {
                 initial="closed"
                 animate="open"
                 exit="closed"
-                className="px-3 pt-2 border-t border-primary-200/50 space-y-3"
+                className="border-t border-primary-200/50 space-y-3"
               >
                 <Button
                   className="primary-gradient w-full font-medium shadow-sm hover:shadow-md transition-all"
-                  size="lg"
                   asChild
                 >
                   <Link href="/signup">Sign up</Link>
@@ -249,7 +248,6 @@ function MobileNav({ isOpen, onOpenChange }: MobileNavProps) {
                 <Button
                   className="w-full border-2 border-primary-500 text-primary-500 font-medium hover:bg-primary-500 hover:text-white active:scale-95 transition-all duration-200"
                   variant="ghost"
-                  size="lg"
                   asChild
                 >
                   <Link href="/login">Log in</Link>

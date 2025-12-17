@@ -27,7 +27,7 @@ type BlobProps = {
 const VARIANT_CLASSES: Record<BlobVariant, string> = {
   primary: "bg-primary-500/50",
   secondary: "bg-secondary-500/50",
-  tertiary: "bg-red-500/30",
+  tertiary: "bg-pink-500/30",
 };
 
 const SIZE_CLASSES: Record<BlobSize, string> = {

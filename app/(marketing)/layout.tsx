@@ -19,6 +19,7 @@ export default function MarketingLayout({ children }: React.PropsWithChildren) {
 function BlobContainer() {
   return (
     <div className="absolute inset-0 overflow-hidden -z-10">
+      <Blob variant="primary" size="sm" position="top-left" intent="strong" />
       <Blob variant="primary" size="lg" position="top-right" intent="strong" />
       <Blob
         variant="secondary"
@@ -30,6 +31,12 @@ function BlobContainer() {
         variant="primary"
         size="lg"
         position="bottom-right"
+        intent="strong"
+      />
+      <Blob
+        variant="tertiary"
+        size="sm"
+        position="bottom-left"
         intent="strong"
       />
     </div>
