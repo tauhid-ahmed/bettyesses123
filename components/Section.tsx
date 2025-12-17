@@ -8,6 +8,7 @@ type SectionProps = {
   description?: React.ReactNode;
   padding?: "none" | "sm" | "md" | "lg";
   children: React.ReactNode;
+  className?: string;
 };
 
 export default function Section({
@@ -16,15 +17,19 @@ export default function Section({
   title,
   description,
   padding = "lg",
+  className,
 }: SectionProps) {
   return (
     <section
-      className={cn({
-        "py-6 md:py-10 lg:py-20 space-y-6 lg:space-y-10": padding === "lg",
-        "py-6 lg:py-10": padding === "md",
-        "py-6": padding === "sm",
-        "py-0": padding === "none",
-      })}
+      className={cn(
+        {
+          "py-6 md:py-10 lg:py-20 space-y-6 lg:space-y-10": padding === "lg",
+          "py-6 lg:py-10": padding === "md",
+          "py-6": padding === "sm",
+          "py-0": padding === "none",
+        },
+        className
+      )}
     >
       <Container className="space-y-4 text-center">
         {eyebrow && <Eyebrow>{eyebrow}</Eyebrow>}
