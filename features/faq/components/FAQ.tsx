@@ -7,8 +7,9 @@ import {
 } from "@/components/accordion/components/Accordion";
 import Image from "next/image";
 import bookImage from "@/images/book.webp";
+import { type AccordionData } from "../types";
 
-export default function FAQ() {
+export default function FAQ({ data = faqData }: { data?: AccordionData[] }) {
   return (
     <Section eyebrow="FAQ" title="Frequently Asked Questions">
       <Container>
@@ -25,7 +26,7 @@ export default function FAQ() {
           {/* Accordion Container */}
           <div className="w-full lg:flex-1">
             <AccordionGroup allowMultiple={false}>
-              {faqData.map((item) => (
+              {data.map((item) => (
                 <AccordionItem key={item.question} title={item.question}>
                   <p>{item.answer}</p>
                 </AccordionItem>

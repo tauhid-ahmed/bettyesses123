@@ -30,7 +30,7 @@ export default function PageIntro({ title, description, image }: Props) {
               </p>
             </div>
             <Image
-              className="order-1 md:order-2"
+              className="order-1 md:order-2 h-60 block object-contain"
               src={image}
               alt={title}
               height={240}

@@ -1,4 +1,6 @@
-export const faqData = [
+import { type AccordionData } from "../types";
+
+export const faqData: AccordionData[] = [
   {
     question: "How can I order multiple books?",
     answer:
