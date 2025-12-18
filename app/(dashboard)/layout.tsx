@@ -16,6 +16,7 @@ import {
   BadgePercent,
   BookOpenCheck,
   CirclePoundSterling,
+  ClipboardCheck,
   FileUser,
   LucideUser,
   LucideUserPlus,
@@ -85,6 +86,12 @@ const navItems = [
     href: "/promo-codes",
     name: "Promo Codes",
     icon: <BadgePercent />,
+    children: [],
+  },
+  {
+    href: "/order-management",
+    name: "Order Management",
+    icon: <ClipboardCheck />,
     children: [],
   },
   {
