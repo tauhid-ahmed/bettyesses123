@@ -13,6 +13,7 @@ import {
 } from "@/features/admin/dashboard/components/DashboardContainer";
 import DashboardNavigation from "@/features/admin/dashboard/components/DashboardNavigation";
 import {
+  BadgePercent,
   BookOpenCheck,
   CirclePoundSterling,
   FileUser,
@@ -72,6 +73,18 @@ const navItems = [
     href: "/privacy-and-policy",
     name: "Privacy Policy",
     icon: <BookOpenCheck />,
+    children: [],
+  },
+  {
+    href: "/terms-and-condition",
+    name: "Terms & Condition",
+    icon: <BookOpenCheck />,
+    children: [],
+  },
+  {
+    href: "/promo-codes",
+    name: "Promo Codes",
+    icon: <BadgePercent />,
     children: [],
   },
   {

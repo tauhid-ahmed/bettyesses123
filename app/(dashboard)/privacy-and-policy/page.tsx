@@ -1,22 +1,5 @@
-import PageHeading from "@/components/PageHeading";
-import EditPrivacyPolicy from "@/components/privacy-and-policy/EditPrivacyPolicy";
+import PolicyPage from "../policy/page";
 
-const PrivacyAndPolicyPage = () => {
-  return (
-    <div>
-      <div>
-        <PageHeading
-          query=""
-          title="Add New Privacy Policy"
-          showSearchBar={false}
-        />
-      </div>
-
-      <div>
-        <EditPrivacyPolicy />
-      </div>
-    </div>
-  );
-};
-
-export default PrivacyAndPolicyPage;
+export default function PrivacyPolicyPage() {
+  return <PolicyPage title="Privacy Policy" type="privacy" />;
+}
