@@ -28,7 +28,7 @@ const bookInfo = {
   originalPrice: 19.99,
 };
 
-export default function PublicBookDetails() {
+export default function PublicBookDetails({ id }: { id: string }) {
   return (
     <Section padding="sm">
       <Container>
@@ -42,6 +42,7 @@ export default function PublicBookDetails() {
             price={bookInfo.price}
             discount={bookInfo.discount}
             originalPrice={bookInfo.originalPrice}
+            id={id}
           />
         </div>
       </Container>

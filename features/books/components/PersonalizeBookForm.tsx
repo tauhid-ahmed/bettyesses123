@@ -20,13 +20,13 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
+import { usePersonalizeBook } from "../context/PersonalizeBookContext";
 
 const formSchema = z.object({
   childName: z.string().min(1, "Child's name is required"),
   age: z.string().min(1, "Age is required"),
   gender: z.string().min(1, "Gender is required"),
   birthMonth: z.string().min(1, "Birth month is required"),
-  image: z.instanceof(File).optional().or(z.string().optional()),
 });
 
 type FormValues = z.infer<typeof formSchema>;
@@ -48,20 +48,21 @@ const months = [
 ];
 
 export default function PersonalizeBookForm() {
+  const { formData, updateFormData, setCurrentStep } = usePersonalizeBook();
+
   const form = useForm<FormValues>({
     resolver: zodResolver(formSchema),
     defaultValues: {
-      childName: "",
-      age: "",
-      gender: "",
-      birthMonth: "",
-      image: undefined,
+      childName: formData.childName,
+      age: formData.age,
+      gender: formData.gender,
+      birthMonth: formData.birthMonth,
     },
   });
 
   function onSubmit(values: FormValues) {
-    console.log(values);
-    // Handle form submission
+    updateFormData(values);
+    setCurrentStep(2);
   }
 
   return (
@@ -77,7 +78,6 @@ export default function PersonalizeBookForm() {
 
       <Form {...form}>
         <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
-          {/* Child's Name */}
           <FormField
             control={form.control}
             name="childName"
@@ -92,7 +92,6 @@ export default function PersonalizeBookForm() {
             )}
           />
 
-          {/* Age */}
           <FormField
             control={form.control}
             name="age"
@@ -101,7 +100,7 @@ export default function PersonalizeBookForm() {
                 <FormLabel className="text-gray-700">Age</FormLabel>
                 <Select onValueChange={field.onChange} value={field.value}>
                   <FormControl>
-                    <SelectTrigger className="bg-white">
+                    <SelectTrigger className="bg-white w-full">
                       <SelectValue placeholder="6" />
                     </SelectTrigger>
                   </FormControl>
@@ -118,7 +117,6 @@ export default function PersonalizeBookForm() {
             )}
           />
 
-          {/* Gender */}
           <FormField
             control={form.control}
             name="gender"
@@ -142,7 +140,6 @@ export default function PersonalizeBookForm() {
             )}
           />
 
-          {/* Birth Month */}
           <FormField
             control={form.control}
             name="birthMonth"
@@ -165,32 +162,6 @@ export default function PersonalizeBookForm() {
                     ))}
                   </SelectContent>
                 </Select>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
-
-          {/* Image Upload Field (for later implementation) */}
-          <FormField
-            control={form.control}
-            name="image"
-            render={({ field: { value, onChange, ...field } }) => (
-              <FormItem>
-                <FormLabel className="text-gray-700">
-                  Child's Photo (Optional)
-                </FormLabel>
-                <FormControl>
-                  <Input
-                    type="file"
-                    accept="image/*"
-                    onChange={(e) => {
-                      const file = e.target.files?.[0];
-                      onChange(file);
-                    }}
-                    {...field}
-                    className="bg-white"
-                  />
-                </FormControl>
                 <FormMessage />
               </FormItem>
             )}

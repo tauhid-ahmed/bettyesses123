@@ -1,5 +1,7 @@
 import Heading from "@/components/Heading";
 import { Button } from "@/components/ui/button";
+import { personalizeBookPath } from "@/paths";
+import Link from "next/link";
 
 type Props = {
   title: string;
@@ -9,6 +11,7 @@ type Props = {
   price: number;
   discount: number;
   originalPrice: number;
+  id: string;
 };
 
 export default function PublicBookInfo({
@@ -19,6 +22,7 @@ export default function PublicBookInfo({
   price,
   discount,
   originalPrice,
+  id,
 }: Props) {
   return (
     <div className="h-full grid items-center">
@@ -44,8 +48,8 @@ export default function PublicBookInfo({
             </span>
           </div>
         </div>
-        <Button size="lg" className="primary-gradient w-full">
-          Personalize This Book
+        <Button size="lg" className="primary-gradient w-full" asChild>
+          <Link href={personalizeBookPath(id)}>Personalize This Book</Link>
         </Button>
       </div>
     </div>
