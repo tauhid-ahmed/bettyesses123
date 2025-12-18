@@ -1,6 +1,7 @@
 "use client";
 
 import { ChevronDown } from "lucide-react";
+import Link from "next/link";
 import { useState } from "react";
 
 export default function CreatePromoCodeForm() {
@@ -78,7 +79,6 @@ export default function CreatePromoCodeForm() {
           />
         </div>
 
-     
         <div>
           <label className="block text-gray-900 text-base font-normal mb-3">
             Use Limit
@@ -156,17 +156,17 @@ export default function CreatePromoCodeForm() {
 
         {/* Action Buttons */}
         <div className="flex flex-col sm:flex-row gap-4 pt-4">
-          <button
-            type="button"
-            onClick={handleCancel}
-            className="flex-1 px-6 py-3 border-2 border-gray-900 text-gray-900 rounded-lg hover:bg-gray-50 transition-colors font-medium"
+          <Link
+            href="/promo-codes"
+            className="flex-1 px-6 py-3 border-2 border-gray-900 rounded-lg hover:bg-gray-50 transition-colors text-center text-gray-900 font-medium"
           >
             Cancel
-          </button>
+          </Link>
+
           <button
             type="button"
             onClick={handleSubmit}
-            className="flex-1 px-6 py-3 bg-blue-400 hover:bg-blue-500 text-white rounded-lg transition-colors font-medium"
+            className="flex-1 px-6 py-3 bg-[#73B7FF] hover:bg-blue-500 text-white rounded-lg transition-colors font-medium"
           >
             Send To
           </button>
