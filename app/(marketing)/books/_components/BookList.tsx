@@ -2,7 +2,7 @@ import Container from "@/components/Container";
 import Section from "@/components/Section";
 import BookCardHorizontal from "@/features/books/components/BookCardHorizontal";
 import { horizontalBooks } from "@/features/books/data";
-import { savedBooksIdPath } from "@/paths";
+import { booksIdPath } from "@/paths";
 
 export default function BookList() {
   return (
@@ -17,7 +17,7 @@ export default function BookList() {
                 ageRange={book.ageRange}
                 description={book.description}
                 lessons={book.lessons}
-                href={savedBooksIdPath(book.id)}
+                href={booksIdPath(book.id)}
               />
             </li>
           ))}
