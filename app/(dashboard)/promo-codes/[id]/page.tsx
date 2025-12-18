@@ -74,91 +74,119 @@ export default function EditPromoCodePage() {
   const onSubmit: SubmitHandler<FormValues> = (data) => {
     console.log("Saved data:", { id, ...data });
 
-    // Update promoCodes array if you want to simulate saving
     const index = promoCodes.findIndex((p) => p.id === id);
     if (index !== -1) {
       promoCodes[index] = { id, ...data };
     }
   };
 
-  if (!promo) return <p>Loading...</p>;
+  if (!promo) return <p className="p-6">Loading...</p>;
 
   return (
-    <div className="p-6">
-      <h1 className="text-2xl font-semibold mb-4">Edit Promo Code</h1>
+    <div className=" p-4 sm:p-6 lg:p-8">
+      <h1 className="text-2xl sm:text-3xl font-semibold text-gray-900 mb-8">
+        Edit Promo Code
+      </h1>
 
-      <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
-        <Controller
-          name="code"
-          control={control}
-          render={({ field }) => (
-            <input
-              {...field}
-              type="text"
-              placeholder="Promo Code"
-              className="w-full p-3 border rounded"
-            />
-          )}
-        />
+      <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
+        <div>
+          <label className="block text-gray-900 text-base font-normal mb-3">
+            Promo Code
+          </label>
+          <Controller
+            name="code"
+            control={control}
+            render={({ field }) => (
+              <input
+                {...field}
+                type="text"
+                placeholder="Enter promo code"
+                className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-400 focus:border-transparent text-gray-700"
+              />
+            )}
+          />
+        </div>
 
-        <Controller
-          name="discount"
-          control={control}
-          render={({ field }) => (
-            <input
-              {...field}
-              type="text"
-              placeholder="Discount"
-              className="w-full p-3 border rounded"
-            />
-          )}
-        />
+        <div>
+          <label className="block text-gray-900 text-base font-normal mb-3">
+            Discount
+          </label>
+          <Controller
+            name="discount"
+            control={control}
+            render={({ field }) => (
+              <input
+                {...field}
+                type="text"
+                placeholder="Enter discount (e.g., 12% off)"
+                className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-400 focus:border-transparent text-gray-700"
+              />
+            )}
+          />
+        </div>
 
-        <Controller
-          name="minOrder"
-          control={control}
-          render={({ field }) => (
-            <input
-              {...field}
-              type="text"
-              placeholder="Minimum Order"
-              className="w-full p-3 border rounded"
-            />
-          )}
-        />
+        <div>
+          <label className="block text-gray-900 text-base font-normal mb-3">
+            Minimum Order Amount
+          </label>
+          <Controller
+            name="minOrder"
+            control={control}
+            render={({ field }) => (
+              <input
+                {...field}
+                type="text"
+                placeholder="Enter minimum order amount (e.g., €30)"
+                className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-400 focus:border-transparent text-gray-700"
+              />
+            )}
+          />
+        </div>
 
-        <Controller
-          name="hoursLeft"
-          control={control}
-          render={({ field }) => (
-            <input
-              {...field}
-              type="number"
-              placeholder="Hours Left"
-              className="w-full p-3 border rounded"
-            />
-          )}
-        />
+        <div>
+          <label className="block text-gray-900 text-base font-normal mb-3">
+            Hours Left
+          </label>
+          <Controller
+            name="hoursLeft"
+            control={control}
+            render={({ field }) => (
+              <input
+                {...field}
+                type="number"
+                placeholder="Enter hours remaining"
+                className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-400 focus:border-transparent text-gray-700"
+              />
+            )}
+          />
+        </div>
 
-        <Controller
-          name="minutesLeft"
-          control={control}
-          render={({ field }) => (
-            <input
-              {...field}
-              type="number"
-              placeholder="Minutes Left"
-              className="w-full p-3 border rounded"
-            />
-          )}
-        />
+        <div>
+          <label className="block text-gray-900 text-base font-normal mb-3">
+            Minutes Left
+          </label>
+          <Controller
+            name="minutesLeft"
+            control={control}
+            render={({ field }) => (
+              <input
+                {...field}
+                type="number"
+                placeholder="Enter minutes remaining"
+                className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-400 focus:border-transparent text-gray-700"
+              />
+            )}
+          />
+        </div>
 
-        <button
-          type="submit"
-          className="bg-blue-500 text-white px-6 py-3 rounded w-full mt-2"
-        >
-          Save Changes
-        </button>
+        <div className="pt-4">
+          <button
+            type="submit"
+            className="w-full px-6 py-3 bg-blue-400 hover:bg-blue-500 text-white rounded-lg transition-colors font-medium"
+          >
+            Save Changes
+          </button>
+        </div>
       </form>
     </div>
   );
