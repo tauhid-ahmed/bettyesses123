@@ -32,7 +32,7 @@ export default function PublicBookDetails() {
   return (
     <Section padding="sm">
       <Container>
-        <div className="grid md:grid-cols-[minmax(minmax(10rem, 1fr),27.5rem)_2fr] gap-6">
+        <div className="grid md:grid-cols-[minmax(23rem,1fr)_2fr] gap-6">
           <BookGallery images={data} />
           <PublicBookInfo
             title={bookInfo.title}
