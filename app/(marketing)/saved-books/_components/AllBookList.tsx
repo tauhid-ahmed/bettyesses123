@@ -3,6 +3,7 @@ import Section from "@/components/Section";
 import { Button } from "@/components/ui/button";
 import BookCardVertical from "@/features/books/components/BookCardVertical";
 import { verticalBooks } from "@/features/books/data";
+import { booksIdPath } from "@/paths";
 import Link from "next/link";
 
 export default function AllBooksList() {
@@ -21,6 +22,7 @@ export default function AllBooksList() {
               ageRange={book.ageRange}
               description={book.description}
               lessons={book.lessons}
+              href={booksIdPath(book.id)}
             />
           ))}
         </ul>

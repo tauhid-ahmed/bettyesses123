@@ -2,6 +2,7 @@ import Container from "@/components/Container";
 import Section from "@/components/Section";
 import BookCardHorizontal from "@/features/books/components/BookCardHorizontal";
 import { horizontalBooks } from "@/features/books/data";
+import { savedBooksIdPath } from "@/paths";
 
 export default function BookList() {
   return (
@@ -10,7 +11,14 @@ export default function BookList() {
         <ul className="space-y-4 lg:space-y-6">
           {horizontalBooks.map((book) => (
             <li key={book.id}>
-              <BookCardHorizontal {...book} />
+              <BookCardHorizontal
+                image={book.image}
+                title={book.title}
+                ageRange={book.ageRange}
+                description={book.description}
+                lessons={book.lessons}
+                href={savedBooksIdPath(book.id)}
+              />
             </li>
           ))}
         </ul>

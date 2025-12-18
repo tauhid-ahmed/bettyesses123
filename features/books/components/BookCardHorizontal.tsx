@@ -5,14 +5,8 @@ import Image from "next/image";
 
 import cameraIcon from "@/images/icons/camera.webp";
 import giftIcon from "@/images/icons/gift.webp";
-
-type Props = {
-  image: string;
-  title: string;
-  ageRange: string;
-  description: string;
-  lessons: string;
-};
+import Link from "next/link";
+import { BookCardHorizontalProps } from "../types";
 
 export default function BookCardHorizontal({
   title,
@@ -20,10 +14,11 @@ export default function BookCardHorizontal({
   ageRange,
   description,
   lessons,
-}: Props) {
+  href,
+}: BookCardHorizontalProps) {
   return (
     <Card className="rounded-xl overflow-hidden border-none p-0 gap-0 shadow-xs hover:shadow-lg hover:shadow-primary-300 transition-shadow flex flex-col sm:flex-row bg-primary-100 m-2 mx-auto md:h-90.25 group">
-      <div className="flex-1 sm:w-1/2 relative shrink-0 md:max-w-[487px] overflow-hidden bg-red-500">
+      <div className="flex-1 sm:w-1/2 relative shrink-0 md:max-w-[487px] overflow-hidden">
         <Image
           src={image}
           alt={title}
@@ -54,8 +49,8 @@ export default function BookCardHorizontal({
         </div>
 
         <div className="mt-4">
-          <Button className="primary-gradient w-full" size="lg">
-            Personalize This Book
+          <Button className="primary-gradient w-full" size="lg" asChild>
+            <Link href={href}>Personalize This Book</Link>
           </Button>
         </div>
       </div>

@@ -3,6 +3,7 @@ import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import Image from "next/image";
 import { BooksCardVerticalProps } from "../types";
+import Link from "next/link";
 
 export default function BookCardVertical({
   title,
@@ -10,6 +11,7 @@ export default function BookCardVertical({
   ageRange,
   description,
   lessons,
+  href,
 }: BooksCardVerticalProps) {
   return (
     <Card className="rounded-xl overflow-hidden border-none p-0 gap-0 shadow-xs hover:shadow-lg hover:shadow-primary-300 transition-shadow bg-primary-100 group duration-300">
@@ -35,11 +37,13 @@ export default function BookCardVertical({
         </div>
         <p className="text-gray-500 line-clamp-2">{description}</p>
         <div className="mt-4">
-          <Button className="primary-gradient" size="lg">
-            <span>
-              Personalize{" "}
-              <span className="max-md:hidden md:inline-block">This Book</span>
-            </span>
+          <Button className="primary-gradient" size="lg" asChild>
+            <Link href={href}>
+              <span>
+                Personalize{" "}
+                <span className="max-md:hidden md:inline-block">This Book</span>
+              </span>
+            </Link>
           </Button>
         </div>
       </div>

@@ -4,6 +4,7 @@ import { Button } from "@/components/ui/button";
 import BookCardVertical from "@/features/books/components/BookCardVertical";
 import { verticalBooks } from "@/features/books/data";
 import Link from "next/link";
+import { booksIdPath } from "@/paths";
 
 export default function BooksList() {
   return (
@@ -21,6 +22,7 @@ export default function BooksList() {
               ageRange={book.ageRange}
               description={book.description}
               lessons={book.lessons}
+              href={booksIdPath(book.id)}
             />
           ))}
         </ul>
