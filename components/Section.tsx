@@ -3,6 +3,7 @@ import Heading from "./Heading";
 import Container from "./Container";
 import HeadingReveal from "./HeadingReveal";
 import { DiagonalWipeReveal, DoubleWipeReveal, WipeReveal } from "./Animations";
+import { DescriptionChars } from "./TextAnimation";
 
 type SectionProps = {
   eyebrow?: React.ReactNode;
@@ -69,5 +70,5 @@ function Title({ children }: React.PropsWithChildren) {
 }
 
 function Description({ children }: React.PropsWithChildren) {
-  return <>{children}</>;
+  return <DescriptionChars text={children as string} />;
 }

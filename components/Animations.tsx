@@ -166,7 +166,7 @@ export function DiagonalWipeReveal({
   delay = 0,
   className = "",
   once = true,
-  overlayColor = "bg-primary-100",
+  overlayColor = "bg-primary-100/50",
   duration = 1,
 }: Omit<WipeRevealProps, "direction">) {
   const ref = useRef(null);
@@ -184,7 +184,7 @@ export function DiagonalWipeReveal({
         animate={isInView ? { opacity: 1 } : {}}
         transition={{
           duration: 0.01,
-          delay: delay + duration * 0.5,
+          delay: delay + duration * 0.3,
         }}
       >
         {children}

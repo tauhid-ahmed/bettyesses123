@@ -31,7 +31,7 @@ export default function HeadingReveal({
         opacity: 0,
         y: 40,
         scale: 0.95,
-        filter: "blur(8px)",
+        filter: "blur(4px)",
       }}
       animate={
         isInView
@@ -44,7 +44,7 @@ export default function HeadingReveal({
           : {}
       }
       transition={{
-        duration: 0.7,
+        duration: 0.4,
         delay: delay,
         ease: [0.16, 1, 0.3, 1],
         opacity: { duration: 0.6 },
@@ -55,13 +55,3 @@ export default function HeadingReveal({
     </motion.div>
   );
 }
-
-// Usage example:
-// <HeadingReveal>
-//   <h1>Your Heading Here</h1>
-// </HeadingReveal>
-//
-// With delay:
-// <HeadingReveal delay={0.2}>
-//   <h2>Second Heading</h2>
-// </HeadingReveal>

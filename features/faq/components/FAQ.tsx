@@ -8,6 +8,7 @@ import {
 import Image from "next/image";
 import bookImage from "@/images/book.webp";
 import { type AccordionData } from "../types";
+import { CardReveal } from "@/components/CardAnimation";
 
 export default function FAQ({ data = faqData }: { data?: AccordionData[] }) {
   return (
@@ -25,13 +26,15 @@ export default function FAQ({ data = faqData }: { data?: AccordionData[] }) {
 
           {/* Accordion Container */}
           <div className="w-full lg:flex-1">
-            <AccordionGroup allowMultiple={false}>
-              {data.map((item) => (
-                <AccordionItem key={item.question} title={item.question}>
-                  <p>{item.answer}</p>
-                </AccordionItem>
-              ))}
-            </AccordionGroup>
+            <CardReveal>
+              <AccordionGroup allowMultiple={false}>
+                {data.map((item) => (
+                  <AccordionItem key={item.question} title={item.question}>
+                    <p>{item.answer}</p>
+                  </AccordionItem>
+                ))}
+              </AccordionGroup>
+            </CardReveal>
           </div>
         </div>
       </Container>
