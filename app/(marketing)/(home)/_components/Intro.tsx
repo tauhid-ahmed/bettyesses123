@@ -3,7 +3,9 @@ import Heading from "@/components/Heading";
 import Section from "@/components/Section";
 import { Button } from "@/components/ui/button";
 import introImage from "@/images/homeIntro.webp";
+import { booksPath } from "@/paths";
 import Image from "next/image";
+import Link from "next/link";
 
 export default function Intro() {
   return (
@@ -23,8 +25,8 @@ export default function Intro() {
               and kids. We prioritize uncompromising quality, offering only the
               best for you and your little ones.
             </p>
-            <Button className="primary-gradient" size="lg">
-              Create Free Preview
+            <Button className="primary-gradient" size="lg" asChild>
+              <Link href={booksPath()}>Create Free Preview</Link>
             </Button>
           </div>
           <div className="max-w-[600px] shrink-4 order-1 md:order-2 animate-float">
