@@ -12,7 +12,7 @@ export default function PrivacyFeatures({
   return (
     <Section eyebrow="Privacy Features" title="We keep your information safe">
       <Container>
-        <ul className="flex flex-col md:flex-row gap-4">
+        <div className="flex flex-col md:flex-row gap-4">
           {data.map((item) => (
             <FeatureCard
               key={item.id}
@@ -21,7 +21,7 @@ export default function PrivacyFeatures({
               description={item.title}
             />
           ))}
-        </ul>
+        </div>
       </Container>
     </Section>
   );

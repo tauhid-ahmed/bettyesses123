@@ -1,6 +1,8 @@
 import { cn } from "@/lib/utils";
 import Heading from "./Heading";
 import Container from "./Container";
+import HeadingReveal from "./HeadingReveal";
+import { DiagonalWipeReveal, DoubleWipeReveal, WipeReveal } from "./Animations";
 
 type SectionProps = {
   eyebrow?: React.ReactNode;
@@ -44,21 +46,25 @@ export default function Section({
 function Eyebrow({ children }: React.PropsWithChildren) {
   return (
     <Heading as="h2" className="text-primary-500" size="h6" align="center">
-      {children}
+      <DiagonalWipeReveal className="inline-block">
+        {children}
+      </DiagonalWipeReveal>
     </Heading>
   );
 }
 
 function Title({ children }: React.PropsWithChildren) {
   return (
-    <Heading
-      as="h2"
-      size="h1"
-      align="center"
-      className="text-gray-800 tracking-tight"
-    >
-      {children}
-    </Heading>
+    <HeadingReveal>
+      <Heading
+        as="h2"
+        size="h1"
+        align="center"
+        className="text-gray-800 tracking-tight"
+      >
+        {children}
+      </Heading>
+    </HeadingReveal>
   );
 }
 

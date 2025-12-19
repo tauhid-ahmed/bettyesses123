@@ -15,7 +15,7 @@ export default function HowWeWorks({
       title="Personalize your storybook in just three magical steps"
     >
       <Container>
-        <ul className="flex flex-col md:flex-row gap-4">
+        <div className="flex flex-col md:flex-row gap-4">
           {data.map((item) => (
             <FeatureCard
               key={item.id}
@@ -24,7 +24,7 @@ export default function HowWeWorks({
               description={item.title}
             />
           ))}
-        </ul>
+        </div>
       </Container>
     </Section>
   );
