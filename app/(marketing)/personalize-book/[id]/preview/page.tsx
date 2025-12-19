@@ -1,3 +1,5 @@
-export default function Preview() {
-  return <div>page</div>;
+import BookPersonalizationPreview from "./preview";
+
+export default function HomePage() {
+  return <BookPersonalizationPreview />;
 }
