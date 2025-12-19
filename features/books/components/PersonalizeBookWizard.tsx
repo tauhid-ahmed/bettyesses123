@@ -42,7 +42,7 @@ function PersonalizeBook() {
 
   return (
     <AnimatePresence mode="wait" custom={currentStep}>
-      <Container size="sm" className="overflow">
+      <Container size="xs" className="overflow">
         <motion.div
           key={currentStep}
           custom={currentStep}

@@ -2,7 +2,7 @@ import { cn } from "@/lib/utils";
 
 type Props = {
   children: React.ReactNode;
-  size?: "sm" | "md" | "lg";
+  size?: "xs" | "sm" | "md" | "lg";
   className?: string;
 };
 
@@ -15,6 +15,7 @@ export default function Container({ children, className, size = "lg" }: Props) {
           "max-w-344": size === "lg",
           "max-w-267.75": size === "md",
           "max-w-196.5": size === "sm",
+          "max-w-172": size === "xs",
         },
         className
       )}

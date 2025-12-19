@@ -72,9 +72,10 @@ export default function PersonalizeBookForm() {
   return (
     <Section
       title="Personalize Book"
+      padding="sm"
       description="The book will be personalized with the information you provide"
     >
-      <Container size="sm">
+      <div className="mt-6">
         <Form {...form}>
           <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
             <FormField
@@ -174,7 +175,7 @@ export default function PersonalizeBookForm() {
             </Button>
           </form>
         </Form>
-      </Container>
+      </div>
     </Section>
   );
 }
