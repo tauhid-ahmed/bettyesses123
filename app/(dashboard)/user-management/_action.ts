@@ -1,6 +1,9 @@
 "use server";
 
-import { getAccessToken } from "@/lib/getServerAuth";
+const getAccessToken = async () => {
+  const token = "token";
+  return token;
+};
 import { revalidateTag } from "next/cache";
 
 export async function deleteUser(
