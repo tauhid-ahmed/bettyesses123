@@ -196,8 +196,7 @@ function VariantSlider({ page }: VariantSliderProps) {
 
   return (
     <div className="w-full max-w-2xl mx-auto">
-      {/* Animated Variant Display */}
-      <div className="relative aspect-[3/4] bg-gradient-to-br from-gray-50 to-gray-100 rounded-xl overflow-hidden shadow-lg mb-6">
+      <div className="relative aspect-[3/2] rounded-xl overflow-hidden shadow-lg mb-6">
         <AnimatePresence mode="wait">
           <motion.div
             key={currentVariant.id}
@@ -211,9 +210,6 @@ function VariantSlider({ page }: VariantSliderProps) {
               className="w-full h-full bg-cover bg-center"
               style={{ backgroundImage: `url(${currentVariant.image})` }}
             />
-            <div className="absolute bottom-4 left-1/2 transform -translate-x-1/2 bg-black/80 text-white px-4 py-2 rounded-full text-sm font-medium backdrop-blur-sm">
-              {currentVariant.id} • {page.title}
-            </div>
           </motion.div>
         </AnimatePresence>
       </div>
@@ -265,11 +261,6 @@ function VariantSlider({ page }: VariantSliderProps) {
           <ChevronRight className="w-6 h-6" />
         </button>
       </div>
-
-      <div className="text-center mt-4 text-sm text-gray-600">
-        <span className="font-medium">{currentIndex + 1}</span> of{" "}
-        {page.variants.length} variants
-      </div>
     </div>
   );
 }
@@ -282,97 +273,9 @@ function PageSection({ page, index }: { page: BookPage; index: number }) {
   return (
     <section className="py-10 border-b border-gray-200 last:border-b-0">
       <div className="container mx-auto px-4">
-        <div className="mb-8">
-          <div className="flex items-center gap-4 mb-3">
-            <div className="flex items-center justify-center w-10 h-10 rounded-full bg-gradient-to-r from-blue-500 to-blue-600 text-white font-bold text-lg shadow-lg">
-              {index + 1}
-            </div>
-            <div>
-              <h2 className="text-2xl font-bold text-gray-900">{page.title}</h2>
-              <p className="text-gray-600 mt-1">
-                Selected:{" "}
-                <span className="font-semibold text-blue-600">
-                  {selectedId}
-                </span>
-              </p>
-            </div>
-          </div>
-          <p className="text-gray-700 max-w-2xl">
-            Choose your preferred version for this page. Swipe, click dots, or
-            use arrow keys to preview alternatives.
-          </p>
-        </div>
-
         <VariantSlider page={page} />
       </div>
     </section>
-  );
-}
-
-// =============== COMPONENT: SelectionSummary ===============
-function SelectionSummary() {
-  const { getAllSelections, resetSelections } = useSelection();
-  const [isSubmitting, setIsSubmitting] = useState(false);
-  const selections = getAllSelections();
-
-  const handleSubmit = async () => {
-    setIsSubmitting(true);
-    // Simulate API call
-    await new Promise((resolve) => setTimeout(resolve, 1000));
-    console.log("Submitting selections:", selections);
-    alert(`Selections submitted!\n${JSON.stringify(selections, null, 2)}`);
-    setIsSubmitting(false);
-  };
-
-  return (
-    <div className="sticky bottom-0 bg-white border-t border-gray-200 shadow-lg">
-      <div className="container mx-auto px-4 py-6">
-        <div className="flex flex-col md:flex-row items-center justify-between gap-4">
-          <div>
-            <h3 className="text-lg font-semibold text-gray-900">
-              Your Selections
-            </h3>
-            <p className="text-gray-600 text-sm">
-              {Object.keys(selections).length} pages customized
-            </p>
-          </div>
-
-          <div className="flex items-center gap-4">
-            <button
-              onClick={resetSelections}
-              className="px-5 py-2.5 border border-gray-300 rounded-lg font-medium text-gray-700 hover:bg-gray-50 transition-colors active:scale-95"
-            >
-              Reset All
-            </button>
-
-            <button
-              onClick={handleSubmit}
-              disabled={isSubmitting}
-              className="px-6 py-2.5 bg-gradient-to-r from-blue-600 to-blue-700 text-white rounded-lg font-semibold hover:from-blue-700 hover:to-blue-800 disabled:opacity-50 transition-all active:scale-95 shadow-md"
-            >
-              {isSubmitting ? "Submitting..." : "Preview & Confirm"}
-            </button>
-          </div>
-        </div>
-
-        {/* Selected variants list */}
-        <div className="mt-4 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
-          {MOCK_PAGES.map((page) => (
-            <div
-              key={page.pageId}
-              className="flex items-center justify-between p-3 bg-gray-50 rounded-lg"
-            >
-              <span className="text-sm font-medium text-gray-700">
-                {page.title}
-              </span>
-              <span className="px-3 py-1 bg-blue-100 text-blue-700 rounded-full text-xs font-semibold">
-                {selections[page.pageId] || "Not selected"}
-              </span>
-            </div>
-          ))}
-        </div>
-      </div>
-    </div>
   );
 }
 
@@ -388,9 +291,9 @@ function PreviewContent() {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-b from-gray-50 to-white">
+    <div>
       {/* Header */}
-      <header className="bg-white shadow-sm border-b">
+      <header className="shadow-sm border-b">
         <div className="container mx-auto px-4 py-6">
           <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
             <div>
@@ -417,7 +320,7 @@ function PreviewContent() {
         <motion.div
           initial={{ opacity: 0, y: -20 }}
           animate={{ opacity: 1, y: 0 }}
-          className="bg-blue-50 border border-blue-200 mx-4 mt-4 rounded-xl"
+          className="border border-blue-200 mx-4 mt-4 rounded-xl"
         >
           <div className="container mx-auto px-4 py-4">
             <div className="flex justify-between items-start">
@@ -449,9 +352,6 @@ function PreviewContent() {
           <PageSection key={page.pageId} page={page} index={index} />
         ))}
       </main>
-
-      {/* Summary & Actions */}
-      <SelectionSummary />
     </div>
   );
 }
