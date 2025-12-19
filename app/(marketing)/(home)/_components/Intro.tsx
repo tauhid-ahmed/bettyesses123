@@ -1,3 +1,4 @@
+import { CardSlide } from "@/components/CardAnimation";
 import Container from "@/components/Container";
 import Heading from "@/components/Heading";
 import HeadingReveal from "@/components/HeadingReveal";
@@ -34,12 +35,17 @@ export default function Intro() {
               }
             />
 
-            <Button className="primary-gradient" size="lg" asChild>
-              <Link href={booksPath()}>Create Free Preview</Link>
-            </Button>
+            <CardSlide>
+              {" "}
+              <Button className="primary-gradient" size="lg" asChild>
+                <Link href={booksPath()}>Create Free Preview</Link>
+              </Button>
+            </CardSlide>
           </div>
           <div className="max-w-[600px] shrink-4 order-1 md:order-2 animate-float">
-            <Image src={introImage} alt="Intro Image" />
+            <CardSlide direction="right">
+              <Image src={introImage} alt="Intro Image" />
+            </CardSlide>
           </div>
         </div>
       </Container>
