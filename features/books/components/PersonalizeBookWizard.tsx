@@ -13,20 +13,20 @@ import Container from "@/components/Container";
 function PersonalizeBook() {
   const { currentStep } = usePersonalizeBook();
 
-  const slideVariants = {
-    enter: (direction: number) => ({
-      x: direction > 0 ? 100 : -100,
-      opacity: 0,
-    }),
-    center: {
-      x: 0,
-      opacity: 1,
-    },
-    exit: (direction: number) => ({
-      x: direction < 0 ? 100 : -100,
-      opacity: 0,
-    }),
-  };
+  // const slideVariants = {
+  //   enter: (direction: number) => ({
+  //     x: direction > 0 ? 100 : -100,
+  //     opacity: 0,
+  //   }),
+  //   center: {
+  //     x: 0,
+  //     opacity: 1,
+  //   },
+  //   exit: (direction: number) => ({
+  //     x: direction < 0 ? 100 : -100,
+  //     opacity: 0,
+  //   }),
+  // };
 
   const fadeVariants = {
     enter: {
@@ -46,7 +46,7 @@ function PersonalizeBook() {
         <motion.div
           key={currentStep}
           custom={currentStep}
-          variants={slideVariants}
+          variants={fadeVariants}
           initial="enter"
           animate="center"
           exit="exit"

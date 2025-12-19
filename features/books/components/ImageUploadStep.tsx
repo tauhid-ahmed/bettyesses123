@@ -46,7 +46,7 @@ export default function ImageUploadStep() {
                   key={i}
                   className="w-16 h-16 rounded-full bg-gray-200 overflow-hidden"
                 >
-                  <div className="w-full h-full bg-gradient-to-br from-gray-300 to-gray-400" />
+                  <div className="w-full h-full bg-linear-to-br from-gray-300 to-gray-400" />
                 </div>
               ))}
             </div>
@@ -57,11 +57,11 @@ export default function ImageUploadStep() {
               <Button
                 type="button"
                 variant="outline"
-                className="cursor-pointer"
+                className="cursor-pointer font-bold border-primary-500 py-6 px-6! text-primary-500 bg-transparent hover:bg-primary-500 hover:text-white"
                 asChild
               >
                 <span>
-                  <Upload className="w-4 h-4 mr-2" />
+                  <Upload className="size-4!" />
                   Upload Image
                 </span>
               </Button>
@@ -74,7 +74,7 @@ export default function ImageUploadStep() {
               />
             </label>
 
-            <p className="text-xs text-gray-500 mt-2">Max file size 10MB</p>
+            <p className="text-xs text-gray-500 mt-2">PNG JPG, up to 10MB</p>
           </div>
         </div>
       ) : (
@@ -103,12 +103,11 @@ export default function ImageUploadStep() {
             </p>
 
             <Button
-              type="button"
-              className="w-full mt-4"
-              size="lg"
+              type="submit"
+              className="w-full primary-gradient rounded-lg"
               onClick={handleContinue}
             >
-              Continue
+              Personalize &amp; Preview
             </Button>
           </div>
         </div>

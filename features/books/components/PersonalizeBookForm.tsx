@@ -21,6 +21,7 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { usePersonalizeBook } from "../context/PersonalizeBookContext";
+import { ArrowRight } from "lucide-react";
 
 const formSchema = z.object({
   childName: z.string().min(1, "Child's name is required"),
@@ -66,7 +67,7 @@ export default function PersonalizeBookForm() {
   }
 
   return (
-    <div className="w-full max-w-lg mx-auto p-8 bg-gradient-to-br from-blue-50 to-purple-50 rounded-2xl">
+    <div className="w-full max-w-lg mx-auto p-8 bg-linear-to-br rounded-2xl">
       <div className="text-center mb-8">
         <h1 className="text-3xl font-bold text-gray-900 mb-2">
           Personalize Book
@@ -85,7 +86,7 @@ export default function PersonalizeBookForm() {
               <FormItem>
                 <FormLabel className="text-gray-700">Child's Name</FormLabel>
                 <FormControl>
-                  <Input placeholder="Rakib" {...field} className="bg-white" />
+                  <Input placeholder="Name" {...field} className="bg-white" />
                 </FormControl>
                 <FormMessage />
               </FormItem>
@@ -101,7 +102,7 @@ export default function PersonalizeBookForm() {
                 <Select onValueChange={field.onChange} value={field.value}>
                   <FormControl>
                     <SelectTrigger className="bg-white w-full">
-                      <SelectValue placeholder="6" />
+                      <SelectValue placeholder="age" />
                     </SelectTrigger>
                   </FormControl>
                   <SelectContent>
@@ -125,7 +126,7 @@ export default function PersonalizeBookForm() {
                 <FormLabel className="text-gray-700">Gender</FormLabel>
                 <Select onValueChange={field.onChange} value={field.value}>
                   <FormControl>
-                    <SelectTrigger className="bg-white">
+                    <SelectTrigger className="bg-white w-full">
                       <SelectValue placeholder="Select gender" />
                     </SelectTrigger>
                   </FormControl>
@@ -150,7 +151,7 @@ export default function PersonalizeBookForm() {
                 </FormLabel>
                 <Select onValueChange={field.onChange} value={field.value}>
                   <FormControl>
-                    <SelectTrigger className="bg-white">
+                    <SelectTrigger className="bg-white w-full">
                       <SelectValue placeholder="January" />
                     </SelectTrigger>
                   </FormControl>
@@ -167,8 +168,8 @@ export default function PersonalizeBookForm() {
             )}
           />
 
-          <Button type="submit" className="w-full" size="lg">
-            Continue
+          <Button type="submit" className="w-full primary-gradient rounded-lg">
+            Go To Next Step <ArrowRight className="ml-2" /> Upload photo
           </Button>
         </form>
       </Form>

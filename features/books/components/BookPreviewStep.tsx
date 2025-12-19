@@ -2,27 +2,32 @@
 
 import { useEffect, useState } from "react";
 import { usePersonalizeBook } from "../context/PersonalizeBookContext";
+import { useRouter, usePathname } from "next/navigation";
 
 export default function BookPreviewStep() {
   const { formData } = usePersonalizeBook();
   const [progress, setProgress] = useState(0);
+  const router = useRouter();
+  const pathname = usePathname();
 
+  // Progress animation
   useEffect(() => {
     const interval = setInterval(() => {
-      setProgress((prev) => {
-        if (prev >= 100) {
-          clearInterval(interval);
-          return 100;
-        }
-        return prev + 1;
-      });
+      setProgress((prev) => Math.min(prev + 1, 100));
     }, 50);
 
     return () => clearInterval(interval);
   }, []);
 
+  // Navigation side-effect
+  useEffect(() => {
+    if (progress === 100) {
+      router.push(`${pathname}/preview`);
+    }
+  }, [progress, router, pathname]);
+
   return (
-    <div className="w-full max-w-lg mx-auto p-8 min-h-screen flex items-center justify-center bg-linear-to-br from-blue-50 to-purple-50">
+    <div className="w-full max-w-fit mx-auto p-8 flex items-center justify-center">
       <div className="text-center">
         <h1 className="text-3xl font-bold text-gray-900 mb-2">
           {formData.childName}'s Book Preview
@@ -48,8 +53,8 @@ export default function BookPreviewStep() {
               stroke="url(#gradient)"
               strokeWidth="20"
               fill="none"
-              strokeDasharray={`${2 * Math.PI * 100}`}
-              strokeDashoffset={`${2 * Math.PI * 100 * (1 - progress / 100)}`}
+              strokeDasharray={2 * Math.PI * 100}
+              strokeDashoffset={2 * Math.PI * 100 * (1 - progress / 100)}
               strokeLinecap="round"
               className="transition-all duration-300 ease-out"
             />
