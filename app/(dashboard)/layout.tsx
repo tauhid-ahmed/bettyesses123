@@ -18,6 +18,7 @@ import {
   CirclePoundSterling,
   ClipboardCheck,
   FileUser,
+  HandHeart,
   LucideUser,
   LucideUserPlus,
   PanelsLeftBottom,
@@ -92,6 +93,12 @@ const navItems = [
     href: "/order-management",
     name: "Order Management",
     icon: <ClipboardCheck />,
+    children: [],
+  },
+  {
+    href: "/rating-reviews",
+    name: "Rating & Reviews",
+    icon: <HandHeart />,
     children: [],
   },
   {
