@@ -50,7 +50,6 @@ const navItems = [
     icon: <Book />,
     children: [],
   },
-
   {
     href: "/privacy-and-policy",
     name: "Privacy Policy",
