@@ -2,6 +2,7 @@
 
 import Image from "next/image";
 import Profile from "../../components/Profile";
+import Link from "next/link";
 
 // import { usePathname } from "next/navigation";
 
@@ -23,14 +24,17 @@ export default function DashboardHeader() {
 
   return (
     <div className="flex items-center justify-between px-4 py-2 bg-linear-to-r from-[#0556AB] to-[#EEF6FF] text-white h-16">
-      <div className="font-medium md:text-lg lg:text-xl">
+      <Link
+        href={"/"}
+        className="font-medium md:text-lg lg:text-xl cursor-pointer"
+      >
         <Image
           src="/dashboard-logo-header.png"
           alt="dashboard-header-logo"
           width={50}
           height={150}
         />
-      </div>
+      </Link>
       <Profile
         name="Seema Badaya"
         role="Admin"

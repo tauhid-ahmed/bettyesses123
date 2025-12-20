@@ -7,6 +7,7 @@ import { cn } from "@/lib/utils";
 import { useSidebar } from "./SidebarProvider";
 import DashboardLogoutButton from "./DashboardFooter";
 import Image from "next/image";
+import Link from "next/link";
 
 type DashboardSidebarProps = {
   children: React.ReactNode;
@@ -54,13 +55,15 @@ function SidebarHeader() {
         className="flex gap-2"
       >
         {!isExpanded && (
-          <Image src="/Logo.svg" alt="logo" width={100} height={150} />
+          <Link href={"/"}>
+            <Image src="/Logo.svg" alt="logo" width={100} height={150} />
+          </Link>
         )}
 
         {isExpanded && (
-          <div className="flex justify-center items-center">
+          <Link href={"/"} className="flex justify-center items-center">
             <Image src="/Logo.svg" alt="logo" width={80} height={110} />
-          </div>
+          </Link>
         )}
       </motion.div>
     </div>
