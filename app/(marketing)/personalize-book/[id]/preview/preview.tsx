@@ -9,7 +9,7 @@ import React, {
   useEffect,
 } from "react";
 import { motion, AnimatePresence } from "motion/react";
-import { ChevronLeft, ChevronRight } from "lucide-react";
+import { LucideArrowLeft, LucideArrowRight } from "lucide-react";
 import Image from "next/image";
 
 import bookCoverImage1 from "@/images/book-cover-1.webp";
@@ -22,6 +22,8 @@ import Section from "@/components/Section";
 import Container from "@/components/Container";
 import Heading from "@/components/Heading";
 import { Button } from "@/components/ui/button";
+import Link from "next/link";
+import { cartPath } from "@/paths";
 
 // =============== TYPES ===============
 export type Variant = {
@@ -228,24 +230,36 @@ function VariantSlider({ page, index }: VariantSliderProps) {
           </motion.div>
         </AnimatePresence>
         {/* Controls */}
-        <div className="flex items-center justify-between px-2 absolute top-1/2 -translate-y-1/2 w-full">
-          <button
+        <div className="flex items-center justify-between absolute top-1/2 -translate-y-1/2 w-full">
+          <Button
             onClick={goToPrev}
-            disabled={isAnimating || page.variants.length <= 1}
-            className="p-3 rounded-full hover:bg-gray-100 disabled:opacity-30 transition-all active:scale-95"
-            aria-label="Previous variant"
+            size="icon-lg"
+            variant="ghost"
+            className="rounded-full primary-gradient p-px group"
           >
-            <ChevronLeft className="w-6 h-6" />
-          </button>
+            <div
+              className="size-full rounded-full bg-transparent grid place-items-center 
+                        bg-linear-to-r from-primary-500 hover:to-secondary-500 text-white
+                        "
+            >
+              <LucideArrowLeft className="size-5 text-white" />
+            </div>
+          </Button>
 
-          <button
-            onClick={goToNext}
-            disabled={isAnimating || page.variants.length <= 1}
-            className="p-3 rounded-full hover:bg-gray-100 disabled:opacity-30 transition-all active:scale-95"
-            aria-label="Next variant"
+          <Button
+            onClick={goToPrev}
+            size="icon-lg"
+            variant="ghost"
+            className="rounded-full primary-gradient p-px group"
           >
-            <ChevronRight className="w-6 h-6" />
-          </button>
+            <div
+              className="size-full rounded-full bg-transparent grid place-items-center 
+                        hover:bg-linear-to-r hover:from-primary-500 hover:to-secondary-500 hover:text-white
+                        active:bg-linear-to-r active:from-primary-500 active:to-secondary-500 active:text-white"
+            >
+              <LucideArrowRight className="size-5 text-white" />
+            </div>
+          </Button>
         </div>
       </div>
       <div className="flex items-center justify-center gap-3">
@@ -280,7 +294,7 @@ function VariantSlider({ page, index }: VariantSliderProps) {
 
 function PageSection({ page, index }: { page: BookPage; index: number }) {
   return (
-    <section className="py-10">
+    <section className="py-6 lg:py-10">
       <VariantSlider page={page} index={index} />
     </section>
   );
@@ -297,8 +311,8 @@ function PreviewContent() {
         {MOCK_PAGES.map((page, index) => (
           <PageSection key={page.pageId} page={page} index={index} />
         ))}
-        <Button size="lg" className="primary-gradient mx-auto flex">
-          Save Preview & Continue to Payment
+        <Button size="lg" className="primary-gradient mx-auto flex" asChild>
+          <Link href={cartPath()}>Save Preview & Continue to Payment</Link>
         </Button>
       </Container>
     </Section>
