@@ -1,5 +1,6 @@
 "use client";
 
+import Image from "next/image";
 import Profile from "../../components/Profile";
 
 // import { usePathname } from "next/navigation";
@@ -23,8 +24,12 @@ export default function DashboardHeader() {
   return (
     <div className="flex items-center justify-between px-4 py-2 bg-linear-to-r from-[#0556AB] to-[#EEF6FF] text-white h-16">
       <div className="font-medium md:text-lg lg:text-xl">
-        {/* {headerTitles[pathname as keyof typeof headerTitles] || "Dashboard"}{" "} */}
-        {APP_NAME}
+        <Image
+          src="/dashboard-logo-header.png"
+          alt="dashboard-header-logo"
+          width={50}
+          height={150}
+        />
       </div>
       <Profile
         name="Seema Badaya"

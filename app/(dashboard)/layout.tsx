@@ -22,6 +22,7 @@ import {
   PanelsLeftBottom,
   Settings,
 } from "lucide-react";
+import { CgNotes } from "react-icons/cg";
 import { Suspense } from "react";
 
 const navItems = [
@@ -59,7 +60,7 @@ const navItems = [
   {
     href: "/terms-and-condition",
     name: "Terms & Condition",
-    icon: <BookOpenCheck />,
+    icon: <CgNotes />,
     children: [],
   },
   {
