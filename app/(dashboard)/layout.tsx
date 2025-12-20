@@ -42,35 +42,12 @@ const navItems = [
     children: [],
   },
   {
-    href: "/mover-management",
-    name: "Mover Management",
-    icon: <LucideUserPlus />,
+    href: "/order-management",
+    name: "Order Management",
+    icon: <ClipboardCheck />,
     children: [],
   },
-  {
-    href: "/revenue",
-    name: "Revenue",
-    icon: <CirclePoundSterling />,
-    children: [],
-  },
-  {
-    href: "/refund-request",
-    name: "Refund Request",
-    icon: <UserRoundPen />,
-    children: [],
-  },
-  {
-    href: "/provider-approval",
-    name: "Provider Approval",
-    icon: <FileUser />,
-    children: [],
-  },
-  {
-    href: "/complaint-box",
-    name: "Complaint Box",
-    icon: <UserCog />,
-    children: [],
-  },
+
   {
     href: "/privacy-and-policy",
     name: "Privacy Policy",
@@ -89,12 +66,7 @@ const navItems = [
     icon: <BadgePercent />,
     children: [],
   },
-  {
-    href: "/order-management",
-    name: "Order Management",
-    icon: <ClipboardCheck />,
-    children: [],
-  },
+
   {
     href: "/rating-reviews",
     name: "Rating & Reviews",
