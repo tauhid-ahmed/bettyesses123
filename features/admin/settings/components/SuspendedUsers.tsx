@@ -9,195 +9,54 @@ import {
   TableBodyItem,
 } from "@/features/table/components/Table";
 import { TableProvider } from "@/features/table/components/TableProvider";
-import { SortDirection } from "@/features/table/types/table.type";
 import { cn } from "@/lib/utils";
-import Link from "next/link";
 
 // -------------------- Types --------------------
-type UserTier = "FREE" | "PREMIUM";
-type UserRole = "USER" | "ADMIN" | "SUPER_ADMIN";
-type UserGender = "male" | "female" | "other" | null;
-
-type User = {
-  id: string;
-  fullName: string;
-  profilePic: string | null;
-  email: string;
-  phone: string | null;
-  role: UserRole;
-  status: string;
-  tier: UserTier;
-  emailVerified: boolean;
-  createdAt: string;
-  Profile: {
-    gender: UserGender;
-  } | null;
-};
-
-type Meta = {
-  page: number;
-  limit: number;
-  total: number;
-  totalPages: number;
-};
-
 type SearchParams = {
   page?: string;
   limit?: string;
-  sort?: string;
   q?: string;
-  tier?: "all" | "free" | "premium";
 };
 
-type TableHeaderConfig = {
-  key: keyof User | "gender";
-  label: string;
-  sortable?: boolean;
+type SuspendedUser = {
+  id: string;
+  userName: string;
+  suspendedFrom: string;
+  suspendedTo: string;
 };
 
-// -------------------- Dummy Data --------------------
-const DUMMY_USERS: User[] = [
-  {
-    id: "1",
-    fullName: "John Doe",
-    profilePic: null,
-    email: "john.doe@example.com",
-    phone: "+1234567890",
-    role: "USER",
-    status: "active",
-    tier: "PREMIUM",
-    emailVerified: true,
-    createdAt: "2024-01-15T10:30:00Z",
-    Profile: { gender: "male" },
-  },
-  {
-    id: "2",
-    fullName: "Jane Smith",
-    profilePic: null,
-    email: "jane.smith@example.com",
-    phone: "+1234567891",
-    role: "ADMIN",
-    status: "active",
-    tier: "FREE",
-    emailVerified: true,
-    createdAt: "2024-02-20T14:45:00Z",
-    Profile: { gender: "female" },
-  },
-  {
-    id: "3",
-    fullName: "Alice Johnson",
-    profilePic: null,
-    email: "alice.j@example.com",
-    phone: null,
-    role: "USER",
-    status: "active",
-    tier: "PREMIUM",
-    emailVerified: false,
-    createdAt: "2024-03-10T09:15:00Z",
-    Profile: { gender: "female" },
-  },
-  {
-    id: "4",
-    fullName: "Bob Williams",
-    profilePic: null,
-    email: "bob.w@example.com",
-    phone: "+1234567892",
-    role: "SUPER_ADMIN",
-    status: "active",
-    tier: "PREMIUM",
-    emailVerified: true,
-    createdAt: "2024-01-05T08:00:00Z",
-    Profile: { gender: "male" },
-  },
-  {
-    id: "5",
-    fullName: "Carol Davis",
-    profilePic: null,
-    email: "carol.d@example.com",
-    phone: "+1234567893",
-    role: "USER",
-    status: "inactive",
-    tier: "FREE",
-    emailVerified: true,
-    createdAt: "2024-04-01T11:20:00Z",
-    Profile: null,
-  },
-  {
-    id: "6",
-    fullName: "Carol Davis 3",
-    profilePic: null,
-    email: "carol.d@example.com",
-    phone: "+1234567893",
-    role: "USER",
-    status: "inactive",
-    tier: "FREE",
-    emailVerified: true,
-    createdAt: "2024-04-01T11:20:00Z",
-    Profile: null,
-  },
-];
+// -------------------- Dummy Data (IMAGE BASED) --------------------
+const DUMMY_SUSPENDED_USERS: SuspendedUser[] = Array.from(
+  { length: 1450 },
+  (_, i) => ({
+    id: `${i + 1}`,
+    userName: "Al Muntakim",
+    suspendedFrom: "21 Oct, 2025",
+    suspendedTo: "30 Aug 2026",
+  })
+);
 
 // -------------------- Table Header --------------------
-const tableHeader: TableHeaderConfig[] = [
-  { key: "fullName", label: "Name", sortable: true },
-  { key: "gender", label: "Gender", sortable: true },
-  { key: "tier", label: "Plan", sortable: true },
+const tableHeader = [
+  { key: "userName", label: "User Name", sortable: false },
+  { key: "suspensionPeriod", label: "Suspension Period", sortable: false },
+  { key: "suspension", label: "Suspension", sortable: false },
 ];
 
-// -------------------- Helper Functions --------------------
-function filterUsers(users: User[], query: SearchParams): User[] {
-  let filtered = [...users];
-
-  // Search filter
-  if (query.q) {
-    const searchTerm = query.q.toLowerCase();
-    filtered = filtered.filter(
-      (user) =>
-        user.fullName.toLowerCase().includes(searchTerm) ||
-        user.email.toLowerCase().includes(searchTerm)
-    );
-  }
-
-  // Tier filter
-  if (query.tier && query.tier !== "all") {
-    filtered = filtered.filter(
-      (user) => user.tier === query.tier!.toUpperCase()
-    );
-  }
-
-  return filtered;
+// -------------------- Helpers --------------------
+function filterUsers(users: SuspendedUser[], query: SearchParams) {
+  if (!query.q) return users;
+  return users.filter((u) =>
+    u.userName.toLowerCase().includes(query.q!.toLowerCase())
+  );
 }
 
-function sortUsers(
-  users: User[],
-  sortField: string,
-  sortDirection: string
-): User[] {
-  if (!sortField || !sortDirection) return users;
-
-  return [...users].sort((a, b) => {
-    let comparison = 0;
-
-    if (sortField === "fullName") {
-      comparison = a.fullName.localeCompare(b.fullName);
-    } else if (sortField === "tier") {
-      comparison = a.tier.localeCompare(b.tier);
-    } else if (sortField === "gender") {
-      const genderA = a.Profile?.gender || "";
-      const genderB = b.Profile?.gender || "";
-      comparison = genderA.localeCompare(genderB);
-    }
-
-    return sortDirection === "asc" ? comparison : -comparison;
-  });
-}
-
-function paginateUsers(users: User[], page: number, limit: number): User[] {
+function paginateUsers(users: SuspendedUser[], page: number, limit: number) {
   const startIndex = (page - 1) * limit;
   return users.slice(startIndex, startIndex + limit);
 }
 
-function calculateMeta(total: number, page: number, limit: number): Meta {
+function calculateMeta(total: number, page: number, limit: number) {
   return {
     page,
     limit,
@@ -214,20 +73,17 @@ export default async function Suspended({
 }) {
   const query = await searchParams;
 
-  // Parse parameters with defaults
   const page = parseInt(query.page || "1", 10);
-  const limit = parseInt(query.limit || "10", 10);
-  const [sortField = "", sortDirection = ""] = (query.sort || "").split(":");
+  const limit = parseInt(query.limit || "11", 10);
 
-  // Process data
-  const filteredUsers = filterUsers(DUMMY_USERS, query);
-  const sortedUsers = sortUsers(filteredUsers, sortField, sortDirection);
-  const paginatedUsers = paginateUsers(sortedUsers, page, limit);
+  const filteredUsers = filterUsers(DUMMY_SUSPENDED_USERS, query);
+  const paginatedUsers = paginateUsers(filteredUsers, page, limit);
   const meta = calculateMeta(filteredUsers.length, page, limit);
 
   return (
     <TableProvider>
       <div className="space-y-4 overflow-x-hidden">
+        {/* Search */}
         <div className="flex items-center justify-start lg:justify-end print:hidden">
           <SearchField
             placeholder="Search users..."
@@ -235,71 +91,53 @@ export default async function Suspended({
           />
         </div>
 
+        {/* Table */}
         <Table>
           <TableHeader>
             <TableRow>
-              {tableHeader.map(({ key, label, sortable = true }) => (
+              {tableHeader.map(({ key, label }) => (
                 <TableHeaderItem
                   key={key}
-                  prop={key}
-                  currentSort={sortField}
-                  sortDirection={sortDirection as SortDirection}
                   label={label}
-                  sortable={sortable}
+                  prop={key}
+                  sortable={false}
+                  currentSort=""
+                  sortDirection="asc"
                 />
               ))}
-              <th
-                className={cn(
-                  "w-full flex items-center gap-2 p-4! py-1 truncate font-medium text-white transition cursor-pointer no-underline"
-                )}
-              >
-                Details
-              </th>
             </TableRow>
           </TableHeader>
 
           <TableBody>
             {paginatedUsers.length === 0 ? (
               <TableRow>
-                <TableBodyItem colSpan={tableHeader.length + 1}>
-                  <div className="text-center py-8 text-gray-500">
-                    No users found
+                <TableBodyItem colSpan={3}>
+                  <div className="py-8 text-center text-gray-500">
+                    No suspended users found
                   </div>
                 </TableBodyItem>
               </TableRow>
             ) : (
               paginatedUsers.map((user) => (
                 <TableRow key={user.id}>
-                  {/* Name Column */}
-                  <TableBodyItem>{user.fullName}</TableBodyItem>
+                  {/* User Name */}
+                  <TableBodyItem>{user.userName}</TableBodyItem>
 
-                  {/* Gender Column */}
+                  {/* Suspension Period */}
                   <TableBodyItem>
-                    <span className="text-sm text-gray-900 capitalize">
-                      {user.Profile?.gender || "N/A"}
-                    </span>
+                    {user.suspendedFrom} - {user.suspendedTo}
                   </TableBodyItem>
 
-                  {/* Plan Column */}
+                  {/* Action */}
                   <TableBodyItem>
-                    <span
+                    <button
                       className={cn(
-                        "inline-flex items-center px-3 py-1 rounded-full text-sm font-medium"
-                        // user.tier === "PREMIUM"
-                        //   ? "bg-[#FE5975] text-pink-50"
-                        //   : "text-gray-600 bg-gray-100"
+                        "rounded-md bg-[#10B981] px-4 py-2 text-sm font-medium text-white",
+                        "hover:bg-[#10B981] transition"
                       )}
                     >
-                      {user.tier === "PREMIUM" ? "Premium" : "Free"}
-                    </span>
-                  </TableBodyItem>
-                  <TableBodyItem>
-                    <Link
-                      className="text-sm text-primary-500 capitalize hover:underline"
-                      href={`/mover-management/${user.id}`}
-                    >
-                      View Details
-                    </Link>
+                      End Suspension
+                    </button>
                   </TableBodyItem>
                 </TableRow>
               ))
@@ -307,6 +145,7 @@ export default async function Suspended({
           </TableBody>
         </Table>
 
+        {/* Pagination */}
         <Pagination
           totalPages={meta.totalPages}
           currentPage={meta.page}

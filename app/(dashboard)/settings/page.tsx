@@ -23,7 +23,7 @@ const tabs = [
     value: SUSPENDED_USERS,
   },
   {
-    label: "Top Providers",
+    label: "Admin Management",
     value: TOP_PROVIDERS,
   },
 ];
@@ -34,16 +34,16 @@ export default async function SettingsPage({ searchParams }: Props) {
 
   return (
     <div className="flex flex-col gap-4">
-      <div className="p-4 bg-white rounded space-y-4">
+      <div className=" space-y-4">
         <h1 className="text-xl md:text-2xl lg:text-3xl font-medium py-4">
-          Settings
+          Admin Profile
         </h1>
         <ul className="flex flex-wrap gap-2 lg:gap-4 relative">
           {tabs.map((tab) => (
             <li
               className={cn(
-                "whitespace-nowrap py-2 px-2 rounded bg-primary-50 overflow-hidden text-sm lg:text-md",
-                tab.value === t && "bg-primary-600 text-white"
+                "whitespace-nowrap py-2 px-2 rounded bg-[#FEFEFE] overflow-hidden text-sm lg:text-md",
+                tab.value === t && "bg-[#00244A] text-white"
               )}
               key={tab.value}
             >
@@ -57,7 +57,7 @@ export default async function SettingsPage({ searchParams }: Props) {
         {t === SUSPENDED_USERS && (
           <SuspendedUsers searchParams={searchParams} />
         )}
-        {t === TOP_PROVIDERS && <TopProviders searchParams={searchParams} />}
+        {t === TOP_PROVIDERS && <TopProviders />}
       </div>
     </div>
   );

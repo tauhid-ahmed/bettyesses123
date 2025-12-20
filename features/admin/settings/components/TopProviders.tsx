@@ -1,318 +1,202 @@
-import Pagination from "@/features/table/components/Pagination";
-import SearchField from "@/features/table/components/SearchField";
-import {
-  Table,
-  TableBody,
-  TableHeader,
-  TableHeaderItem,
-  TableRow,
-  TableBodyItem,
-} from "@/features/table/components/Table";
-import { TableProvider } from "@/features/table/components/TableProvider";
-import { SortDirection } from "@/features/table/types/table.type";
-import { cn } from "@/lib/utils";
+"use client";
+
+import { useState } from "react";
+import { Plus, ChevronDown, ChevronLeft, ChevronRight } from "lucide-react";
 import Link from "next/link";
 
-// -------------------- Types --------------------
-type UserTier = "FREE" | "PREMIUM";
-type UserRole = "USER" | "ADMIN" | "SUPER_ADMIN";
-type UserGender = "male" | "female" | "other" | null;
+export default function AdminList() {
+  const [currentPage, setCurrentPage] = useState(1);
+  const totalPages = 16;
+  const totalItems = 1450;
+  const itemsPerPage = 11;
 
-type User = {
-  id: string;
-  fullName: string;
-  profilePic: string | null;
-  email: string;
-  phone: string | null;
-  role: UserRole;
-  status: string;
-  tier: UserTier;
-  emailVerified: boolean;
-  createdAt: string;
-  Profile: {
-    gender: UserGender;
-  } | null;
-};
+  // Generate dummy data
+  const admins = Array(itemsPerPage)
+    .fill(null)
+    .map((_, i) => ({
+      id: i + 1,
+      name: "Al Muntakim",
+      email: "null@gmail.com",
+      role: "Admin",
+    }));
 
-type Meta = {
-  page: number;
-  limit: number;
-  total: number;
-  totalPages: number;
-};
+  const [selectedRoles, setSelectedRoles] = useState<Record<number, string>>(
+    admins.reduce((acc, admin) => ({ ...acc, [admin.id]: admin.role }), {})
+  );
 
-type SearchParams = {
-  page?: string;
-  limit?: string;
-  sort?: string;
-  q?: string;
-  tier?: "all" | "free" | "premium";
-};
+  const handleRoleChange = (adminId: number, newRole: string) => {
+    setSelectedRoles((prev) => ({ ...prev, [adminId]: newRole }));
+  };
 
-type TableHeaderConfig = {
-  key: keyof User | "gender";
-  label: string;
-  sortable?: boolean;
-};
+  const getPageNumbers = () => {
+    const pages = [];
 
-// -------------------- Dummy Data --------------------
-const DUMMY_USERS: User[] = [
-  {
-    id: "1",
-    fullName: "John Doe",
-    profilePic: null,
-    email: "john.doe@example.com",
-    phone: "+1234567890",
-    role: "USER",
-    status: "active",
-    tier: "PREMIUM",
-    emailVerified: true,
-    createdAt: "2024-01-15T10:30:00Z",
-    Profile: { gender: "male" },
-  },
-  {
-    id: "2",
-    fullName: "Jane Smith",
-    profilePic: null,
-    email: "jane.smith@example.com",
-    phone: "+1234567891",
-    role: "ADMIN",
-    status: "active",
-    tier: "FREE",
-    emailVerified: true,
-    createdAt: "2024-02-20T14:45:00Z",
-    Profile: { gender: "female" },
-  },
-  {
-    id: "3",
-    fullName: "Alice Johnson",
-    profilePic: null,
-    email: "alice.j@example.com",
-    phone: null,
-    role: "USER",
-    status: "active",
-    tier: "PREMIUM",
-    emailVerified: false,
-    createdAt: "2024-03-10T09:15:00Z",
-    Profile: { gender: "female" },
-  },
-  {
-    id: "4",
-    fullName: "Bob Williams",
-    profilePic: null,
-    email: "bob.w@example.com",
-    phone: "+1234567892",
-    role: "SUPER_ADMIN",
-    status: "active",
-    tier: "PREMIUM",
-    emailVerified: true,
-    createdAt: "2024-01-05T08:00:00Z",
-    Profile: { gender: "male" },
-  },
-  {
-    id: "5",
-    fullName: "Carol Davis",
-    profilePic: null,
-    email: "carol.d@example.com",
-    phone: "+1234567893",
-    role: "USER",
-    status: "inactive",
-    tier: "FREE",
-    emailVerified: true,
-    createdAt: "2024-04-01T11:20:00Z",
-    Profile: null,
-  },
-  {
-    id: "6",
-    fullName: "Carol Davis 3",
-    profilePic: null,
-    email: "carol.d@example.com",
-    phone: "+1234567893",
-    role: "USER",
-    status: "inactive",
-    tier: "FREE",
-    emailVerified: true,
-    createdAt: "2024-04-01T11:20:00Z",
-    Profile: null,
-  },
-];
-
-// -------------------- Table Header --------------------
-const tableHeader: TableHeaderConfig[] = [
-  { key: "fullName", label: "Name", sortable: true },
-  { key: "gender", label: "Gender", sortable: true },
-  { key: "tier", label: "Plan", sortable: true },
-];
-
-// -------------------- Helper Functions --------------------
-function filterUsers(users: User[], query: SearchParams): User[] {
-  let filtered = [...users];
-
-  // Search filter
-  if (query.q) {
-    const searchTerm = query.q.toLowerCase();
-    filtered = filtered.filter(
-      (user) =>
-        user.fullName.toLowerCase().includes(searchTerm) ||
-        user.email.toLowerCase().includes(searchTerm)
-    );
-  }
-
-  // Tier filter
-  if (query.tier && query.tier !== "all") {
-    filtered = filtered.filter(
-      (user) => user.tier === query.tier!.toUpperCase()
-    );
-  }
-
-  return filtered;
-}
-
-function sortUsers(
-  users: User[],
-  sortField: string,
-  sortDirection: string
-): User[] {
-  if (!sortField || !sortDirection) return users;
-
-  return [...users].sort((a, b) => {
-    let comparison = 0;
-
-    if (sortField === "fullName") {
-      comparison = a.fullName.localeCompare(b.fullName);
-    } else if (sortField === "tier") {
-      comparison = a.tier.localeCompare(b.tier);
-    } else if (sortField === "gender") {
-      const genderA = a.Profile?.gender || "";
-      const genderB = b.Profile?.gender || "";
-      comparison = genderA.localeCompare(genderB);
+    if (currentPage > 1) {
+      pages.push(1);
     }
 
-    return sortDirection === "asc" ? comparison : -comparison;
-  });
-}
+    if (currentPage > 2) {
+      pages.push(2);
+    }
 
-function paginateUsers(users: User[], page: number, limit: number): User[] {
-  const startIndex = (page - 1) * limit;
-  return users.slice(startIndex, startIndex + limit);
-}
+    if (currentPage > 3) {
+      pages.push(3);
+    }
 
-function calculateMeta(total: number, page: number, limit: number): Meta {
-  return {
-    page,
-    limit,
-    total,
-    totalPages: Math.ceil(total / limit),
+    if (currentPage > 4) {
+      pages.push("...");
+    }
+
+    if (currentPage < totalPages - 3) {
+      pages.push(totalPages);
+    }
+
+    return pages.filter((p, i, arr) => arr.indexOf(p) === i);
   };
-}
-
-// -------------------- Component --------------------
-export default async function TopProviders({
-  searchParams,
-}: {
-  searchParams: Promise<SearchParams>;
-}) {
-  const query = await searchParams;
-
-  // Parse parameters with defaults
-  const page = parseInt(query.page || "1", 10);
-  const limit = parseInt(query.limit || "10", 10);
-  const [sortField = "", sortDirection = ""] = (query.sort || "").split(":");
-
-  // Process data
-  const filteredUsers = filterUsers(DUMMY_USERS, query);
-  const sortedUsers = sortUsers(filteredUsers, sortField, sortDirection);
-  const paginatedUsers = paginateUsers(sortedUsers, page, limit);
-  const meta = calculateMeta(filteredUsers.length, page, limit);
 
   return (
-    <TableProvider>
-      <div className="space-y-4 overflow-x-hidden">
-        <div className="flex items-center lg:justify-end print:hidden">
-          <SearchField
-            placeholder="Search users..."
-            initialValue={query.q || ""}
-          />
+    <div className=" pt-12">
+      <div className="">
+        {/* Header */}
+        <div className="flex justify-between items-center mb-6">
+          <h1 className="text-3xl font-semibold text-gray-900">Admin List</h1>
+          <Link
+            href={"settings/add-admin"}
+            className="flex items-center gap-2 bg-[#00244A] text-[#FAFAFA] px-4 py-2 rounded-lg  transition-colors"
+          >
+            <Plus size={20} />
+            Add Admin
+          </Link>
         </div>
 
-        <Table>
-          <TableHeader>
-            <TableRow>
-              {tableHeader.map(({ key, label, sortable = true }) => (
-                <TableHeaderItem
-                  key={key}
-                  prop={key}
-                  currentSort={sortField}
-                  sortDirection={sortDirection as SortDirection}
-                  label={label}
-                  sortable={sortable}
-                />
-              ))}
-              <th
-                className={cn(
-                  "w-full flex items-center gap-2 p-4! py-1 truncate font-medium text-white transition cursor-pointer no-underline"
-                )}
+        {/* Table */}
+        <div className=" overflow-hidden">
+          {/* Table Header */}
+          <div className="grid grid-cols-3 bg-[#73B7FF] text-white px-6 py-3 rounded-t-xl">
+            <div className="font-medium">User Name</div>
+            <div className="font-medium">Email</div>
+            <div className="font-medium">Role</div>
+          </div>
+
+          {/* Table Body */}
+          <div className="divide-y divide-gray-200">
+            {admins.map((admin) => (
+              <div
+                key={admin.id}
+                className="grid grid-cols-3 px-6 py-4 items-center hover:bg-gray-50"
               >
-                Details
-              </th>
-            </TableRow>
-          </TableHeader>
+                <div className="text-gray-900">{admin.name}</div>
+                <div className="text-gray-900">{admin.email}</div>
+                <div>
+                  <select
+                    value={selectedRoles[admin.id]}
+                    onChange={(e) => handleRoleChange(admin.id, e.target.value)}
+                    className="flex items-center gap-2 bg-[#00244A] text-white px-4 py-2 rounded-md  text-sm cursor-pointer appearance-none pr-10"
+                    style={{
+                      backgroundImage: `url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 24 24' fill='none' stroke='white' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='6 9 12 15 18 9'%3E%3C/polyline%3E%3C/svg%3E")`,
+                      backgroundRepeat: "no-repeat",
+                      backgroundPosition: "right 0.5rem center",
+                      backgroundSize: "1rem",
+                    }}
+                  >
+                    <option value="Admin" className="bg-white text-gray-900">
+                      Admin
+                    </option>
+                    <option value="User" className="bg-white text-gray-900">
+                      User
+                    </option>
+                    <option value="Member" className="bg-white text-gray-900">
+                      Member
+                    </option>
+                  </select>
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
 
-          <TableBody>
-            {paginatedUsers.length === 0 ? (
-              <TableRow>
-                <TableBodyItem colSpan={tableHeader.length + 1}>
-                  <div className="text-center py-8 text-gray-500">
-                    No users found
-                  </div>
-                </TableBodyItem>
-              </TableRow>
-            ) : (
-              paginatedUsers.map((user) => (
-                <TableRow key={user.id}>
-                  {/* Name Column */}
-                  <TableBodyItem>{user.fullName}</TableBodyItem>
+        {/* Pagination */}
+        <div className="flex justify-between items-center mt-6">
+          <div className="text-gray-600 text-sm flex items-center gap-2">
+            <span>Showing</span>
+            <select className="border border-gray-300 rounded px-2 py-1 text-sm">
+              <option>{itemsPerPage}</option>
+              <option>25</option>
+              <option>50</option>
+              <option>100</option>
+            </select>
+            <span>out of {totalItems.toLocaleString()}</span>
+          </div>
 
-                  {/* Gender Column */}
-                  <TableBodyItem>
-                    <span className="text-sm text-gray-900 capitalize">
-                      {user.Profile?.gender || "N/A"}
-                    </span>
-                  </TableBodyItem>
+          <div className="flex items-center gap-1">
+            <button
+              onClick={() => setCurrentPage((prev) => Math.max(1, prev - 1))}
+              disabled={currentPage === 1}
+              className="flex items-center gap-1 px-3 py-1.5 text-gray-700 hover:bg-gray-100 rounded disabled:opacity-50 disabled:cursor-not-allowed transition-colors text-sm"
+            >
+              <ChevronLeft size={16} />
+              Previous
+            </button>
 
-                  {/* Plan Column */}
-                  <TableBodyItem>
-                    <span
-                      className={cn(
-                        "inline-flex items-center px-3 py-1 rounded-full text-sm font-medium"
-                        // user.tier === "PREMIUM"
-                        //   ? "bg-[#FE5975] text-pink-50"
-                        //   : "text-gray-600 bg-gray-100"
-                      )}
-                    >
-                      {user.tier === "PREMIUM" ? "Premium" : "Free"}
-                    </span>
-                  </TableBodyItem>
-                  <TableBodyItem>
-                    <Link
-                      className="text-sm text-primary-500 capitalize hover:underline"
-                      href={`/mover-management/${user.id}`}
-                    >
-                      View Details
-                    </Link>
-                  </TableBodyItem>
-                </TableRow>
-              ))
-            )}
-          </TableBody>
-        </Table>
+            <button
+              onClick={() => setCurrentPage(1)}
+              className={`min-w-[36px] px-3 py-1.5 rounded transition-colors text-sm ${
+                currentPage === 1
+                  ? "bg-[#0556AB] text-white"
+                  : "text-gray-700 hover:bg-gray-100"
+              }`}
+            >
+              1
+            </button>
 
-        <Pagination
-          totalPages={meta.totalPages}
-          currentPage={meta.page}
-          pageSize={meta.limit}
-        />
+            <button
+              onClick={() => setCurrentPage(2)}
+              className={`min-w-[36px] px-3 py-1.5 rounded transition-colors text-sm ${
+                currentPage === 2
+                  ? "bg-[#0556AB] text-white"
+                  : "text-gray-700 hover:bg-gray-100"
+              }`}
+            >
+              2
+            </button>
+
+            <button
+              onClick={() => setCurrentPage(3)}
+              className={`min-w-[36px] px-3 py-1.5 rounded transition-colors text-sm ${
+                currentPage === 3
+                  ? "bg-[#0556AB] text-white"
+                  : "text-gray-700 hover:bg-gray-100"
+              }`}
+            >
+              3
+            </button>
+
+            <span className="px-2 text-gray-400">...</span>
+
+            <button
+              onClick={() => setCurrentPage(16)}
+              className={`min-w-[36px] px-3 py-1.5 rounded transition-colors text-sm ${
+                currentPage === 16
+                  ? "bg-[#0556AB] text-white"
+                  : "text-gray-700 hover:bg-gray-100"
+              }`}
+            >
+              16
+            </button>
+
+            <button
+              onClick={() =>
+                setCurrentPage((prev) => Math.min(totalPages, prev + 1))
+              }
+              disabled={currentPage === totalPages}
+              className="flex items-center gap-1 px-3 py-1.5 text-gray-700 hover:bg-gray-100 rounded disabled:opacity-50 disabled:cursor-not-allowed transition-colors text-sm"
+            >
+              Next
+              <ChevronRight size={16} />
+            </button>
+          </div>
+        </div>
       </div>
-    </TableProvider>
+    </div>
   );
 }
