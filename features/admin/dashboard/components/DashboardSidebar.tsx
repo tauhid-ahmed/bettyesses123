@@ -6,6 +6,7 @@ import React from "react";
 import { cn } from "@/lib/utils";
 import { useSidebar } from "./SidebarProvider";
 import DashboardLogoutButton from "./DashboardFooter";
+import Image from "next/image";
 
 type DashboardSidebarProps = {
   children: React.ReactNode;
@@ -46,20 +47,20 @@ export default function DashboardSidebar({ children }: DashboardSidebarProps) {
 function SidebarHeader() {
   const { isExpanded } = useSidebar();
   return (
-    <div className="px-5 -mx-5 flex gap-2 items-center h-16 relative after:absolute after:inset-x-0 after:bottom-0 after:h-px after:bg-gray-200">
+    <div className="px-5 -mx-5 flex items-center justify-center h-16 relative after:absolute after:inset-x-0 after:bottom-0 after:h-px after:bg-gray-200">
       <motion.div
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
-        className={cn("shrink-0 flex w-full gap-2 text-center")}
+        className="flex gap-2"
       >
         {!isExpanded && (
-          <strong className="font-bold leading-none py-4 px-1">JH</strong>
+          <Image src="/Logo.svg" alt="logo" width={100} height={150} />
         )}
 
         {isExpanded && (
-          <strong className="font-bold leading-none p-4 text-lg">
-            Job Hive
-          </strong>
+          <div className="flex justify-center items-center">
+            <Image src="/Logo.svg" alt="logo" width={80} height={110} />
+          </div>
         )}
       </motion.div>
     </div>

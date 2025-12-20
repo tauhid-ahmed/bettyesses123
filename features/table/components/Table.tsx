@@ -29,7 +29,7 @@ export function Table({ children }: React.ComponentProps<"table">) {
 
 export function TableHeader({ children }: React.ComponentProps<"thead">) {
   return (
-    <thead className="bg-primary-400 text-white sticky top-0 z-10">
+    <thead className="bg-[#73B7FF] text-white sticky top-0 z-10">
       {children}
     </thead>
   );

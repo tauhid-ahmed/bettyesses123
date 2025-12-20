@@ -14,22 +14,20 @@ import {
 import DashboardNavigation from "@/features/admin/dashboard/components/DashboardNavigation";
 import {
   BadgePercent,
+  Book,
   BookOpenCheck,
-  CirclePoundSterling,
   ClipboardCheck,
-  FileUser,
+  HandHeart,
   LucideUser,
-  LucideUserPlus,
   PanelsLeftBottom,
   Settings,
-  UserCog,
-  UserRoundPen,
 } from "lucide-react";
+import { CgNotes } from "react-icons/cg";
 import { Suspense } from "react";
 
 const navItems = [
   {
-    href: "/",
+    href: "/overview",
     name: "Overview",
     icon: <PanelsLeftBottom />,
     children: [],
@@ -41,35 +39,18 @@ const navItems = [
     children: [],
   },
   {
-    href: "/mover-management",
-    name: "Mover Management",
-    icon: <LucideUserPlus />,
+    href: "/order-management",
+    name: "Order Management",
+    icon: <ClipboardCheck />,
     children: [],
   },
   {
-    href: "/revenue",
-    name: "Revenue",
-    icon: <CirclePoundSterling />,
+    href: "/books",
+    name: "Books",
+    icon: <Book />,
     children: [],
   },
-  {
-    href: "/refund-request",
-    name: "Refund Request",
-    icon: <UserRoundPen />,
-    children: [],
-  },
-  {
-    href: "/provider-approval",
-    name: "Provider Approval",
-    icon: <FileUser />,
-    children: [],
-  },
-  {
-    href: "/complaint-box",
-    name: "Complaint Box",
-    icon: <UserCog />,
-    children: [],
-  },
+
   {
     href: "/privacy-and-policy",
     name: "Privacy Policy",
@@ -79,7 +60,7 @@ const navItems = [
   {
     href: "/terms-and-condition",
     name: "Terms & Condition",
-    icon: <BookOpenCheck />,
+    icon: <CgNotes />,
     children: [],
   },
   {
@@ -88,10 +69,11 @@ const navItems = [
     icon: <BadgePercent />,
     children: [],
   },
+
   {
-    href: "/order-management",
-    name: "Order Management",
-    icon: <ClipboardCheck />,
+    href: "/rating-reviews",
+    name: "Rating & Reviews",
+    icon: <HandHeart />,
     children: [],
   },
   {
