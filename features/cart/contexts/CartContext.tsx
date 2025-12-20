@@ -25,7 +25,7 @@ interface CartProviderProps {
   children: React.ReactNode;
 }
 
-export const CartProvider: React.FC<CartProviderProps> = ({ children }) => {
+export function CartProvider({ children }: CartProviderProps) {
   const [cartItems, setCartItems] = useState<CartItem[]>([]);
   const [isLoading, setIsLoading] = useState<boolean>(true);
 
@@ -65,7 +65,7 @@ export const CartProvider: React.FC<CartProviderProps> = ({ children }) => {
             : item
         );
       }
-      return [...prev, { ...product, quantity: 1 }];
+      return [...prev, { ...product, imageUrl: product.imageUrl, quantity: 1 }];
     });
   }, []);
 
@@ -110,4 +110,4 @@ export const CartProvider: React.FC<CartProviderProps> = ({ children }) => {
   };
 
   return <CartContext.Provider value={value}>{children}</CartContext.Provider>;
-};
+}
