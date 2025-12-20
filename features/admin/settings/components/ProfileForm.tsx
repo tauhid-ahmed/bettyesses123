@@ -34,14 +34,18 @@ export function ProfileForm({ initialData }: ProfileFormProps) {
     defaultValues: {
       fullName: initialData.fullName,
       email: initialData.email,
-      location: initialData.location || "",
-      phoneNumber: initialData.phoneNumber || "",
+      location: initialData.location ?? "", // Use nullish coalescing operator
+      phoneNumber: initialData.phoneNumber ?? "", // Use nullish coalescing operator
     },
   });
 
   const onSubmit = (data: ProfileSchema) => {
     startTransition(async () => {
-      const result = await updateProfile(data);
+      const result = await updateProfile({
+        ...data,
+        location: data.location || "", // Ensure location is a string
+        phoneNumber: data.phoneNumber || "", // Ensure phoneNumber is a string
+      });
       if (result.success) {
         toast.success(result.message);
       } else {

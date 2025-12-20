@@ -15,6 +15,7 @@ export type BooksCardVerticalProps = {
   ageRange: string;
   description: string;
   lessons: string;
+  href: string;
 };
 
 // Single horizontal book
@@ -25,6 +26,7 @@ export type HorizontalBook = {
   ageRange: string;
   description: string;
   lessons: string;
+  href?: string;
 };
 
 // Array of horizontal books
@@ -37,4 +39,5 @@ export type BookCardHorizontalProps = {
   ageRange: string;
   description: string;
   lessons: string;
+  href: string;
 };

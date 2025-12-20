@@ -32,12 +32,12 @@ function Footer() {
   };
 
   return (
-    <footer className="mt-10 lg:mt-20">
+    <footer className="mt-20 lg:mt-40">
       <Container>
         <div className="flex flex-col lg:flex-row gap-8 lg:gap-20 py-6">
           {/* Logo and Description */}
-          <div className="space-y-4 lg:w-2/5 xl:w-1/3">
-            <Logo />
+          <div className="lg:w-2/5 xl:w-1/3 relative">
+            <Logo className="absolute -translate-y-full" />
             <p className="text-sm text-gray-700 leading-relaxed mt-4 lg:mt-6 max-w-lg lg:max-w-none">
               {footerData.logo.description}
             </p>

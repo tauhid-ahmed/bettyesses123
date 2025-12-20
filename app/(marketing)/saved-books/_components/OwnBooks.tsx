@@ -2,6 +2,7 @@ import Container from "@/components/Container";
 import Section from "@/components/Section";
 import BookCardVertical from "@/features/books/components/BookCardVertical";
 import { verticalBooks } from "@/features/books/data";
+import { personalizeBookPath } from "@/paths";
 
 export default function OwnBooksList() {
   return (
@@ -16,6 +17,7 @@ export default function OwnBooksList() {
               ageRange={book.ageRange}
               description={book.description}
               lessons={book.lessons}
+              href={personalizeBookPath(book.id)}
             />
           ))}
         </ul>

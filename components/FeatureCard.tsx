@@ -7,6 +7,7 @@ import ideaIcon from "@/images/icons/idea.webp";
 import printerIcon from "@/images/icons/printer.webp";
 import handIcon from "@/images/icons/hand.webp";
 import Heading from "./Heading";
+import { CardTilt } from "./CardAnimation";
 
 type Props = {
   icon: string;
@@ -25,32 +26,34 @@ const icons = {
 
 export default function FeatureCard({ icon, title, description }: Props) {
   return (
-    <GradientBorder
-      borderRadius={8}
-      className="w-full text-center"
-      padding="sm"
-    >
-      <div className="space-y-3 bg-primary-100 py-2">
-        <Image
-          src={icons[icon as keyof typeof icons]}
-          alt="book"
-          width={112}
-          height={112}
-          className="w-fit mx-auto size-16 md:size-20 lg:size-28 mb-6"
-        />
-        <Heading
-          as="h3"
-          size="h4"
-          weight="semibold"
-          align="center"
-          className="text-gray-600 tracking-tight"
-        >
-          {title}
-        </Heading>
-        <p className="text-gray-500 text-sm md:text-lg px-2 leading-snug">
-          {description}
-        </p>
-      </div>
-    </GradientBorder>
+    <CardTilt className="w-full">
+      <GradientBorder
+        borderRadius={8}
+        className="w-full text-center"
+        padding="sm"
+      >
+        <div className="space-y-3 bg-primary-100 py-2">
+          <Image
+            src={icons[icon as keyof typeof icons]}
+            alt="book"
+            width={112}
+            height={112}
+            className="w-fit mx-auto size-16 md:size-20 lg:size-28 mb-6"
+          />
+          <Heading
+            as="h3"
+            size="h4"
+            weight="semibold"
+            align="center"
+            className="text-gray-600 tracking-tight"
+          >
+            {title}
+          </Heading>
+          <p className="text-gray-500 text-sm md:text-lg px-2 leading-snug">
+            {description}
+          </p>
+        </div>
+      </GradientBorder>
+    </CardTilt>
   );
 }

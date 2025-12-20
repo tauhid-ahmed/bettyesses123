@@ -22,6 +22,12 @@ function BlobContainer() {
       <Blob variant="primary" size="sm" position="top-left" intent="strong" />
       <Blob variant="primary" size="lg" position="top-right" intent="strong" />
       <Blob
+        variant="primary"
+        size="sm"
+        position="center-right"
+        intent="strong"
+      />
+      <Blob
         variant="secondary"
         size="lg"
         position="center-left"

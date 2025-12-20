@@ -1,3 +1,4 @@
+import { CardTilt } from "@/components/CardAnimation";
 import GradientBorder from "@/components/GradientBorder";
 import Heading from "@/components/Heading";
 import Rating from "@/components/Rating";
@@ -19,32 +20,34 @@ export default function TestimonialCard({
   rating,
 }: Props) {
   return (
-    <GradientBorder
-      borderRadius={8}
-      className="w-full text-center h-full"
-      padding="sm"
-    >
-      <div className="space-y-2 bg-primary-100 py-2">
-        <TestimonialImage image={image} name={name} />
+    <CardTilt className="w-full">
+      <GradientBorder
+        borderRadius={8}
+        className="w-full text-center h-full"
+        padding="sm"
+      >
+        <div className="space-y-2 bg-primary-100 py-2">
+          <TestimonialImage image={image} name={name} />
 
-        <Heading
-          as="h3"
-          size="h4"
-          weight="semibold"
-          align="center"
-          className="text-gray-600 tracking-tight"
-        >
-          {name}
-        </Heading>
-        <p className="text-gray-500 text-sm md:text-lg px-2 font-medium">
-          Age: {age}
-        </p>
-        <p className="text-gray-500 text-sm md:text-lg px-2 leading-snug">
-          {description}
-        </p>
-        <Rating value={rating} readonly className="mx-auto w-fit" />
-      </div>
-    </GradientBorder>
+          <Heading
+            as="h3"
+            size="h4"
+            weight="semibold"
+            align="center"
+            className="text-gray-600 tracking-tight"
+          >
+            {name}
+          </Heading>
+          <p className="text-gray-500 text-sm md:text-lg px-2 font-medium">
+            Age: {age}
+          </p>
+          <p className="text-gray-500 text-md! md:text-lg px-2 leading-snug line-clamp-1">
+            {description}
+          </p>
+          <Rating value={rating} readonly className="mx-auto w-fit" />
+        </div>
+      </GradientBorder>
+    </CardTilt>
   );
 }
 

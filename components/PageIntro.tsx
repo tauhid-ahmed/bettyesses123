@@ -3,6 +3,7 @@ import Container from "./Container";
 import Heading from "./Heading";
 import Section from "./Section";
 import { useScreenSize } from "@/hooks/useScreenSize";
+import { DescriptionChars } from "./TextAnimation";
 
 type Props = {
   title: string;
@@ -25,9 +26,9 @@ export default function PageIntro({ title, description, image }: Props) {
               >
                 {title}
               </Heading>
-              <p className="text-lg text-gray-800 text-center md:text-left">
-                {description}
-              </p>
+              <div className="text-lg text-gray-800 text-center md:text-left">
+                <DescriptionChars text={description}></DescriptionChars>
+              </div>
             </div>
             <Image
               className="order-1 md:order-2 h-60 block object-contain"
