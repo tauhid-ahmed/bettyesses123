@@ -13,7 +13,10 @@ import {
 } from "@/features/admin/dashboard/components/DashboardContainer";
 import DashboardNavigation from "@/features/admin/dashboard/components/DashboardNavigation";
 import {
+  BadgePercent,
+  BookOpenCheck,
   CirclePoundSterling,
+  ClipboardCheck,
   FileUser,
   LucideUser,
   LucideUserPlus,
@@ -65,6 +68,30 @@ const navItems = [
     href: "/complaint-box",
     name: "Complaint Box",
     icon: <UserCog />,
+    children: [],
+  },
+  {
+    href: "/privacy-and-policy",
+    name: "Privacy Policy",
+    icon: <BookOpenCheck />,
+    children: [],
+  },
+  {
+    href: "/terms-and-condition",
+    name: "Terms & Condition",
+    icon: <BookOpenCheck />,
+    children: [],
+  },
+  {
+    href: "/promo-codes",
+    name: "Promo Codes",
+    icon: <BadgePercent />,
+    children: [],
+  },
+  {
+    href: "/order-management",
+    name: "Order Management",
+    icon: <ClipboardCheck />,
     children: [],
   },
   {
