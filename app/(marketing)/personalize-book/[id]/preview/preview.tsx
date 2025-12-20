@@ -10,11 +10,23 @@ import React, {
 } from "react";
 import { motion, AnimatePresence } from "motion/react";
 import { ChevronLeft, ChevronRight } from "lucide-react";
+import Image from "next/image";
+
+import bookCoverImage1 from "@/images/book-cover-1.webp";
+import bookCoverImage2 from "@/images/book-cover-2.webp";
+import bookCoverImage3 from "@/images/book-cover-3.webp";
+import bookCoverImage4 from "@/images/book-cover-4.webp";
+import bookCoverImage5 from "@/images/book-cover-5.webp";
+import { StaticImageData } from "next/image";
+import Section from "@/components/Section";
+import Container from "@/components/Container";
+import Heading from "@/components/Heading";
+import { Button } from "@/components/ui/button";
 
 // =============== TYPES ===============
 export type Variant = {
   id: string;
-  image: string;
+  image: StaticImageData;
   title?: string;
 };
 
@@ -25,7 +37,7 @@ export type BookPage = {
 };
 
 export type SelectionState = {
-  [pageId: string]: string; // selectedVariantId
+  [pageId: string]: string;
 };
 
 // =============== MOCK DATA ===============
@@ -34,32 +46,31 @@ const MOCK_PAGES: BookPage[] = [
     pageId: "page_1",
     title: "Cover Page",
     variants: [
-      { id: "v1", image: "/api/placeholder/400/500?text=Cover+1" },
-      { id: "v2", image: "/api/placeholder/400/500?text=Cover+2" },
-      { id: "v3", image: "/api/placeholder/400/500?text=Cover+3" },
+      { id: "v1", image: bookCoverImage5 },
+      { id: "v2", image: bookCoverImage2 },
+      { id: "v3", image: bookCoverImage3 },
     ],
   },
   {
     pageId: "page_2",
     title: "Story Page",
     variants: [
-      { id: "v1", image: "/api/placeholder/400/500?text=Story+1" },
-      { id: "v2", image: "/api/placeholder/400/500?text=Story+2" },
-      { id: "v3", image: "/api/placeholder/400/500?text=Story+3" },
-      { id: "v4", image: "/api/placeholder/400/500?text=Story+4" },
+      { id: "v1", image: bookCoverImage3 },
+      { id: "v2", image: bookCoverImage4 },
+      { id: "v3", image: bookCoverImage1 },
+      { id: "v4", image: bookCoverImage5 },
     ],
   },
   {
     pageId: "page_3",
     title: "Character Introduction",
     variants: [
-      { id: "v1", image: "/api/placeholder/400/500?text=Character+1" },
-      { id: "v2", image: "/api/placeholder/400/500?text=Character+2" },
+      { id: "v1", image: bookCoverImage2 },
+      { id: "v2", image: bookCoverImage1 },
     ],
   },
 ];
 
-// =============== CONTEXT ===============
 type SelectionContextType = {
   selections: SelectionState;
   setSelection: (pageId: string, variantId: string) => void;
@@ -144,12 +155,12 @@ function SelectionProvider({ children }: { children: React.ReactNode }) {
   );
 }
 
-// =============== COMPONENT: VariantSlider ===============
 interface VariantSliderProps {
   page: BookPage;
+  index: number;
 }
 
-function VariantSlider({ page }: VariantSliderProps) {
+function VariantSlider({ page, index }: VariantSliderProps) {
   const { getSelectedVariant, setSelection } = useSelection();
   const [isAnimating, setIsAnimating] = useState(false);
 
@@ -196,167 +207,104 @@ function VariantSlider({ page }: VariantSliderProps) {
 
   return (
     <div className="w-full max-w-2xl mx-auto">
-      <div className="relative aspect-[3/2] rounded-xl overflow-hidden shadow-lg mb-6">
+      <Heading className="text-gray-800" align={"center"} as="h3" size="h6">
+        Page {index + 1}
+      </Heading>
+      <div className="relative aspect-2/2 rounded-xl overflow-hidden shadow-lg mb-6 mt-2">
         <AnimatePresence mode="wait">
           <motion.div
             key={currentVariant.id}
-            initial={{ opacity: 0, scale: 0.98 }}
+            initial={{ opacity: 0.5, scale: 0.98 }}
             animate={{ opacity: 1, scale: 1 }}
-            exit={{ opacity: 0, scale: 1.02 }}
+            exit={{ opacity: 0.5, scale: 1.02 }}
             transition={{ duration: 0.3, ease: "easeInOut" }}
             className="absolute inset-0"
           >
-            <div
+            <Image
+              src={currentVariant.image}
               className="w-full h-full bg-cover bg-center"
-              style={{ backgroundImage: `url(${currentVariant.image})` }}
+              alt={page.title}
             />
           </motion.div>
         </AnimatePresence>
-      </div>
+        {/* Controls */}
+        <div className="flex items-center justify-between px-2 absolute top-1/2 -translate-y-1/2 w-full">
+          <button
+            onClick={goToPrev}
+            disabled={isAnimating || page.variants.length <= 1}
+            className="p-3 rounded-full hover:bg-gray-100 disabled:opacity-30 transition-all active:scale-95"
+            aria-label="Previous variant"
+          >
+            <ChevronLeft className="w-6 h-6" />
+          </button>
 
-      {/* Controls */}
-      <div className="flex items-center justify-between px-2">
-        <button
-          onClick={goToPrev}
-          disabled={isAnimating || page.variants.length <= 1}
-          className="p-3 rounded-full hover:bg-gray-100 disabled:opacity-30 transition-all active:scale-95"
-          aria-label="Previous variant"
-        >
-          <ChevronLeft className="w-6 h-6" />
-        </button>
-
-        <div className="flex items-center gap-3">
-          {page.variants.map((variant) => (
-            <button
-              key={variant.id}
-              onClick={() => handleVariantSelect(variant.id)}
-              disabled={isAnimating}
-              className="relative group"
-              aria-label={`Select variant ${variant.id}`}
-            >
-              <div
-                className={`w-3 h-3 rounded-full transition-all ${
-                  variant.id === selectedVariantId
-                    ? "bg-blue-600 scale-125"
-                    : "bg-gray-300 group-hover:bg-gray-400"
-                }`}
-              />
-              {variant.id === selectedVariantId && (
-                <motion.div
-                  layoutId={`active-${page.pageId}`}
-                  className="absolute inset-0 border-2 border-blue-500 rounded-full"
-                  transition={{ type: "spring", stiffness: 500, damping: 30 }}
-                />
-              )}
-            </button>
-          ))}
+          <button
+            onClick={goToNext}
+            disabled={isAnimating || page.variants.length <= 1}
+            className="p-3 rounded-full hover:bg-gray-100 disabled:opacity-30 transition-all active:scale-95"
+            aria-label="Next variant"
+          >
+            <ChevronRight className="w-6 h-6" />
+          </button>
         </div>
-
-        <button
-          onClick={goToNext}
-          disabled={isAnimating || page.variants.length <= 1}
-          className="p-3 rounded-full hover:bg-gray-100 disabled:opacity-30 transition-all active:scale-95"
-          aria-label="Next variant"
-        >
-          <ChevronRight className="w-6 h-6" />
-        </button>
+      </div>
+      <div className="flex items-center justify-center gap-3">
+        {page.variants.map((variant) => (
+          <button
+            key={variant.id}
+            onClick={() => handleVariantSelect(variant.id)}
+            disabled={isAnimating}
+            className="relative group"
+            aria-label={`Select variant ${variant.id}`}
+          >
+            <div
+              className={`w-3 h-3 rounded-full transition-all ${
+                variant.id === selectedVariantId
+                  ? "bg-blue-600 scale-125"
+                  : "bg-gray-300 group-hover:bg-gray-400"
+              }`}
+            />
+            {variant.id === selectedVariantId && (
+              <motion.div
+                layoutId={`active-${page.pageId}`}
+                className="absolute inset-0 border-2 border-blue-500 rounded-full"
+                transition={{ type: "spring", stiffness: 500, damping: 30 }}
+              />
+            )}
+          </button>
+        ))}
       </div>
     </div>
   );
 }
 
-// =============== COMPONENT: PageSection ===============
 function PageSection({ page, index }: { page: BookPage; index: number }) {
-  const { getSelectedVariant } = useSelection();
-  const selectedId = getSelectedVariant(page.pageId);
-
   return (
-    <section className="py-10 border-b border-gray-200 last:border-b-0">
-      <div className="container mx-auto px-4">
-        <VariantSlider page={page} />
-      </div>
+    <section className="py-10">
+      <VariantSlider page={page} index={index} />
     </section>
   );
 }
 
-// =============== COMPONENT: PreviewContent (Fixed) ===============
 function PreviewContent() {
-  const { getAllSelections } = useSelection();
-  const [showInstructions, setShowInstructions] = useState(true);
-
-  const handleExportSelections = () => {
-    const selections = getAllSelections();
-    console.log("Current selections for backend:", selections);
-    return selections;
-  };
-
   return (
-    <div>
-      {/* Header */}
-      <header className="shadow-sm border-b">
-        <div className="container mx-auto px-4 py-6">
-          <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
-            <div>
-              <h1 className="text-3xl font-bold text-gray-900">
-                Book Personalization Preview
-              </h1>
-              <p className="text-gray-600 mt-2">
-                Customize each page of your book. Your selections are saved
-                automatically.
-              </p>
-            </div>
-            <button
-              onClick={() => handleExportSelections()}
-              className="px-4 py-2 text-sm border border-gray-300 rounded-lg hover:bg-gray-50 self-start md:self-auto"
-            >
-              Export Selections (Check Console)
-            </button>
-          </div>
-        </div>
-      </header>
-
-      {/* Instructions */}
-      {showInstructions && (
-        <motion.div
-          initial={{ opacity: 0, y: -20 }}
-          animate={{ opacity: 1, y: 0 }}
-          className="border border-blue-200 mx-4 mt-4 rounded-xl"
-        >
-          <div className="container mx-auto px-4 py-4">
-            <div className="flex justify-between items-start">
-              <div>
-                <h3 className="font-semibold text-blue-900">
-                  How to customize:
-                </h3>
-                <ul className="text-blue-800 text-sm mt-2 space-y-1">
-                  <li>• Click on dots below each image to select variant</li>
-                  <li>• Use left/right arrow keys or buttons to navigate</li>
-                  <li>• Selections are saved automatically</li>
-                  <li>• Finalize with "Preview & Confirm" button</li>
-                </ul>
-              </div>
-              <button
-                onClick={() => setShowInstructions(false)}
-                className="text-blue-600 hover:text-blue-800"
-              >
-                ✕
-              </button>
-            </div>
-          </div>
-        </motion.div>
-      )}
-
-      {/* Pages */}
-      <main className="container mx-auto px-4 py-8">
+    <Section
+      title="Personalized Book"
+      description="Generated the personalized book for you"
+      padding="sm"
+    >
+      <Container size="xs" className="max-w-xl">
         {MOCK_PAGES.map((page, index) => (
           <PageSection key={page.pageId} page={page} index={index} />
         ))}
-      </main>
-    </div>
+        <Button size="lg" className="primary-gradient mx-auto flex">
+          Save Preview & Continue to Payment
+        </Button>
+      </Container>
+    </Section>
   );
 }
 
-// =============== MAIN COMPONENT: BookPersonalizationPreview ===============
 export default function BookPersonalizationPreview() {
   return (
     <SelectionProvider>
