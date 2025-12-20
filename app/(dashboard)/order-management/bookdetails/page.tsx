@@ -16,7 +16,7 @@ type BookOrder = {
 
 type BookDetailsPageProps = {
   bookData: BookOrder | null;
-  setSelectedBook: (book: BookOrder | null) => void;
+  setSelectedBook: unknown;
 };
 
 type BookInfo = {

@@ -16,7 +16,7 @@ export default function DashboardActiveLink({
 }: ActiveLinkProps) {
   const { isExpanded } = useSidebar();
   const pathname = usePathname();
-  const isActive = pathname === href; // Remove the isExpanded condition
+  const isActive = pathname === href; 
 
   console.log(href);
 
@@ -25,8 +25,8 @@ export default function DashboardActiveLink({
       href={href}
       className={cn(
         "flex items-center gap-y-2.5 rounded-xl whitespace-nowrap",
-        isActive && "bg-primary-600 text-white",
-        !isActive && "hover:bg-primary-600 hover:text-white",
+        isActive && "bg-[#00244A] text-white",
+        !isActive && "hover:bg-[#00244A] hover:text-white",
         className
       )}
     >

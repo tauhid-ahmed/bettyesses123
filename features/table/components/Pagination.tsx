@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-unused-expressions */
 "use client";
 
 import { useSearchParams, useRouter } from "next/navigation";
@@ -114,7 +115,6 @@ export default function Pagination({
                   size="sm"
                   variant="ghost"
                   disabled
-                  className="cursor-default"
                 >
                   ...
                 </Button>
@@ -125,16 +125,21 @@ export default function Pagination({
             const isActive = pageNum === currentPage;
 
             return (
-              <Button
-                key={pageNum}
-                size="sm"
-                variant={isActive ? "default" : "outline"}
-                onClick={() => navigateToPage(pageNum)}
-                disabled={isPending}
-                className={cn(isActive && "pointer-events-none", "min-w-10")}
-              >
-                {pageNum}
-              </Button>
+            <Button
+  key={pageNum}
+  size="sm"
+  variant={isActive ? "default" : "outline"}
+  onClick={() => navigateToPage(pageNum)}
+  disabled={isPending}
+  className={cn(
+    "min-w-10",
+    isActive &&
+      "bg-[#0556AB] text-white hover:bg-[#044a92] pointer-events-none"
+  )}
+>
+  {pageNum}
+</Button>
+
             );
           })}
 
