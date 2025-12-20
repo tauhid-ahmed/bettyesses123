@@ -14,23 +14,19 @@ import {
 import DashboardNavigation from "@/features/admin/dashboard/components/DashboardNavigation";
 import {
   BadgePercent,
+  Book,
   BookOpenCheck,
-  CirclePoundSterling,
   ClipboardCheck,
-  FileUser,
   HandHeart,
   LucideUser,
-  LucideUserPlus,
   PanelsLeftBottom,
   Settings,
-  UserCog,
-  UserRoundPen,
 } from "lucide-react";
 import { Suspense } from "react";
 
 const navItems = [
   {
-    href: "/",
+    href: "/overview",
     name: "Overview",
     icon: <PanelsLeftBottom />,
     children: [],
@@ -45,6 +41,12 @@ const navItems = [
     href: "/order-management",
     name: "Order Management",
     icon: <ClipboardCheck />,
+    children: [],
+  },
+  {
+    href: "/books",
+    name: "Books",
+    icon: <Book />,
     children: [],
   },
 
