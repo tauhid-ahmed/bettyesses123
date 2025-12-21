@@ -13,7 +13,7 @@ import { SortDirection } from "@/features/table/types/table.type";
 import { cn } from "@/lib/utils";
 import Link from "next/link";
 
-/* -------------------- Types -------------------- */
+
 type OrderStatus = "Processing" | "Shipped" | "In Route" | "Delivered";
 
 type Order = {
@@ -46,7 +46,6 @@ type TableHeaderConfig = {
   sortable?: boolean;
 };
 
-/* -------------------- Dummy Data (Image Based) -------------------- */
 const DUMMY_ORDERS: Order[] = [
   {
     id: "1",
@@ -95,7 +94,7 @@ const DUMMY_ORDERS: Order[] = [
   },
 ];
 
-/* -------------------- Table Header -------------------- */
+
 const tableHeader: TableHeaderConfig[] = [
   { key: "userName", label: "User Name", sortable: true },
   { key: "email", label: "Email" },
@@ -105,7 +104,7 @@ const tableHeader: TableHeaderConfig[] = [
   { key: "status", label: "Status", sortable: true },
 ];
 
-/* -------------------- Helpers -------------------- */
+
 function filterOrders(orders: Order[], query: SearchParams) {
   if (!query.q) return orders;
   const q = query.q.toLowerCase();
@@ -153,7 +152,7 @@ function calculateMeta(total: number, page: number, limit: number): Meta {
   };
 }
 
-/* -------------------- Status Badge -------------------- */
+
 function StatusBadge({ status }: { status: OrderStatus }) {
   const styles: Record<OrderStatus, string> = {
     Processing: "bg-yellow-100 text-yellow-700 border border-yellow-300",
@@ -174,12 +173,11 @@ function StatusBadge({ status }: { status: OrderStatus }) {
   );
 }
 
-/* -------------------- Component -------------------- */
-export default async function ActivityPage({
+const ActivityPage =  async ({
   searchParams,
 }: {
   searchParams: Promise<SearchParams>;
-}) {
+}) =>{
   const query = await searchParams;
 
   const page = parseInt(query.page || "1", 10);
@@ -264,3 +262,4 @@ export default async function ActivityPage({
     </TableProvider>
   );
 }
+export default ActivityPage;

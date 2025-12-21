@@ -13,7 +13,7 @@ import { SortDirection } from "@/features/table/types/table.type";
 import { cn } from "@/lib/utils";
 import Link from "next/link";
 
-/* -------------------- Types -------------------- */
+
 type OrderStatus = "Processing" | "Shipped" | "In Route" | "Delivered";
 
 type Order = {
@@ -46,7 +46,7 @@ type TableHeaderConfig = {
   sortable?: boolean;
 };
 
-/* -------------------- Dummy Data (From Image) -------------------- */
+
 const DUMMY_ORDERS: Order[] = [
   {
     id: "1",
@@ -54,7 +54,7 @@ const DUMMY_ORDERS: Order[] = [
     email: "seema@gmail.com",
     orderedBooks: 2,
     price: 50,
-    orderId: "#3472234",
+    orderId: "pi_1N8xXh2eZvKYlo2CabcDEF12",
     status: "Processing",
   },
   {
@@ -63,7 +63,7 @@ const DUMMY_ORDERS: Order[] = [
     email: "almuntakim@gmail.com",
     orderedBooks: 1,
     price: 35,
-    orderId: "#3472235",
+    orderId: "pi_1N8xXh2eZvKYlo2CabcDEF12",
     status: "Shipped",
   },
   {
@@ -72,7 +72,7 @@ const DUMMY_ORDERS: Order[] = [
     email: "nusrat@gmail.com",
     orderedBooks: 7,
     price: 120,
-    orderId: "#3472236",
+    orderId: "pi_1N8xXh2eZvKYlo2CabcDEF12",
     status: "In Route",
   },
   {
@@ -81,7 +81,7 @@ const DUMMY_ORDERS: Order[] = [
     email: "rafsan@gmail.com",
     orderedBooks: 4,
     price: 80,
-    orderId: "#3472237",
+    orderId: "pi_1N8xXh2eZvKYlo2CabcDEF12",
     status: "Delivered",
   },
   {
@@ -90,7 +90,7 @@ const DUMMY_ORDERS: Order[] = [
     email: "seema@gmail.com",
     orderedBooks: 1,
     price: 25,
-    orderId: "#3472238",
+    orderId: "pi_1N8xXh2eZvKYlo2CabcDEF12",
     status: "Processing",
   },
   {
@@ -99,7 +99,7 @@ const DUMMY_ORDERS: Order[] = [
     email: "tahmid@gmail.com",
     orderedBooks: 3,
     price: 60,
-    orderId: "#3472239",
+    orderId: "pi_1N8xXh2eZvKYlo2CabcDEF12",
     status: "Shipped",
   },
   {
@@ -108,7 +108,7 @@ const DUMMY_ORDERS: Order[] = [
     email: "ayesha@gmail.com",
     orderedBooks: 6,
     price: 110,
-    orderId: "#3472240",
+    orderId: "pi_1N8xXh2eZvKYlo2CabcDEF12",
     status: "In Route",
   },
   {
@@ -117,7 +117,7 @@ const DUMMY_ORDERS: Order[] = [
     email: "imran@gmail.com",
     orderedBooks: 2,
     price: 40,
-    orderId: "#3472241",
+    orderId: "pi_1N8xXh2eZvKYlo2CabcDEF12",
     status: "Delivered",
   },
   {
@@ -126,7 +126,7 @@ const DUMMY_ORDERS: Order[] = [
     email: "farhan@gmail.com",
     orderedBooks: 5,
     price: 95,
-    orderId: "#3472242",
+    orderId: "pi_1N8xXh2eZvKYlo2CabcDEF12",
     status: "Processing",
   },
   {
@@ -135,7 +135,7 @@ const DUMMY_ORDERS: Order[] = [
     email: "sadia@gmail.com",
     orderedBooks: 8,
     price: 150,
-    orderId: "#3472243",
+    orderId: "pi_1N8xXh2eZvKYlo2CabcDEF12",
     status: "Shipped",
   },
   {
@@ -144,7 +144,7 @@ const DUMMY_ORDERS: Order[] = [
     email: "mehedi@gmail.com",
     orderedBooks: 3,
     price: 55,
-    orderId: "#3472244",
+    orderId: "pi_1N8xXh2eZvKYlo2CabcDEF12",
     status: "Delivered",
   },
   {
@@ -153,7 +153,7 @@ const DUMMY_ORDERS: Order[] = [
     email: "nabila@gmail.com",
     orderedBooks: 4,
     price: 75,
-    orderId: "#3472245",
+    orderId: "pi_1N8xXh2eZvKYlo2CabcDEF12",
     status: "In Route",
   },
   {
@@ -162,7 +162,7 @@ const DUMMY_ORDERS: Order[] = [
     email: "nabila@gmail.com",
     orderedBooks: 4,
     price: 75,
-    orderId: "#3472245",
+    orderId: "pi_1N8xXh2eZvKYlo2CabcDEF12",
     status: "In Route",
   },
   {
@@ -171,7 +171,7 @@ const DUMMY_ORDERS: Order[] = [
     email: "nabila@gmail.com",
     orderedBooks: 4,
     price: 75,
-    orderId: "#3472245",
+    orderId: "pi_1N8xXh2eZvKYlo2CabcDEF12",
     status: "In Route",
   },
   {
@@ -180,12 +180,12 @@ const DUMMY_ORDERS: Order[] = [
     email: "nabila@gmail.com",
     orderedBooks: 4,
     price: 75,
-    orderId: "#3472245",
+    orderId: "pi_1N8xXh2eZvKYlo2CabcDEF12",
     status: "In Route",
   },
 ];
 
-/* -------------------- Table Header -------------------- */
+
 const tableHeader: TableHeaderConfig[] = [
   { key: "userName", label: "User Name", sortable: true },
   { key: "email", label: "Email" },
@@ -195,7 +195,7 @@ const tableHeader: TableHeaderConfig[] = [
   { key: "status", label: "Status", sortable: true },
 ];
 
-/* -------------------- Helpers -------------------- */
+
 function filterOrders(orders: Order[], query: SearchParams) {
   if (!query.q) return orders;
 
@@ -242,7 +242,7 @@ function calculateMeta(total: number, page: number, limit: number): Meta {
   };
 }
 
-/* -------------------- Status Badge -------------------- */
+
 function StatusBadge({ status }: { status: OrderStatus }) {
   const styles: Record<OrderStatus, string> = {
     Processing: "bg-yellow-100 text-[#FFBB00] border-[#FFBB00] border",
@@ -263,7 +263,7 @@ function StatusBadge({ status }: { status: OrderStatus }) {
   );
 }
 
-/* -------------------- Component -------------------- */
+
 export default async function OrderManagementTable({
   searchParams,
 }: {
@@ -272,7 +272,7 @@ export default async function OrderManagementTable({
   const query = await searchParams;
 
   const page = parseInt(query.page || "1", 10);
-  const limit = parseInt(query.limit || "10", 10);
+  const limit = parseInt(query.limit || "12", 12);
   const [sortField = "", sortDirection = ""] = (query.sort || "").split(":");
 
   const filtered = filterOrders(DUMMY_ORDERS, query);

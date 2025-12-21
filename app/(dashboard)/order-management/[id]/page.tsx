@@ -133,13 +133,14 @@ export default function UserDetailsPage() {
                 />
               </div>
             )}
+           
           </div>
         </div>
       </div>
 
-      {/* ================= MODAL ================= */}
+      {/* modal */}
       {showSuspendModal && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-[#CCCCCC]/10 backdrop-blur-xs">
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/30 backdrop-blur-xs">
           <div className="w-full max-w-xs rounded-xl bg-white p-6 shadow-xl">
             <div className="mx-auto mb-4 flex h-12 w-12 items-center justify-center rounded-full bg-red-100">
               <AlertCircle className="h-6 w-6 text-red-500" />
