@@ -83,7 +83,7 @@ export default function PersonalizeBookForm() {
               name="childName"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel className="text-gray-700">Child's Name</FormLabel>
+                  <FormLabel className="text-gray-700">Child&apos;s Name</FormLabel>
                   <FormControl>
                     <Input placeholder="Name" {...field} className="bg-white" />
                   </FormControl>

@@ -1,136 +1,351 @@
-"use client";
+import PageHeading from "@/components/PageHeading";
+import Pagination from "@/features/table/components/Pagination";
+import {
+  Table,
+  TableBody,
+  TableHeader,
+  TableHeaderItem,
+  TableRow,
+  TableBodyItem,
+} from "@/features/table/components/Table";
+import { TableProvider } from "@/features/table/components/TableProvider";
+import { SortDirection } from "@/features/table/types/table.type";
+import { cn } from "@/lib/utils";
+import Link from "next/link";
 
-import { ChevronDown } from "lucide-react";
-import { useState } from "react";
+/* -------------------- Types -------------------- */
+type OrderStatus = "Processing" | "Shipped" | "In Route" | "Delivered";
 
-import BookCards from "@/components/order-management/bookcards/BookCards";
-import BookDetailsPage from "./bookdetails/page";
-import { BookOrder } from "./types";
+type Order = {
+  id: string;
+  userName: string;
+  email: string;
+  orderedBooks: number;
+  price: number;
+  orderId: string;
+  status: OrderStatus;
+};
 
-export default function UserDetailsPage() {
-  const [selectedRole, setSelectedRole] = useState("User");
-  const [showRoleDropdown, setShowRoleDropdown] = useState(false);
-  const [seletectedBook, setSelectedBook] = useState<BookOrder | null>(null);
+type Meta = {
+  page: number;
+  limit: number;
+  total: number;
+  totalPages: number;
+};
 
-  const roleOptions: string[] = [
-    "Everyone",
-    "New User",
-    "One Year Old User",
-    "2 Year Old User",
-    "User",
-  ];
+type SearchParams = {
+  page?: string;
+  limit?: string;
+  sort?: string;
+  q?: string;
+};
+
+type TableHeaderConfig = {
+  key: keyof Order;
+  label: string;
+  sortable?: boolean;
+};
+
+/* -------------------- Dummy Data (From Image) -------------------- */
+const DUMMY_ORDERS: Order[] = [
+  {
+    id: "1",
+    userName: "Seema Badaya",
+    email: "seema@gmail.com",
+    orderedBooks: 2,
+    price: 50,
+    orderId: "#3472234",
+    status: "Processing",
+  },
+  {
+    id: "2",
+    userName: "Al Muntakim",
+    email: "almuntakim@gmail.com",
+    orderedBooks: 1,
+    price: 35,
+    orderId: "#3472235",
+    status: "Shipped",
+  },
+  {
+    id: "3",
+    userName: "Nusrat Jahan",
+    email: "nusrat@gmail.com",
+    orderedBooks: 7,
+    price: 120,
+    orderId: "#3472236",
+    status: "In Route",
+  },
+  {
+    id: "4",
+    userName: "Rafsan Rahman",
+    email: "rafsan@gmail.com",
+    orderedBooks: 4,
+    price: 80,
+    orderId: "#3472237",
+    status: "Delivered",
+  },
+  {
+    id: "5",
+    userName: "Seema Badaya",
+    email: "seema@gmail.com",
+    orderedBooks: 1,
+    price: 25,
+    orderId: "#3472238",
+    status: "Processing",
+  },
+  {
+    id: "6",
+    userName: "Tahmid Hasan",
+    email: "tahmid@gmail.com",
+    orderedBooks: 3,
+    price: 60,
+    orderId: "#3472239",
+    status: "Shipped",
+  },
+  {
+    id: "7",
+    userName: "Ayesha Akter",
+    email: "ayesha@gmail.com",
+    orderedBooks: 6,
+    price: 110,
+    orderId: "#3472240",
+    status: "In Route",
+  },
+  {
+    id: "8",
+    userName: "Imran Hossain",
+    email: "imran@gmail.com",
+    orderedBooks: 2,
+    price: 40,
+    orderId: "#3472241",
+    status: "Delivered",
+  },
+  {
+    id: "9",
+    userName: "Farhan Ahmed",
+    email: "farhan@gmail.com",
+    orderedBooks: 5,
+    price: 95,
+    orderId: "#3472242",
+    status: "Processing",
+  },
+  {
+    id: "10",
+    userName: "Sadia Islam",
+    email: "sadia@gmail.com",
+    orderedBooks: 8,
+    price: 150,
+    orderId: "#3472243",
+    status: "Shipped",
+  },
+  {
+    id: "11",
+    userName: "Mehedi Hasan",
+    email: "mehedi@gmail.com",
+    orderedBooks: 3,
+    price: 55,
+    orderId: "#3472244",
+    status: "Delivered",
+  },
+  {
+    id: "12",
+    userName: "Nabila Khan",
+    email: "nabila@gmail.com",
+    orderedBooks: 4,
+    price: 75,
+    orderId: "#3472245",
+    status: "In Route",
+  },
+  {
+    id: "13",
+    userName: "Nabila Khan",
+    email: "nabila@gmail.com",
+    orderedBooks: 4,
+    price: 75,
+    orderId: "#3472245",
+    status: "In Route",
+  },
+  {
+    id: "14",
+    userName: "Nabila Khan",
+    email: "nabila@gmail.com",
+    orderedBooks: 4,
+    price: 75,
+    orderId: "#3472245",
+    status: "In Route",
+  },
+  {
+    id: "15",
+    userName: "Nabila Khan",
+    email: "nabila@gmail.com",
+    orderedBooks: 4,
+    price: 75,
+    orderId: "#3472245",
+    status: "In Route",
+  },
+];
+
+/* -------------------- Table Header -------------------- */
+const tableHeader: TableHeaderConfig[] = [
+  { key: "userName", label: "User Name", sortable: true },
+  { key: "email", label: "Email" },
+  { key: "orderedBooks", label: "Ordered Books", sortable: true },
+  { key: "price", label: "Price", sortable: true },
+  { key: "orderId", label: "Order ID" },
+  { key: "status", label: "Status", sortable: true },
+];
+
+/* -------------------- Helpers -------------------- */
+function filterOrders(orders: Order[], query: SearchParams) {
+  if (!query.q) return orders;
+
+  const q = query.q.toLowerCase();
+  return orders.filter(
+    (order) =>
+      order.userName.toLowerCase().includes(q) ||
+      order.email.toLowerCase().includes(q) ||
+      order.orderId.toLowerCase().includes(q)
+  );
+}
+
+function sortOrders(orders: Order[], sortField: string, sortDirection: string) {
+  if (!sortField || !sortDirection) return orders;
+
+  return [...orders].sort((a, b) => {
+    let result = 0;
+
+    if (typeof a[sortField as keyof Order] === "number") {
+      result =
+        (a[sortField as keyof Order] as number) -
+        (b[sortField as keyof Order] as number);
+    } else {
+      result = String(a[sortField as keyof Order]).localeCompare(
+        String(b[sortField as keyof Order])
+      );
+    }
+
+    return sortDirection === "asc" ? result : -result;
+  });
+}
+
+function paginate(orders: Order[], page: number, limit: number) {
+  const start = (page - 1) * limit;
+  return orders.slice(start, start + limit);
+}
+
+function calculateMeta(total: number, page: number, limit: number): Meta {
+  return {
+    page,
+    limit,
+    total,
+    totalPages: Math.ceil(total / limit),
+  };
+}
+
+/* -------------------- Status Badge -------------------- */
+function StatusBadge({ status }: { status: OrderStatus }) {
+  const styles: Record<OrderStatus, string> = {
+    Processing: "bg-yellow-100 text-[#FFBB00] border-[#FFBB00] border",
+    Shipped: "bg-pink-100 text-[#FF008C] border-[#FF008C] border",
+    "In Route": "bg-purple-100 text-[#9935E5] border-[#9935E5] border",
+    Delivered: "bg-green-100 text-[#00FF44] border-[#00FF44] border",
+  };
 
   return (
-    <div className="min-h-screen sm:py-6 lg:py-8">
-      <div className=" space-y-8">
-        <div className="bg-white rounded-xl shadow-xs p-6">
-          <div className="mb-6">
-            <h1 className="text-[32px] font-medium text-dark-800 mb-2">
-              User Details
-            </h1>
-            <p className="text-base text-[#61758A]">
-              See The full Info On A User
-            </p>
-          </div>
+    <span
+      className={cn(
+        "inline-flex px-3 py-1 rounded-full text-sm font-medium",
+        styles[status]
+      )}
+    >
+      {status}
+    </span>
+  );
+}
 
-          <div className="border-t-2 border-[#99A6B8] pt-6 space-y-4">
-            <div className="flex flex-col sm:flex-row sm:items-center">
-              <span className="text-gray-900 font-normal w-full sm:w-32 mb-1 sm:mb-0">
-                User Name:
-              </span>
-              <span className="text-gray-900">Al Muntakim</span>
-            </div>
+/* -------------------- Component -------------------- */
+export default async function OrderManagementTable({
+  searchParams,
+}: {
+  searchParams: Promise<SearchParams>;
+}) {
+  const query = await searchParams;
 
-            <div className="flex flex-col sm:flex-row sm:items-center">
-              <span className="text-gray-900 font-normal w-full sm:w-32 mb-1 sm:mb-0">
-                Email:
-              </span>
-              <span className="text-gray-900">null@gmail.com</span>
-            </div>
-          </div>
+  const page = parseInt(query.page || "1", 10);
+  const limit = parseInt(query.limit || "10", 10);
+  const [sortField = "", sortDirection = ""] = (query.sort || "").split(":");
 
-          <div className="border-t border-gray-200 mt-14 pt-6 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
-            <div className="flex flex-col sm:flex-row sm:items-center gap-3 sm:gap-4">
-              <span className="text-dark-800 font-normal text-xl">
-                Change Role:
-              </span>
-              <div className="relative">
-                <button
-                  type="button"
-                  onClick={() => setShowRoleDropdown(!showRoleDropdown)}
-                  className="px-6 py-2 bg-[#00244A]  text-white rounded-md focus:outline-none focus:ring-2 focus:ring-[#00244A] flex items-center gap-2  justify-between"
-                >
-                  <span>{selectedRole}</span>
-                  <ChevronDown className="w-4 h-4" />
-                </button>
+  const filtered = filterOrders(DUMMY_ORDERS, query);
+  const sorted = sortOrders(filtered, sortField, sortDirection);
+  const paginated = paginate(sorted, page, limit);
+  const meta = calculateMeta(filtered.length, page, limit);
 
-                {showRoleDropdown && (
-                  <div className="absolute z-10 w-full mt-2 bg-white border border-gray-300 rounded-lg shadow-lg">
-                    {roleOptions.map((option) => (
-                      <button
-                        key={option}
-                        type="button"
-                        onClick={() => {
-                          setSelectedRole(option);
-                          setShowRoleDropdown(false);
-                        }}
-                        className="w-full px-4 py-2.5 text-left hover:bg-gray-50 text-gray-700 first:rounded-t-lg last:rounded-b-lg"
-                      >
-                        {option}
-                      </button>
-                    ))}
+  return (
+    <TableProvider>
+      <div className="space-y-4">
+        <PageHeading
+          title="Order Management"
+          query={query.q || ""}
+          placeholder="Search orders..."
+        />
+
+        <Table>
+          <TableHeader>
+            <TableRow>
+              {tableHeader.map(({ key, label, sortable = true }) => (
+                <TableHeaderItem
+                  key={key}
+                  prop={key}
+                  label={label}
+                  sortable={sortable}
+                  currentSort={sortField}
+                  sortDirection={sortDirection as SortDirection}
+                />
+              ))}
+              <th className="p-4 text-white">Details</th>
+            </TableRow>
+          </TableHeader>
+
+          <TableBody>
+            {paginated.length === 0 ? (
+              <TableRow>
+                <TableBodyItem colSpan={tableHeader.length + 1}>
+                  <div className="text-center py-8 text-gray-500">
+                    No orders found
                   </div>
-                )}
-              </div>
-            </div>
+                </TableBodyItem>
+              </TableRow>
+            ) : (
+              paginated.map((order) => (
+                <TableRow key={order.id}>
+                  <TableBodyItem>{order.userName}</TableBodyItem>
+                  <TableBodyItem>{order.email}</TableBodyItem>
+                  <TableBodyItem>{order.orderedBooks}</TableBodyItem>
+                  <TableBodyItem>€ {order.price}</TableBodyItem>
+                  <TableBodyItem>{order.orderId}</TableBodyItem>
+                  <TableBodyItem>
+                    <StatusBadge status={order.status} />
+                  </TableBodyItem>
+                  <TableBodyItem>
+                    <Link
+                      href={`/order-management/${order.id}`}
+                      className="text-blue-600 hover:underline text-sm"
+                    >
+                      View Details
+                    </Link>
+                  </TableBodyItem>
+                </TableRow>
+              ))
+            )}
+          </TableBody>
+        </Table>
 
-            <button className="px-6 py-2 bg-[#E63946] hover:bg-[#E63946] text-white rounded-md transition-colors font-normal">
-              Suspend User
-            </button>
-          </div>
-        </div>
-
-        <div className="bg-white rounded-lg shadow-sm p-6">
-          {!seletectedBook ? (
-            <div>
-              <div className="mb-6">
-                <h2 className="text-[32px] font-medium text-dark-800 mb-2">
-                  Ongoing Order Details
-                </h2>
-                <p className="text-base text-[#61758A]">
-                  See information about your ongoing
-                </p>
-              </div>
-              <BookCards setSelectedBook={setSelectedBook} />
-            </div>
-          ) : (
-            <div>
-              <div className="mb-6 flex justify-between items-center\">
-                <div>
-                  <h2 className="text-[32px] font-medium text-dark-800 mb-2">
-                    Book Details
-                  </h2>
-                  <p className="text-base text-[#61758A]">
-                    See information about the book
-                  </p>
-                </div>
-                <div>
-                  <button
-                    onClick={() => setSelectedBook(null)}
-                    className="text-sm text-blue-500 mt-2"
-                  >
-                    Close details
-                  </button>
-                </div>
-              </div>
-              <BookDetailsPage
-                setSelectedBook={setSelectedBook}
-                bookData={seletectedBook}
-              />
-            </div>
-          )}
-        </div>
+        <Pagination
+          totalPages={meta.totalPages}
+          currentPage={meta.page}
+          pageSize={meta.limit}
+        />
       </div>
-    </div>
+    </TableProvider>
   );
 }
