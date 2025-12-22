@@ -4,6 +4,7 @@ import Container from "./Container";
 import HeadingReveal from "./HeadingReveal";
 import { DiagonalWipeReveal } from "./Animations";
 import { DescriptionChars } from "./TextAnimation";
+import { AlignLeft } from "lucide-react";
 
 type SectionProps = {
   eyebrow?: React.ReactNode;
@@ -64,7 +65,7 @@ function Title({
     <HeadingReveal>
       <Heading
         as="h2"
-        size="h1"
+        size={align && align === "left" ? "h2" : "h3"}
         align={align}
         className="text-gray-800 tracking-tight"
       >

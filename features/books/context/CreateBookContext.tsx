@@ -74,7 +74,6 @@ const pricingSchema = z
 // Type inference from schemas
 type ChildDetails = z.infer<typeof childDetailsSchema>;
 type Character = z.infer<typeof characterSchema>;
-type StoryIdea = z.infer<typeof storyIdeaSchema>;
 type BookDetails = z.infer<typeof bookDetailsSchema>;
 type Pricing = z.infer<typeof pricingSchema>;
 
@@ -83,7 +82,6 @@ interface BookFormState {
   currentStep: StepId;
   visitedSteps: Set<StepId>;
   childDetails: ChildDetails;
-  storyIdea: StoryIdea;
   bookDetails: BookDetails;
   pricing: Pricing;
   isLoading: boolean;
@@ -98,7 +96,6 @@ type BookFormAction =
   | { type: "UPDATE_CHILD_DETAILS"; payload: Partial<ChildDetails> }
   | { type: "UPLOAD_CHILD_IMAGE"; payload: string }
   | { type: "REMOVE_CHILD_IMAGE" }
-  | { type: "UPDATE_STORY_IDEA"; payload: Partial<StoryIdea> }
   | { type: "ADD_CHARACTER"; payload: Character }
   | { type: "REMOVE_CHARACTER"; payload: string }
   | { type: "UPDATE_BOOK_DETAILS"; payload: Partial<BookDetails> }
@@ -121,12 +118,7 @@ const initialState: BookFormState = {
     image: null,
     language: "English",
   },
-  storyIdea: {
-    idea: "",
-    characters: [],
-    setting: "",
-    moralLesson: "",
-  },
+
   bookDetails: {
     name: "",
     description: "",
@@ -199,22 +191,6 @@ function bookFormReducer(
         childDetails: { ...state.childDetails, image: null },
       };
 
-    case "UPDATE_STORY_IDEA":
-      return {
-        ...state,
-        storyIdea: { ...state.storyIdea, ...action.payload },
-      };
-
-    case "ADD_CHARACTER":
-      return {
-        ...state,
-        storyIdea: {
-          ...state.storyIdea,
-          characters: [...state.storyIdea.characters, action.payload],
-        },
-      };
-
-    case "REMOVE_CHARACTER":
       return {
         ...state,
         storyIdea: {
