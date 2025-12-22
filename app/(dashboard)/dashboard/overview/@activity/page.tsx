@@ -13,7 +13,6 @@ import { SortDirection } from "@/features/table/types/table.type";
 import { cn } from "@/lib/utils";
 import Link from "next/link";
 
-
 type OrderStatus = "Processing" | "Shipped" | "In Route" | "Delivered";
 
 type Order = {
@@ -94,7 +93,6 @@ const DUMMY_ORDERS: Order[] = [
   },
 ];
 
-
 const tableHeader: TableHeaderConfig[] = [
   { key: "userName", label: "User Name", sortable: true },
   { key: "email", label: "Email" },
@@ -103,7 +101,6 @@ const tableHeader: TableHeaderConfig[] = [
   { key: "shipping", label: "Shipping" },
   { key: "status", label: "Status", sortable: true },
 ];
-
 
 function filterOrders(orders: Order[], query: SearchParams) {
   if (!query.q) return orders;
@@ -116,11 +113,7 @@ function filterOrders(orders: Order[], query: SearchParams) {
   );
 }
 
-function sortOrders(
-  orders: Order[],
-  sortField: string,
-  sortDirection: string
-) {
+function sortOrders(orders: Order[], sortField: string, sortDirection: string) {
   if (!sortField || !sortDirection) return orders;
 
   return [...orders].sort((a, b) => {
@@ -152,7 +145,6 @@ function calculateMeta(total: number, page: number, limit: number): Meta {
   };
 }
 
-
 function StatusBadge({ status }: { status: OrderStatus }) {
   const styles: Record<OrderStatus, string> = {
     Processing: "bg-yellow-100 text-yellow-700 border border-yellow-300",
@@ -173,11 +165,11 @@ function StatusBadge({ status }: { status: OrderStatus }) {
   );
 }
 
-const ActivityPage =  async ({
+const ActivityPage = async ({
   searchParams,
 }: {
   searchParams: Promise<SearchParams>;
-}) =>{
+}) => {
   const query = await searchParams;
 
   const page = parseInt(query.page || "1", 10);
@@ -241,7 +233,7 @@ const ActivityPage =  async ({
                   </TableBodyItem>
                   <TableBodyItem>
                     <Link
-                      href={`/order-management/${order.id}`}
+                      href={`/dashboard/order-management/${order.id}`}
                       className="text-primary-500 hover:underline text-sm"
                     >
                       View Details
@@ -261,5 +253,5 @@ const ActivityPage =  async ({
       </div>
     </TableProvider>
   );
-}
+};
 export default ActivityPage;

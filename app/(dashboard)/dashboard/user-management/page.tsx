@@ -300,7 +300,7 @@ export default async function UserTable({
                 </TableBodyItem>
                 <TableBodyItem>
                   <Link
-                    href={`/order-management/${user.id}`}
+                    href={`/dashboard/user-management/${user.id}`}
                     className="text-blue-600 hover:underline"
                   >
                     View Profile
