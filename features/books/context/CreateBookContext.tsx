@@ -111,8 +111,8 @@ type BookFormAction =
   | { type: "RESET_FORM" };
 
 const initialState: BookFormState = {
-  currentStep: "child_details",
-  visitedSteps: new Set(["child_details"]),
+  currentStep: "welcome",
+  visitedSteps: new Set(["welcome"]),
   childDetails: {
     name: "",
     age: 5,
