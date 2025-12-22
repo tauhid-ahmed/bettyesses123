@@ -185,22 +185,6 @@ function bookFormReducer(
         childDetails: { ...state.childDetails, image: action.payload },
       };
 
-    case "REMOVE_CHILD_IMAGE":
-      return {
-        ...state,
-        childDetails: { ...state.childDetails, image: null },
-      };
-
-      return {
-        ...state,
-        storyIdea: {
-          ...state.storyIdea,
-          characters: state.storyIdea.characters.filter(
-            (c) => c.id !== action.payload
-          ),
-        },
-      };
-
     case "UPDATE_BOOK_DETAILS":
       return {
         ...state,
