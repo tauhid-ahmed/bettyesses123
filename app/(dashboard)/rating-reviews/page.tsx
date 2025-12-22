@@ -2,7 +2,7 @@
 
 "use client";
 import { useState } from "react";
-import { Star, Users, Trash2, Eye,  } from "lucide-react";
+import { Star, Users, Trash2, Eye } from "lucide-react";
 
 // -------------------- Types --------------------
 type Review = {
@@ -519,9 +519,7 @@ export default function ReviewsPage() {
 
   // Actions
   const handleDelete = (id: string) => {
-
-      setReviews(reviews.filter((r) => r.id !== id));
-
+    setReviews(reviews.filter((r) => r.id !== id));
   };
 
   const handleTogglePublic = (id: string) => {
