@@ -3,6 +3,8 @@
 import { Plus } from "lucide-react";
 import Link from "next/link";
 import { useState } from "react";
+import { toast } from "sonner";
+import { isatty } from "tty";
 
 export default function PromoCodesDashboard() {
   const [ongoingCodes] = useState([
@@ -94,9 +96,7 @@ export default function PromoCodesDashboard() {
                 Edit
               </Link>
 
-              <button className="flex-1 bg-pink-700 hover:bg-red-600 text-white py-3 rounded-lg transition-colors">
-                Stop This Promo Code
-              </button>
+              <DisablePromoCode />
             </div>
           </div>
         ))}
@@ -137,7 +137,10 @@ export default function PromoCodesDashboard() {
                 </div>
               </div>
 
-              <button className="w-full bg-[#73b7ff] hover:bg-blue-500 text-white py-3 rounded-lg mt-6 transition-colors">
+              <button
+                onClick={() => toast.success("Sending promo code")}
+                className="w-full bg-[#73b7ff] hover:bg-blue-500 text-white py-3 rounded-lg mt-6 transition-colors"
+              >
                 Send This Promo Code
               </button>
             </div>
@@ -145,5 +148,18 @@ export default function PromoCodesDashboard() {
         </div>
       </div>
     </div>
+  );
+}
+
+function DisablePromoCode() {
+  const [isDisabled, setIsDisabled] = useState(false);
+  return (
+    <button
+      disabled={isDisabled}
+      onClick={() => setIsDisabled((isDisabled) => !isDisabled)}
+      className="flex-1 bg-pink-700 hover:bg-red-600 text-white py-3 rounded-lg transition-colors"
+    >
+      Stop This Promo Code
+    </button>
   );
 }
