@@ -20,8 +20,8 @@ function Footer() {
       title: "More Information",
       links: [
         { name: "About Us", href: "/about-us" },
-        { name: "Terms & Condition", href: "/terms-and-condition" },
-        { name: "Privacy Policy", href: "/privacy-and-policy" },
+        { name: "Terms & Condition", href: "/terms-and-conditions" },
+        { name: "Privacy Policy", href: "/privacy-policy" },
       ],
     },
     contact: {
