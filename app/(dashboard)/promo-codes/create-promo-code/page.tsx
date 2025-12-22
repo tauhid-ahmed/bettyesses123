@@ -43,9 +43,7 @@ export default function CreatePromoCodeForm() {
     toast.success("Promo code created successfully.");
   };
 
-  const handleCancel = () => {
-    console.log("Form cancelled");
-  };
+
 
   return (
     <div className=" bg-white p-4 sm:p-6 lg:p-8">
