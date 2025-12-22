@@ -3,8 +3,16 @@
 import { Plus } from "lucide-react";
 import Link from "next/link";
 import { useState } from "react";
+import { toast } from "sonner";
 
 export default function PromoCodesDashboard() {
+  const [disabledIds, setDisabledIds] = useState<number[]>([]);
+
+  const stopPromoCodes = (id: number) => {
+    setDisabledIds((prev) => [...prev, id]);
+    toast.success("Promo code has been stopped successfully.");
+  };
+
   const [ongoingCodes] = useState([
     {
       id: 1,
@@ -94,8 +102,19 @@ export default function PromoCodesDashboard() {
                 Edit
               </Link>
 
-              <button className="flex-1 bg-pink-700 hover:bg-red-600 text-white py-3 rounded-lg transition-colors">
-                Stop This Promo Code
+              <button
+                onClick={() => stopPromoCodes(promo.id)}
+                disabled={disabledIds.includes(promo.id)}
+                className={`flex-1 py-3 rounded-lg transition-colors text-white
+    ${
+      disabledIds.includes(promo.id)
+        ? "bg-gray-400 cursor-not-allowed"
+        : "bg-pink-700 hover:bg-red-600"
+    }`}
+              >
+                {disabledIds.includes(promo.id)
+                  ? "Stopped"
+                  : "Stop This Promo Code"}
               </button>
             </div>
           </div>
@@ -137,7 +156,10 @@ export default function PromoCodesDashboard() {
                 </div>
               </div>
 
-              <button className="w-full bg-[#73b7ff] hover:bg-blue-500 text-white py-3 rounded-lg mt-6 transition-colors">
+              <button
+                onClick={() => toast.success("Promo code sent successfully.")}
+                className="w-full bg-[#73b7ff] hover:bg-blue-500 text-white py-3 rounded-lg mt-6 transition-colors"
+              >
                 Send This Promo Code
               </button>
             </div>

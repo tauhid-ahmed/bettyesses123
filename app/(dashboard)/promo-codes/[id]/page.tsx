@@ -4,6 +4,7 @@
 import { useParams } from "next/navigation";
 import { useEffect, useState } from "react";
 import { useForm, SubmitHandler, Controller } from "react-hook-form";
+import { toast } from "sonner";
 
 type Promo = {
   id: number;
@@ -181,6 +182,8 @@ export default function EditPromoCodePage() {
 
         <div className="pt-4">
           <button
+
+          onClick={() => toast.success("Promo code updated successfully.")}
             type="submit"
             className="w-full px-6 py-3 bg-blue-400 hover:bg-blue-500 text-white rounded-lg transition-colors font-medium"
           >
