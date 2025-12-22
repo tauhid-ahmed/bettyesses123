@@ -13,7 +13,6 @@ import { SortDirection } from "@/features/table/types/table.type";
 import { cn } from "@/lib/utils";
 import Link from "next/link";
 
-
 type OrderStatus = "Processing" | "Shipped" | "In Route" | "Delivered";
 
 type Order = {
@@ -45,7 +44,6 @@ type TableHeaderConfig = {
   label: string;
   sortable?: boolean;
 };
-
 
 const DUMMY_ORDERS: Order[] = [
   {
@@ -185,7 +183,6 @@ const DUMMY_ORDERS: Order[] = [
   },
 ];
 
-
 const tableHeader: TableHeaderConfig[] = [
   { key: "userName", label: "User Name", sortable: true },
   { key: "email", label: "Email" },
@@ -194,7 +191,6 @@ const tableHeader: TableHeaderConfig[] = [
   { key: "orderId", label: "Order ID" },
   { key: "status", label: "Status", sortable: true },
 ];
-
 
 function filterOrders(orders: Order[], query: SearchParams) {
   if (!query.q) return orders;
@@ -242,7 +238,6 @@ function calculateMeta(total: number, page: number, limit: number): Meta {
   };
 }
 
-
 function StatusBadge({ status }: { status: OrderStatus }) {
   const styles: Record<OrderStatus, string> = {
     Processing: "bg-yellow-100 text-[#FFBB00] border-[#FFBB00] border",
@@ -262,7 +257,6 @@ function StatusBadge({ status }: { status: OrderStatus }) {
     </span>
   );
 }
-
 
 export default async function OrderManagementTable({
   searchParams,
@@ -328,7 +322,7 @@ export default async function OrderManagementTable({
                   </TableBodyItem>
                   <TableBodyItem>
                     <Link
-                      href={`/order-management/${order.id}`}
+                      href={`/dashboard/order-management/${order.id}`}
                       className="text-blue-600 hover:underline text-sm"
                     >
                       View Details
