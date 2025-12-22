@@ -22,9 +22,7 @@ import {
 } from "@/components/ui/select";
 import { usePersonalizeBook } from "../context/PersonalizeBookContext";
 import { ArrowRight } from "lucide-react";
-import Heading from "@/components/Heading";
 import Section from "@/components/Section";
-import Container from "@/components/Container";
 
 const formSchema = z.object({
   childName: z.string().min(1, "Child's name is required"),
@@ -83,7 +81,9 @@ export default function PersonalizeBookForm() {
               name="childName"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel className="text-gray-700">Child&apos;s Name</FormLabel>
+                  <FormLabel className="text-gray-700">
+                    Child&apos;s Name
+                  </FormLabel>
                   <FormControl>
                     <Input placeholder="Name" {...field} className="bg-white" />
                   </FormControl>
