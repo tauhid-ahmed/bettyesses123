@@ -2,7 +2,7 @@
 
 "use client";
 import { useState } from "react";
-import { Star, Users, Trash2, Eye, HandHeart } from "lucide-react";
+import { Star, Users, Trash2, Eye,  } from "lucide-react";
 
 // -------------------- Types --------------------
 type Review = {

@@ -57,7 +57,6 @@ const EditPrivacyPolicy = ({ type }: EditPrivacyPolicyProps) => {
       return [...prev, policyData];
     });
 
-    // reset form edit mode
     setEditingId(null);
     setTitle("");
     setPolicyNo("");
