@@ -2,8 +2,9 @@ import { cn } from "@/lib/utils";
 import Heading from "./Heading";
 import Container from "./Container";
 import HeadingReveal from "./HeadingReveal";
-import { DiagonalWipeReveal, DoubleWipeReveal, WipeReveal } from "./Animations";
+import { DiagonalWipeReveal } from "./Animations";
 import { DescriptionChars } from "./TextAnimation";
+import { AlignLeft } from "lucide-react";
 
 type SectionProps = {
   eyebrow?: React.ReactNode;
@@ -12,6 +13,7 @@ type SectionProps = {
   padding?: "none" | "sm" | "md" | "lg";
   children: React.ReactNode;
   className?: string;
+  titleAlign?: "center" | "left";
 };
 
 export default function Section({
@@ -21,6 +23,7 @@ export default function Section({
   description,
   padding = "lg",
   className,
+  titleAlign = "center",
 }: SectionProps) {
   return (
     <section
@@ -36,7 +39,7 @@ export default function Section({
     >
       <Container className="space-y-4 text-center">
         {eyebrow && <Eyebrow>{eyebrow}</Eyebrow>}
-        {title && <Title>{title}</Title>}
+        {title && <Title align={titleAlign}>{title}</Title>}
         {description && <Description>{description}</Description>}
       </Container>
       <>{children}</>
@@ -54,13 +57,16 @@ function Eyebrow({ children }: React.PropsWithChildren) {
   );
 }
 
-function Title({ children }: React.PropsWithChildren) {
+function Title({
+  children,
+  align,
+}: { align: "center" | "left" } & React.PropsWithChildren) {
   return (
     <HeadingReveal>
       <Heading
         as="h2"
-        size="h1"
-        align="center"
+        size={align && align === "left" ? "h2" : "h3"}
+        align={align}
         className="text-gray-800 tracking-tight"
       >
         {children}

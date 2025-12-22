@@ -169,3 +169,16 @@ export default function PromoCodesDashboard() {
     </div>
   );
 }
+
+function DisablePromoCode() {
+  const [isDisabled, setIsDisabled] = useState(false);
+  return (
+    <button
+      disabled={isDisabled}
+      onClick={() => setIsDisabled((isDisabled) => !isDisabled)}
+      className="flex-1 bg-pink-700 hover:bg-red-600 text-white py-3 rounded-lg transition-colors"
+    >
+      Stop This Promo Code
+    </button>
+  );
+}
