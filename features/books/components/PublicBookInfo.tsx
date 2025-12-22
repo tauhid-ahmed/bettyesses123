@@ -1,7 +1,6 @@
 import Heading from "@/components/Heading";
-import { Button } from "@/components/ui/button";
-import { personalizeBookPath } from "@/paths";
-import Link from "next/link";
+import AddToCart from "@/features/cart/components/AddToCart";
+import { StaticImageData } from "next/image";
 
 type Props = {
   title: string;
@@ -12,6 +11,7 @@ type Props = {
   discount: number;
   originalPrice: number;
   id: string;
+  image: string;
 };
 
 export default function PublicBookInfo({
@@ -23,6 +23,7 @@ export default function PublicBookInfo({
   discount,
   originalPrice,
   id,
+  image,
 }: Props) {
   return (
     <div className="h-full grid items-center">
@@ -48,9 +49,7 @@ export default function PublicBookInfo({
             </span>
           </div>
         </div>
-        <Button size="lg" className="primary-gradient w-full" asChild>
-          <Link href={personalizeBookPath(id)}>Personalize This Book</Link>
-        </Button>
+        <AddToCart id={id} product={{ id, title, price, imageUrl: image }} />
       </div>
     </div>
   );

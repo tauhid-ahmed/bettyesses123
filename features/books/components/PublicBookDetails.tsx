@@ -43,6 +43,7 @@ export default function PublicBookDetails({ id }: { id: string }) {
             discount={bookInfo.discount}
             originalPrice={bookInfo.originalPrice}
             id={id}
+            image={"/books.webp"}
           />
         </div>
       </Container>

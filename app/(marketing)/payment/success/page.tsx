@@ -1,9 +1,10 @@
 "use client";
 
-import React, { useState } from "react";
-import { Mail, Home, Download, CheckCircle } from "lucide-react";
-
-// ==================== COMPONENTS ====================
+import { useState } from "react";
+import { Mail, Home, Download } from "lucide-react";
+import Container from "@/components/Container";
+import { Button } from "@/components/ui/button";
+import Heading from "@/components/Heading";
 
 function PaymentSuccessPage({ orderId = "123456ZX" }) {
   const [email, setEmail] = useState<string>("");
@@ -19,22 +20,18 @@ function PaymentSuccessPage({ orderId = "123456ZX" }) {
 
   const handleDownloadReceipt = (): void => {
     console.log("Downloading receipt...");
-    // Add download logic here
   };
 
   const handleBackToHome = (): void => {
     console.log("Navigating to home...");
-    // Add navigation logic here
   };
 
   return (
-    <div className="min-h-screen bg-linear-to-br from-purple-50 via-blue-50 to-pink-50 flex items-center justify-center p-4">
-      <div className="max-w-md w-full">
-        {/* Success Card */}
-        <div className="bg-white rounded-3xl shadow-2xl p-8 text-center">
-          {/* Gift Image */}
-          <div className="mb-6 flex justify-center">
-            <div className="w-64 h-48 rounded-2xl overflow-hidden shadow-lg">
+    <div className="min-h-[90vh] bg-primary-100/90 flex items-center justify-center p-4">
+      <Container size="md">
+        <div className="flex flex-col items-center">
+          <div className="mb-8 flex justify-center">
+            <div className="w-64 h-48 rounded-2xl overflow-hidden border border-gray-100">
               <img
                 src="https://images.unsplash.com/photo-1513885535751-8b9238bd345a?w=500&h=400&fit=crop"
                 alt="Gift boxes"
@@ -42,95 +39,72 @@ function PaymentSuccessPage({ orderId = "123456ZX" }) {
               />
             </div>
           </div>
-
-          {/* Success Icon */}
-          <div className="mb-4 flex justify-center">
-            <div className="w-16 h-16 bg-linear-to-br from-green-400 to-emerald-500 rounded-full flex items-center justify-center shadow-lg">
-              <CheckCircle className="w-10 h-10 text-white" />
-            </div>
-          </div>
-
-          {/* Title */}
-          <h1 className="text-3xl font-bold text-gray-900 mb-3">
+          <Heading
+            as="h1"
+            size="h4"
+            className="text-3xl font-bold text-gray-900 mb-2"
+          >
             Payment Successful
-          </h1>
+          </Heading>
 
-          {/* Order ID */}
           <p className="text-gray-600 mb-8">
             Your Order ID:{" "}
             <span className="font-semibold text-gray-900">{orderId}</span>
           </p>
 
-          {/* Email Section */}
-          <div className="bg-linear-to-br from-purple-50 to-blue-50 rounded-2xl p-6 mb-6 border border-purple-100">
+          <div className="bg-primary-100 rounded-2xl p-6 mb-6 border border-primary-500">
             <p className="text-sm text-gray-700 mb-4 text-left font-medium">
               Want the PDF Copy? Enter your email, and we will mail you the book
             </p>
 
-            <div className="flex gap-2">
-              <div className="flex-1 relative">
+            <div className="flex flex-col sm:flex-row flex-wrap items-center gap-3">
+              <div className="flex-1 w-full sm:flex-4 flex items-center relative">
                 <Mail className="absolute left-3 top-1/2 transform -translate-y-1/2 w-5 h-5 text-gray-400" />
                 <input
                   type="email"
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
                   placeholder="Email"
-                  className="w-full pl-10 pr-4 py-3 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent bg-white"
+                  className="w-full pl-10 pr-4 py-3 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent bg-primary-200 transition"
                 />
               </div>
-              <button
+              <Button
                 onClick={handleSendBook}
-                className="px-6 py-3 bg-linear-to-r from-indigo-600 to-purple-600 text-white rounded-xl hover:from-indigo-700 hover:to-purple-700 transition font-medium shadow-md hover:shadow-lg"
+                className="primary-gradient w-full sm:w-auto flex-1"
               >
                 Send Book
-              </button>
+              </Button>
             </div>
 
             {isEmailSent && (
-              <div className="mt-3 p-3 bg-green-50 border border-green-200 rounded-lg">
-                <p className="text-sm text-green-700 font-medium">
+              <div className="mt-4 p-3 bg-emerald-50 border border-emerald-200 rounded-xl">
+                <p className="text-sm text-emerald-700 font-medium">
                   ✓ Email sent successfully! Check your inbox.
                 </p>
               </div>
             )}
           </div>
 
-          {/* Action Buttons */}
-          <div className="flex gap-3">
-            <button
+          <div className="flex *:flex-1 flex-wrap gap-3 justify-center items-center">
+            <Button
               onClick={handleBackToHome}
-              className="flex-1 py-3 px-4 border-2 border-indigo-600 text-indigo-600 rounded-xl hover:bg-indigo-50 transition font-medium flex items-center justify-center gap-2"
+              variant="outline"
+              className="text-primary-500 border-primary-500! px-6! hover:text-primary-500"
             >
-              <Home className="w-5 h-5" />
+              <Home size="16" className="size-4!" />
               Back To Home
-            </button>
-            <button
-              onClick={handleDownloadReceipt}
-              className="flex-1 py-3 px-4 bg-linear-to-r from-indigo-600 to-purple-600 text-white rounded-xl hover:from-indigo-700 hover:to-purple-700 transition font-medium flex items-center justify-center gap-2 shadow-md hover:shadow-lg"
-            >
-              <Download className="w-5 h-5" />
+            </Button>
+            <Button onClick={handleDownloadReceipt}>
+              <Download size="16" className="size-4!" />
               Download Receipt
-            </button>
+            </Button>
           </div>
         </div>
-
-        {/* Additional Info */}
-        <div className="mt-6 text-center">
-          <p className="text-sm text-gray-600">
-            Need help?{" "}
-            <span className="text-indigo-600 font-semibold cursor-pointer hover:text-indigo-700">
-              Contact Support
-            </span>
-          </p>
-        </div>
-      </div>
+      </Container>
     </div>
   );
 }
 
-// ==================== MAIN APP ====================
-function App() {
+export default function PaymentSuccess() {
   return <PaymentSuccessPage orderId="123456ZX" />;
 }
-
-export default App;
