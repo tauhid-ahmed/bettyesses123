@@ -96,7 +96,7 @@ export default function PromoCodesDashboard() {
 
             <div className="flex flex-col sm:flex-row gap-3 mt-6">
               <Link
-                href={`/promo-codes/${promo.id}`}
+                href={`/dashboard/promo-codes/${promo.id}`}
                 className="flex-1 bg-[#73b7ff] hover:bg-blue-500 text-white py-3 rounded-lg transition-colors text-center"
               >
                 Edit
