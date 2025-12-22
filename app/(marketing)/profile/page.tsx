@@ -16,6 +16,8 @@ import {
 } from "@/components/ui/select";
 import { Card, CardContent } from "@/components/ui/card";
 import { User, MapPin } from "lucide-react";
+import Container from "@/components/Container";
+import Section from "@/components/Section";
 
 // Zod Schema for Profile Form
 const profileSchema = z
@@ -162,8 +164,8 @@ const ProfileForm: React.FC = () => {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-indigo-50 via-purple-50 to-pink-50 p-4 md:p-8">
-      <div className="max-w-6xl mx-auto">
+    <Section padding="sm">
+      <Container>
         <h1 className="text-3xl font-bold text-gray-800 mb-2">My Profile</h1>
         <p className="text-gray-600 mb-8">
           Update profile & personal details whenever you're ready.
@@ -171,7 +173,7 @@ const ProfileForm: React.FC = () => {
 
         <div className="grid md:grid-cols-2 gap-6">
           {/* Edit Profile Card */}
-          <Card className="bg-white shadow-lg">
+          <Card className="bg-primary-100/90 shadow-lg">
             <CardContent className="p-6">
               <h2 className="text-xl font-semibold mb-6 flex items-center gap-2">
                 <User className="w-5 h-5" />
@@ -284,7 +286,7 @@ const ProfileForm: React.FC = () => {
               </div>
 
               {/* Action Buttons */}
-              <div className="flex gap-3 mt-6">
+              <div className="flex flex-wrap gap-3 mt-6">
                 <Button
                   type="button"
                   variant="outline"
@@ -307,7 +309,7 @@ const ProfileForm: React.FC = () => {
           </Card>
 
           {/* Shipping Address Card */}
-          <Card className="bg-white shadow-lg">
+          <Card className="bg-primary-100">
             <CardContent className="p-6">
               <h2 className="text-xl font-semibold mb-6 flex items-center gap-2">
                 <MapPin className="w-5 h-5" />
@@ -342,7 +344,7 @@ const ProfileForm: React.FC = () => {
               </div>
 
               {/* First & Last Name */}
-              <div className="grid grid-cols-2 gap-4 mb-4">
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-4">
                 <div className="space-y-2">
                   <Label htmlFor="firstName">First name</Label>
                   <Input
@@ -416,7 +418,7 @@ const ProfileForm: React.FC = () => {
               </div>
 
               {/* City, State, Code */}
-              <div className="grid grid-cols-3 gap-3 mb-4">
+              <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 mb-4">
                 <div className="space-y-2">
                   <Label htmlFor="city">City</Label>
                   <Input
@@ -472,7 +474,7 @@ const ProfileForm: React.FC = () => {
               </div>
 
               {/* Action Buttons */}
-              <div className="flex gap-3 mt-6">
+              <div className="flex flex-wrap gap-3 mt-6">
                 <Button type="button" variant="outline" className="flex-1">
                   Add New Address
                 </Button>
@@ -488,8 +490,8 @@ const ProfileForm: React.FC = () => {
             </CardContent>
           </Card>
         </div>
-      </div>
-    </div>
+      </Container>
+    </Section>
   );
 };
 

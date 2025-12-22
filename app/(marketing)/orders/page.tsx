@@ -12,6 +12,7 @@ import {
   Mail,
   Phone,
 } from "lucide-react";
+import { Button } from "@/components/ui/button";
 
 // ==================== TYPES ====================
 type OrderStatus = "Processed" | "Shipped" | "En Route" | "Arrived";
@@ -122,7 +123,7 @@ interface TooltipProps {
   text: string;
 }
 
-const Tooltip: React.FC<TooltipProps> = ({ children, text }) => {
+function Tooltip({ children, text }: TooltipProps) {
   const [show, setShow] = useState(false);
 
   return (
@@ -143,16 +144,16 @@ const Tooltip: React.FC<TooltipProps> = ({ children, text }) => {
       )}
     </div>
   );
-};
+}
 
 // Order Card Component
-const OrderCard: React.FC<{ order: OrderItem }> = ({ order }) => {
+function OrderCard({ order }: { order: OrderItem }) {
   const { setSelectedOrder, cancelOrder } = useOrders();
 
   return (
-    <div className="bg-white rounded-2xl shadow-sm border border-gray-100 p-6">
+    <div className="bg-primary-100 rounded-2xl border border-primary-500 p-6">
       <div className="flex gap-6">
-        <div className="w-28 h-36 bg-gray-100 rounded-xl overflow-hidden flex-shrink-0 shadow-sm">
+        <div className="w-28 h-36 bg-primary-100 rounded-xl overflow-hidden flex-shrink-0 shadow-sm">
           <img
             src={order.image}
             alt={order.title}
@@ -201,26 +202,27 @@ const OrderCard: React.FC<{ order: OrderItem }> = ({ order }) => {
                   Cancel Order
                 </button>
               </Tooltip>
-              <button
+              <Button
                 onClick={() => setSelectedOrder(order)}
-                className="px-5 py-2.5 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700 transition text-sm font-medium"
+                className="primary-gradient"
+                size="lg"
               >
                 Track Order
-              </button>
+              </Button>
             </div>
           </div>
         </div>
       </div>
     </div>
   );
-};
+}
 
 // Order List Component
 const OrderList: React.FC = () => {
   const { orders } = useOrders();
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-indigo-50 via-purple-50 to-pink-50 py-12">
+    <div className="min-h-screen bg-linear-to-br from-indigo-50 via-purple-50 to-pink-50 py-12">
       <div className="max-w-4xl mx-auto px-6">
         <div className="mb-8">
           <h1 className="text-3xl font-bold text-gray-900 mb-2">My Order</h1>
@@ -265,7 +267,7 @@ const ProgressStep: React.FC<ProgressStepProps> = ({
       <div
         className={`w-20 h-20 rounded-full flex items-center justify-center mb-3 transition-all shadow-lg ${
           isActive
-            ? "bg-gradient-to-br from-indigo-500 to-purple-600"
+            ? "bg-linear-to-br from-indigo-500 to-purple-600"
             : "bg-gray-200"
         }`}
       >
@@ -285,7 +287,7 @@ const ProgressStep: React.FC<ProgressStepProps> = ({
           <div
             className={`h-full ${
               step < currentStep
-                ? "bg-gradient-to-r from-indigo-500 to-purple-600"
+                ? "bg-linear-to-r from-indigo-500 to-purple-600"
                 : "bg-gray-200"
             }`}
           ></div>
@@ -323,9 +325,9 @@ const OrderDetails: React.FC = () => {
 
         <div className="p-8">
           {/* Order Summary */}
-          <div className="bg-gradient-to-br from-indigo-50 via-purple-50 to-pink-50 rounded-2xl p-6 mb-10 border border-indigo-100">
+          <div className="bg-linear-to-br from-indigo-50 via-purple-50 to-pink-50 rounded-2xl p-6 mb-10 border border-indigo-100">
             <div className="flex gap-6">
-              <div className="w-32 h-40 bg-white rounded-xl overflow-hidden flex-shrink-0 shadow-md">
+              <div className="w-32 h-40 bg-white rounded-xl overflow-hidden shrink-0 shadow-md">
                 <img
                   src={selectedOrder.image}
                   alt={selectedOrder.title}
