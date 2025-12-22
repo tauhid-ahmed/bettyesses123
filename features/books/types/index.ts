@@ -40,6 +40,7 @@ export type BookCardHorizontalProps = {
 };
 
 export type StepId =
+  | "welcome"
   | "child_details"
   | "story_idea"
   | "book_preview"

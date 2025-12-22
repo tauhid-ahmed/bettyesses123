@@ -3,6 +3,32 @@ import { useBookForm } from "../context/CreateBookContext";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { ChildDetails, childDetailsSchema } from "../schema";
 import { GENDERS, LANGUAGES } from "../constant";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
+import { Gender, Language } from "../types";
+
+const ages = Array.from({ length: 13 }, (_, i) => i + 1);
+const months = [
+  "January",
+  "February",
+  "March",
+  "April",
+  "May",
+  "June",
+  "July",
+  "August",
+  "September",
+  "October",
+  "November",
+  "December",
+];
 
 export default function ChildDetailsStep() {
   const { state, dispatch } = useBookForm();
@@ -11,10 +37,16 @@ export default function ChildDetailsStep() {
     handleSubmit,
     formState: { errors },
     setValue,
+    watch,
   } = useForm<ChildDetails>({
     resolver: zodResolver(childDetailsSchema),
     defaultValues: state.childDetails,
   });
+
+  const selectedAge = watch("age");
+  const selectedGender = watch("gender");
+  const selectedBirthMonth = watch("birthMonth");
+  const selectedLanguage = watch("language");
 
   const onSubmit = (data: ChildDetails) => {
     dispatch({ type: "UPDATE_CHILD_DETAILS", payload: data });
@@ -38,13 +70,18 @@ export default function ChildDetailsStep() {
   return (
     <div className="max-w-2xl mx-auto p-6">
       <h2 className="text-2xl font-bold mb-6">Child Details</h2>
-      <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
+      <p className="text-gray-600 mb-6">
+        The book will be personalized with the information you provide
+      </p>
+      <div className="space-y-4">
         <div>
-          <label className="block text-sm font-medium mb-1">Name *</label>
-          <input
+          <label className="block text-sm font-medium mb-1">
+            Child's Name *
+          </label>
+          <Input
             {...register("name")}
-            className="w-full px-3 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500"
-            placeholder="Enter child's name"
+            className="w-full bg-white"
+            placeholder="Name"
           />
           {errors.name && (
             <p className="text-red-500 text-sm mt-1">{errors.name.message}</p>
@@ -53,11 +90,21 @@ export default function ChildDetailsStep() {
 
         <div>
           <label className="block text-sm font-medium mb-1">Age *</label>
-          <input
-            type="number"
-            {...register("age", { valueAsNumber: true })}
-            className="w-full px-3 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500"
-          />
+          <Select
+            onValueChange={(value) => setValue("age", Number(value))}
+            value={selectedAge?.toString()}
+          >
+            <SelectTrigger className="bg-white w-full">
+              <SelectValue placeholder="Select age" />
+            </SelectTrigger>
+            <SelectContent>
+              {ages.map((age) => (
+                <SelectItem key={age} value={age.toString()}>
+                  {age}
+                </SelectItem>
+              ))}
+            </SelectContent>
+          </Select>
           {errors.age && (
             <p className="text-red-500 text-sm mt-1">{errors.age.message}</p>
           )}
@@ -65,16 +112,21 @@ export default function ChildDetailsStep() {
 
         <div>
           <label className="block text-sm font-medium mb-1">Gender *</label>
-          <select
-            {...register("gender")}
-            className="w-full px-3 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500"
+          <Select
+            onValueChange={(value) => setValue("gender", value as Gender)}
+            value={selectedGender}
           >
-            {GENDERS.map((g) => (
-              <option key={g} value={g}>
-                {g}
-              </option>
-            ))}
-          </select>
+            <SelectTrigger className="bg-white w-full">
+              <SelectValue placeholder="Select gender" />
+            </SelectTrigger>
+            <SelectContent>
+              {GENDERS.map((g) => (
+                <SelectItem key={g} value={g}>
+                  {g}
+                </SelectItem>
+              ))}
+            </SelectContent>
+          </Select>
           {errors.gender && (
             <p className="text-red-500 text-sm mt-1">{errors.gender.message}</p>
           )}
@@ -82,13 +134,23 @@ export default function ChildDetailsStep() {
 
         <div>
           <label className="block text-sm font-medium mb-1">
-            Birth Month *
+            Select The Birth Month Of The Child *
           </label>
-          <input
-            type="month"
-            {...register("birthMonth")}
-            className="w-full px-3 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500"
-          />
+          <Select
+            onValueChange={(value) => setValue("birthMonth", value)}
+            value={selectedBirthMonth}
+          >
+            <SelectTrigger className="bg-white w-full">
+              <SelectValue placeholder="Select month" />
+            </SelectTrigger>
+            <SelectContent>
+              {months.map((month) => (
+                <SelectItem key={month} value={month.toLowerCase()}>
+                  {month}
+                </SelectItem>
+              ))}
+            </SelectContent>
+          </Select>
           {errors.birthMonth && (
             <p className="text-red-500 text-sm mt-1">
               {errors.birthMonth.message}
@@ -129,16 +191,21 @@ export default function ChildDetailsStep() {
 
         <div>
           <label className="block text-sm font-medium mb-1">Language *</label>
-          <select
-            {...register("language")}
-            className="w-full px-3 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500"
+          <Select
+            onValueChange={(value) => setValue("language", value as Language)}
+            value={selectedLanguage}
           >
-            {LANGUAGES.map((l) => (
-              <option key={l} value={l}>
-                {l}
-              </option>
-            ))}
-          </select>
+            <SelectTrigger className="bg-white w-full">
+              <SelectValue placeholder="Select language" />
+            </SelectTrigger>
+            <SelectContent>
+              {LANGUAGES.map((l) => (
+                <SelectItem key={l} value={l}>
+                  {l}
+                </SelectItem>
+              ))}
+            </SelectContent>
+          </Select>
           {errors.language && (
             <p className="text-red-500 text-sm mt-1">
               {errors.language.message}
@@ -146,13 +213,13 @@ export default function ChildDetailsStep() {
           )}
         </div>
 
-        <button
-          type="submit"
-          className="w-full bg-blue-500 text-white py-2 rounded-lg hover:bg-blue-600 transition"
+        <Button
+          onClick={handleSubmit(onSubmit)}
+          className="w-full bg-blue-500 hover:bg-blue-600 text-white rounded-lg"
         >
-          Next Step
-        </button>
-      </form>
+          Go To Next Step → Upload photo
+        </Button>
+      </div>
     </div>
   );
 }
