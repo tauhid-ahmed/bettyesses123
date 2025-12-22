@@ -45,7 +45,7 @@ const navItems = [
     children: [],
   },
   {
-    href: "/books",
+    href: "/book",
     name: "Books",
     icon: <Book />,
     children: [],
