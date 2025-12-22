@@ -3,6 +3,8 @@ import { useBookForm } from "../context/CreateBookContext";
 import { Pricing, pricingSchema } from "../schema";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { CURRENCIES } from "../constant";
+import Container from "@/components/Container";
+import { Button } from "@/components/ui/button";
 
 export default function PricingStep() {
   const { state, dispatch, canGoPrev } = useBookForm();
@@ -81,23 +83,24 @@ export default function PricingStep() {
           )}
         </div>
 
-        <div className="flex gap-2">
-          {canGoPrev && (
-            <button
-              type="button"
-              onClick={() => dispatch({ type: "PREV_STEP" })}
-              className="flex-1 bg-gray-300 text-gray-700 py-2 rounded-lg hover:bg-gray-400"
+        <Container size="xs">
+          <div className="flex gap-2 justify-center items-center mt-6 sm:*:flex-1">
+            {canGoPrev && (
+              <Button
+                onClick={() => dispatch({ type: "PREV_STEP" })}
+                variant="outline"
+              >
+                Previous
+              </Button>
+            )}
+            <Button
+              onClick={() => dispatch({ type: "NEXT_STEP" })}
+              className="primary-gradient"
             >
-              Previous
-            </button>
-          )}
-          <button
-            type="submit"
-            className="flex-1 bg-green-500 text-white py-2 rounded-lg hover:bg-green-600"
-          >
-            Complete Book Creation
-          </button>
-        </div>
+              Continue
+            </Button>
+          </div>
+        </Container>
       </form>
     </div>
   );

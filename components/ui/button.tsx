@@ -12,7 +12,7 @@ const buttonVariants = cva(
         default:
           "bg-primary-500 text-primary-foreground hover:bg-primary-600/90",
         destructive:
-          "bg-red-500 text-white hover:bg-danger-500/90 focus-visible:ring-danger-500/20",
+          "bg-danger-500 text-white hover:bg-danger-500/90 focus-visible:ring-danger-500/20",
         success:
           "bg-danger-600 text-white hover:bg-danger-600/90 focus-visible:ring-danger-600/20",
         outline:
