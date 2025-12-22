@@ -1,6 +1,5 @@
 import PageHeading from "@/components/PageHeading";
 import Pagination from "@/features/table/components/Pagination";
-import SearchField from "@/features/table/components/SearchField";
 import {
   Table,
   TableBody,
@@ -14,7 +13,6 @@ import { SortDirection } from "@/features/table/types/table.type";
 import { cn } from "@/lib/utils";
 import Link from "next/link";
 
-// -------------------- Types --------------------
 type UserTier = "FREE" | "PREMIUM";
 type UserRole = "USER" | "ADMIN" | "SUPER_ADMIN";
 type UserGender = "male" | "female" | "other" | null;
@@ -56,7 +54,7 @@ type TableHeaderConfig = {
   sortable?: boolean;
 };
 
-// -------------------- Dummy Data --------------------
+
 const DUMMY_USERS: User[] = [
   {
     id: "1",
@@ -138,18 +136,18 @@ const DUMMY_USERS: User[] = [
   },
 ];
 
-// -------------------- Table Header --------------------
+
 const tableHeader: TableHeaderConfig[] = [
   { key: "fullName", label: "Name", sortable: true },
   { key: "gender", label: "Gender", sortable: true },
   { key: "tier", label: "Plan", sortable: true },
 ];
 
-// -------------------- Helper Functions --------------------
+
 function filterUsers(users: User[], query: SearchParams): User[] {
   let filtered = [...users];
 
-  // Search filter
+
   if (query.q) {
     const searchTerm = query.q.toLowerCase();
     filtered = filtered.filter(
@@ -159,7 +157,6 @@ function filterUsers(users: User[], query: SearchParams): User[] {
     );
   }
 
-  // Tier filter
   if (query.tier && query.tier !== "all") {
     filtered = filtered.filter(
       (user) => user.tier === query.tier!.toUpperCase()
@@ -207,7 +204,7 @@ function calculateMeta(total: number, page: number, limit: number): Meta {
   };
 }
 
-// -------------------- Component --------------------
+
 export default async function RefundPage({
   searchParams,
 }: {
@@ -215,12 +212,11 @@ export default async function RefundPage({
 }) {
   const query = await searchParams;
 
-  // Parse parameters with defaults
   const page = parseInt(query.page || "1", 10);
   const limit = parseInt(query.limit || "10", 10);
   const [sortField = "", sortDirection = ""] = (query.sort || "").split(":");
 
-  // Process data
+
   const filteredUsers = filterUsers(DUMMY_USERS, query);
   const sortedUsers = sortUsers(filteredUsers, sortField, sortDirection);
   const paginatedUsers = paginateUsers(sortedUsers, page, limit);
@@ -270,17 +266,17 @@ export default async function RefundPage({
             ) : (
               paginatedUsers.map((user) => (
                 <TableRow key={user.id}>
-                  {/* Name Column */}
+          
                   <TableBodyItem>{user.fullName}</TableBodyItem>
 
-                  {/* Gender Column */}
+     
                   <TableBodyItem>
                     <span className="text-sm text-gray-900 capitalize">
                       {user.Profile?.gender || "N/A"}
                     </span>
                   </TableBodyItem>
 
-                  {/* Plan Column */}
+       
                   <TableBodyItem>
                     <span
                       className={cn(

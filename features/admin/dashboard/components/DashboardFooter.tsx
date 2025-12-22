@@ -1,12 +1,22 @@
+"use client";
+
 import { Button } from "@/components/ui/button";
 import { useSidebar } from "./SidebarProvider";
 import { LucideLogOut } from "lucide-react";
+import { useRouter } from "next/navigation";
 
 export default function DashboardFooter() {
   const { isExpanded } = useSidebar();
+  const router = useRouter();
+
+  const handleLogout = () => {
+    router.push("/");
+  };
+
   return (
     <div className="py-12 flex flex-col gap-4 justify-start w-full">
       <Button
+        onClick={handleLogout}
         className="bg-[#EEF6FF]"
         variant="ghost"
         size={!isExpanded ? "icon" : "lg"}

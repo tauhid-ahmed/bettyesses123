@@ -1,6 +1,5 @@
 import PageHeading from "@/components/PageHeading";
 import Pagination from "@/features/table/components/Pagination";
-import SearchField from "@/features/table/components/SearchField";
 import {
   Table,
   TableBody,
@@ -12,26 +11,16 @@ import {
 import { TableProvider } from "@/features/table/components/TableProvider";
 import { SortDirection } from "@/features/table/types/table.type";
 import { cn } from "@/lib/utils";
+import { Users } from "lucide-react";
+import Link from "next/link";
 
 // -------------------- Types --------------------
-type UserTier = "FREE" | "PREMIUM";
-type UserRole = "USER" | "ADMIN" | "SUPER_ADMIN";
-type UserGender = "male" | "female" | "other" | null;
-
 type User = {
   id: string;
-  fullName: string;
-  profilePic: string | null;
+  name: string;
   email: string;
-  phone: string | null;
-  role: UserRole;
-  status: string;
-  tier: UserTier;
-  emailVerified: boolean;
-  createdAt: string;
-  Profile: {
-    gender: UserGender;
-  } | null;
+  orderedBook: number;
+  ongoingOrder: "yes" | "no";
 };
 
 type Meta = {
@@ -46,155 +35,171 @@ type SearchParams = {
   limit?: string;
   sort?: string;
   q?: string;
-  tier?: "all" | "free" | "premium";
 };
 
 type TableHeaderConfig = {
-  key: keyof User | "gender";
+  key: keyof User;
   label: string;
   sortable?: boolean;
 };
 
-// -------------------- Dummy Data --------------------
+// -------------------- Dummy Data (From Image) --------------------
 const DUMMY_USERS: User[] = [
   {
     id: "1",
-    fullName: "John Doe",
-    profilePic: null,
-    email: "john.doe@example.com",
-    phone: "+1234567890",
-    role: "USER",
-    status: "active",
-    tier: "PREMIUM",
-    emailVerified: true,
-    createdAt: "2024-01-15T10:30:00Z",
-    Profile: { gender: "male" },
+    name: "Seema Badaya",
+    email: "null@gmail.com",
+    orderedBook: 2,
+    ongoingOrder: "yes",
   },
   {
     id: "2",
-    fullName: "Jane Smith",
-    profilePic: null,
-    email: "jane.smith@example.com",
-    phone: "+1234567891",
-    role: "ADMIN",
-    status: "active",
-    tier: "FREE",
-    emailVerified: true,
-    createdAt: "2024-02-20T14:45:00Z",
-    Profile: { gender: "female" },
+    name: "Al Muntakim",
+    email: "null@gmail.com",
+    orderedBook: 3,
+    ongoingOrder: "no",
   },
   {
     id: "3",
-    fullName: "Alice Johnson",
-    profilePic: null,
-    email: "alice.j@example.com",
-    phone: null,
-    role: "USER",
-    status: "active",
-    tier: "PREMIUM",
-    emailVerified: false,
-    createdAt: "2024-03-10T09:15:00Z",
-    Profile: { gender: "female" },
+    name: "Seema Badaya",
+    email: "null@gmail.com",
+    orderedBook: 0,
+    ongoingOrder: "no",
   },
   {
     id: "4",
-    fullName: "Bob Williams",
-    profilePic: null,
-    email: "bob.w@example.com",
-    phone: "+1234567892",
-    role: "SUPER_ADMIN",
-    status: "active",
-    tier: "PREMIUM",
-    emailVerified: true,
-    createdAt: "2024-01-05T08:00:00Z",
-    Profile: { gender: "male" },
+    name: "Al Muntakim",
+    email: "null@gmail.com",
+    orderedBook: 12,
+    ongoingOrder: "yes",
   },
   {
     id: "5",
-    fullName: "Carol Davis",
-    profilePic: null,
-    email: "carol.d@example.com",
-    phone: "+1234567893",
-    role: "USER",
-    status: "inactive",
-    tier: "FREE",
-    emailVerified: true,
-    createdAt: "2024-04-01T11:20:00Z",
-    Profile: null,
+    name: "Al Muntakim",
+    email: "null@gmail.com",
+    orderedBook: 12,
+    ongoingOrder: "no",
   },
   {
     id: "6",
-    fullName: "Carol Davis 3",
-    profilePic: null,
-    email: "carol.d@example.com",
-    phone: "+1234567893",
-    role: "USER",
-    status: "inactive",
-    tier: "FREE",
-    emailVerified: true,
-    createdAt: "2024-04-01T11:20:00Z",
-    Profile: null,
+    name: "Seema Badaya",
+    email: "null@gmail.com",
+    orderedBook: 2,
+    ongoingOrder: "yes",
+  },
+  {
+    id: "6",
+    name: "Seema Badaya",
+    email: "null@gmail.com",
+    orderedBook: 2,
+    ongoingOrder: "yes",
+  },
+  {
+    id: "6",
+    name: "Seema Badaya",
+    email: "null@gmail.com",
+    orderedBook: 2,
+    ongoingOrder: "yes",
+  },
+  {
+    id: "6",
+    name: "Seema Badaya",
+    email: "null@gmail.com",
+    orderedBook: 2,
+    ongoingOrder: "yes",
+  },
+  {
+    id: "6",
+    name: "Seema Badaya",
+    email: "null@gmail.com",
+    orderedBook: 2,
+    ongoingOrder: "yes",
+  },
+  {
+    id: "6",
+    name: "Seema Badaya",
+    email: "null@gmail.com",
+    orderedBook: 2,
+    ongoingOrder: "yes",
+  },
+  {
+    id: "6",
+    name: "Seema Badaya",
+    email: "null@gmail.com",
+    orderedBook: 2,
+    ongoingOrder: "yes",
+  },
+  {
+    id: "6",
+    name: "Seema Badaya",
+    email: "null@gmail.com",
+    orderedBook: 2,
+    ongoingOrder: "yes",
+  },
+  {
+    id: "6",
+    name: "Seema Badaya",
+    email: "null@gmail.com",
+    orderedBook: 2,
+    ongoingOrder: "yes",
+  },
+  {
+    id: "6",
+    name: "Seema Badaya",
+    email: "null@gmail.com",
+    orderedBook: 2,
+    ongoingOrder: "yes",
+  },
+  {
+    id: "6",
+    name: "Seema Badaya",
+    email: "null@gmail.com",
+    orderedBook: 2,
+    ongoingOrder: "yes",
+  },
+  {
+    id: "6",
+    name: "Seema Badaya",
+    email: "null@gmail.com",
+    orderedBook: 2,
+    ongoingOrder: "yes",
   },
 ];
 
 // -------------------- Table Header --------------------
 const tableHeader: TableHeaderConfig[] = [
-  { key: "fullName", label: "Name", sortable: true },
-  { key: "gender", label: "Gender", sortable: true },
-  { key: "tier", label: "Plan", sortable: true },
+  { key: "name", label: "User Name", sortable: true },
+  { key: "email", label: "Email", sortable: true },
+  { key: "orderedBook", label: "Ordered Book", sortable: true },
+  { key: "ongoingOrder", label: "Ongoing Order", sortable: true },
 ];
 
-// -------------------- Helper Functions --------------------
+// -------------------- Helpers --------------------
 function filterUsers(users: User[], query: SearchParams): User[] {
-  let filtered = [...users];
+  if (!query.q) return users;
 
-  // Search filter
-  if (query.q) {
-    const searchTerm = query.q.toLowerCase();
-    filtered = filtered.filter(
-      (user) =>
-        user.fullName.toLowerCase().includes(searchTerm) ||
-        user.email.toLowerCase().includes(searchTerm)
-    );
-  }
-
-  // Tier filter
-  if (query.tier && query.tier !== "all") {
-    filtered = filtered.filter(
-      (user) => user.tier === query.tier!.toUpperCase()
-    );
-  }
-
-  return filtered;
+  const q = query.q.toLowerCase();
+  return users.filter(
+    (u) => u.name.toLowerCase().includes(q) || u.email.toLowerCase().includes(q)
+  );
 }
 
-function sortUsers(
-  users: User[],
-  sortField: string,
-  sortDirection: string
-): User[] {
+function sortUsers(users: User[], sortField: string, sortDirection: string) {
   if (!sortField || !sortDirection) return users;
 
   return [...users].sort((a, b) => {
-    let comparison = 0;
+    const aVal = a[sortField as keyof User];
+    const bVal = b[sortField as keyof User];
 
-    if (sortField === "fullName") {
-      comparison = a.fullName.localeCompare(b.fullName);
-    } else if (sortField === "tier") {
-      comparison = a.tier.localeCompare(b.tier);
-    } else if (sortField === "gender") {
-      const genderA = a.Profile?.gender || "";
-      const genderB = b.Profile?.gender || "";
-      comparison = genderA.localeCompare(genderB);
-    }
-
-    return sortDirection === "asc" ? comparison : -comparison;
+    if (aVal < bVal) return sortDirection === "asc" ? -1 : 1;
+    if (aVal > bVal) return sortDirection === "asc" ? 1 : -1;
+    return 0;
   });
 }
 
-function paginateUsers(users: User[], page: number, limit: number): User[] {
-  const startIndex = (page - 1) * limit;
-  return users.slice(startIndex, startIndex + limit);
+function paginateUsers(users: User[], page: number, limit: number) {
+  const start = (page - 1) * limit;
+  return users.slice(start, start + limit);
 }
 
 function calculateMeta(total: number, page: number, limit: number): Meta {
@@ -214,12 +219,10 @@ export default async function UserTable({
 }) {
   const query = await searchParams;
 
-  // Parse parameters with defaults
   const page = parseInt(query.page || "1", 10);
-  const limit = parseInt(query.limit || "10", 10);
+  const limit = parseInt(query.limit || "15", 15);
   const [sortField = "", sortDirection = ""] = (query.sort || "").split(":");
 
-  // Process data
   const filteredUsers = filterUsers(DUMMY_USERS, query);
   const sortedUsers = sortUsers(filteredUsers, sortField, sortDirection);
   const paginatedUsers = paginateUsers(sortedUsers, page, limit);
@@ -227,74 +230,84 @@ export default async function UserTable({
 
   return (
     <TableProvider>
-      <div className="space-y-4 overflow-x-hidden">
+      <div className="mb-6">
+        <h1 className="text-[32px] font-medium text-dark-800 mb-3">
+          User Overview
+        </h1>
+
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+          <div className="bg-white rounded-lg shadow-sm p-6">
+            <div className="flex items-start justify-between">
+              <div>
+                <h2 className="text-4xl font-semibold text-gray-900 mb-2">
+                  2,20,000
+                </h2>
+                <p className="text-base text-gray-600">Total Users</p>
+              </div>
+              <div className="bg-blue-900 rounded-lg p-3">
+                <Users className="w-6 h-6 text-white" />
+              </div>
+            </div>
+          </div>
+
+          <div className="bg-white rounded-lg shadow-sm p-6">
+            <div className="flex items-start justify-between">
+              <div>
+                <h2 className="text-4xl font-semibold text-gray-900 mb-2">
+                  1000
+                </h2>
+                <p className="text-base text-gray-600">New User This Month</p>
+              </div>
+              <div className="bg-blue-900 rounded-lg p-3">
+                <Users className="w-6 h-6 text-white" />
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div className="space-y-4">
         <PageHeading
           title="User Management"
           query={query.q || ""}
-          placeholder="Search users..."
+          placeholder="Search"
         />
 
         <Table>
           <TableHeader>
             <TableRow>
-              {tableHeader.map(({ key, label, sortable = true }) => (
+              {tableHeader.map((h) => (
                 <TableHeaderItem
-                  key={key}
-                  prop={key}
+                  key={h.key}
+                  prop={h.key}
+                  label={h.label}
+                  sortable={h.sortable}
                   currentSort={sortField}
                   sortDirection={sortDirection as SortDirection}
-                  label={label}
-                  sortable={sortable}
                 />
               ))}
-              <th
-                className={cn(
-                  "w-full flex items-center gap-2 p-4! py-1 truncate font-medium text-white transition cursor-pointer no-underline"
-                )}
-              >
-                Action
-              </th>
+              <th className="p-4 text-white">Details</th>
             </TableRow>
           </TableHeader>
 
           <TableBody>
-            {paginatedUsers.length === 0 ? (
-              <TableRow>
-                <TableBodyItem colSpan={tableHeader.length + 1}>
-                  <div className="text-center py-8 text-gray-500">
-                    No users found
-                  </div>
+            {paginatedUsers.map((user) => (
+              <TableRow key={user.id}>
+                <TableBodyItem>{user.name}</TableBodyItem>
+                <TableBodyItem>{user.email}</TableBodyItem>
+                <TableBodyItem>{user.orderedBook}</TableBodyItem>
+                <TableBodyItem className="capitalize">
+                  {user.ongoingOrder}
+                </TableBodyItem>
+                <TableBodyItem>
+                  <Link
+                    href={`/order-management/${user.id}`}
+                    className="text-blue-600 hover:underline"
+                  >
+                    View Profile
+                  </Link>
                 </TableBodyItem>
               </TableRow>
-            ) : (
-              paginatedUsers.map((user) => (
-                <TableRow key={user.id}>
-                  {/* Name Column */}
-                  <TableBodyItem></TableBodyItem>
-
-                  {/* Gender Column */}
-                  <TableBodyItem>
-                    <span className="text-sm text-gray-900 capitalize">
-                      {user.Profile?.gender || "N/A"}
-                    </span>
-                  </TableBodyItem>
-
-                  {/* Plan Column */}
-                  <TableBodyItem>
-                    <span
-                      className={cn(
-                        "inline-flex items-center px-3 py-1 rounded-full text-sm font-medium"
-                        // user.tier === "PREMIUM"
-                        //   ? "bg-[#FE5975] text-pink-50"
-                        //   : "text-gray-600 bg-gray-100"
-                      )}
-                    >
-                      {user.tier === "PREMIUM" ? "Premium" : "Free"}
-                    </span>
-                  </TableBodyItem>
-                </TableRow>
-              ))
-            )}
+            ))}
           </TableBody>
         </Table>
 
