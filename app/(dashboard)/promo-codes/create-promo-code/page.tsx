@@ -3,6 +3,7 @@
 import { ChevronDown } from "lucide-react";
 import Link from "next/link";
 import { useState } from "react";
+import { toast } from "sonner";
 
 export default function CreatePromoCodeForm() {
   const [formData, setFormData] = useState({
@@ -39,6 +40,7 @@ export default function CreatePromoCodeForm() {
 
   const handleSubmit = () => {
     console.log("Form submitted:", formData);
+    toast.success("Promo code created successfully.");
   };
 
   const handleCancel = () => {
