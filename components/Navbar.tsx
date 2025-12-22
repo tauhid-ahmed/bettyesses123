@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { MouseEvent, useState } from "react";
 import { motion, AnimatePresence, Variants } from "motion/react";
 import Container from "./Container";
 import Logo from "./Logo";
@@ -9,6 +9,8 @@ import { Button } from "./ui/button";
 import { LucideShoppingBag, LucideMenu, LucideX } from "lucide-react";
 import { useScreenSize } from "@/hooks/useScreenSize";
 import Link from "next/link";
+import { cartPath } from "@/paths";
+import { CartButton } from "@/features/cart/components/CartButton";
 
 interface NavItem {
   name: string;
@@ -115,14 +117,8 @@ function DesktopNav() {
         ))}
       </ul>
       <div className="flex-1 flex justify-end items-center gap-3">
-        <Button
-          className="text-primary-500 hover:bg-transparent hover:opacity-80 hover:text-primary-500 transition-all"
-          variant="ghost"
-          size="icon-lg"
-          aria-label="Shopping bag"
-        >
-          <LucideShoppingBag className="w-5 h-5" />
-        </Button>
+        <CartButton />
+
         <Button className="primary-gradient font-medium" size="lg" asChild>
           <Link href="/signup">Sign up</Link>
         </Button>
@@ -160,14 +156,7 @@ function MobileNav({ isOpen, onOpenChange }: MobileNavProps) {
           <Logo className="h-14 object-contain" />
         </div>
         <div className="flex items-center gap-2">
-          <Button
-            className="text-primary-500 hover:bg-transparent hover:opacity-80 hover:text-primary-500 transition-all"
-            variant="ghost"
-            size="icon"
-            aria-label="Shopping bag"
-          >
-            <LucideShoppingBag className="w-5 h-5" />
-          </Button>
+          <CartButton />
 
           <Button
             variant="ghost"

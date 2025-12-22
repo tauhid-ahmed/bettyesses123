@@ -18,7 +18,6 @@ export type BooksCardVerticalProps = {
   href: string;
 };
 
-// Single horizontal book
 export type HorizontalBook = {
   id: string;
   title: string;
@@ -29,10 +28,8 @@ export type HorizontalBook = {
   href?: string;
 };
 
-// Array of horizontal books
 export type HorizontalBooks = HorizontalBook[];
 
-// Props for the BookCardHorizontal component
 export type BookCardHorizontalProps = {
   image: string;
   title: string;
@@ -41,3 +38,15 @@ export type BookCardHorizontalProps = {
   lessons: string;
   href: string;
 };
+
+export type StepId =
+  | "welcome"
+  | "child_details"
+  | "story_idea"
+  | "book_preview"
+  | "book_details"
+  | "pricing";
+
+export type Language = "English" | "Spanish" | "French";
+export type Currency = "USD" | "EUR" | "GBP";
+export type Gender = "Male" | "Female" | "Other";
