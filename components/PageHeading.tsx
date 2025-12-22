@@ -11,14 +11,16 @@ export default function PageHeading({
   title,
   query = "",
   placeholder = "",
-  showSearchBar= true
+  showSearchBar = true,
 }: Props) {
   return (
-    <div className="flex items-center justify-between print:hidden py-4">
-      <h1 className="text-xl md:text-2xl lg:text-3xl font-medium">{title}</h1>
-      { showSearchBar && 
+    <div className="flex items-center justify-between print:hidden pt-4">
+      <h1 className="text-xl md:text-2xl lg:text-[32px] font-medium text-[#000407]">
+        {title}
+      </h1>
+      {showSearchBar && (
         <SearchField placeholder={placeholder} initialValue={query} />
-      }
+      )}
     </div>
   );
 }
