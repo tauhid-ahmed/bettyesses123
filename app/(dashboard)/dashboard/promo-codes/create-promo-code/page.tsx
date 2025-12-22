@@ -41,8 +41,9 @@ export default function CreatePromoCodeForm() {
 
   const handleSubmit = () => {
     console.log("Form submitted:", formData);
-    toast.success("Promo code created successfully.");
   };
+
+
 
   return (
     <div className=" bg-white p-4 sm:p-6 lg:p-8">
