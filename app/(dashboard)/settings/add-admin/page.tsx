@@ -1,8 +1,8 @@
 "use client";
 
 import { useState } from "react";
-import { X } from "lucide-react";
 import Link from "next/link";
+import { toast } from "sonner";
 
 interface AddAdminModalProps {
   isOpen?: boolean;
@@ -17,9 +17,22 @@ export default function AddAdminModal({
   const [emailAddress, setEmailAddress] = useState<string>("");
 
   const handleSubmit = () => {
+    if (!adminName.trim()) {
+      toast.error("Please enter Admin Name.");
+      return;
+    }
+    if (!emailAddress.trim()) {
+      toast.error("Please enter Email Address.");
+      return;
+    }
+
     console.log("Admin Name:", adminName);
     console.log("Email Address:", emailAddress);
-    // Add your submit logic here
+
+    // Show success toast
+    toast.success("Admin added successfully!");
+
+
   };
 
   const handleCancel = () => {
@@ -33,7 +46,6 @@ export default function AddAdminModal({
   return (
     <div className="h-screen flex items-center justify-center p-4 z-50">
       <div className="rounded-2xl shadow-xl w-full max-w-2xl p-8 relative">
-        {/* Header */}
         <div className="mb-8">
           <h1 className="text-2xl font-bold text-[#1C1C1C] mb-3">MOVEFORCE</h1>
           <h2 className="text-xl font-semibold text-[#1C1C1C]">
@@ -43,8 +55,7 @@ export default function AddAdminModal({
 
         {/* Form */}
         <div className="space-y-6 mb-8">
-          {/* Admin Name */}
-          <div>
+        <div>
             <label
               htmlFor="adminName"
               className="block text-sm text-gray-700 mb-2"
@@ -61,7 +72,7 @@ export default function AddAdminModal({
             />
           </div>
 
-          {/* Email Address */}
+  
           <div>
             <label
               htmlFor="emailAddress"
@@ -91,7 +102,7 @@ export default function AddAdminModal({
           </Link>
           <button
             onClick={handleSubmit}
-            className="px-8 py-2.5 bg-[#00244A] text-white rounded-lg  font-medium"
+            className="px-8 py-2.5 bg-[#00244A] text-white rounded-lg font-medium"
           >
             Add As Admin
           </button>
