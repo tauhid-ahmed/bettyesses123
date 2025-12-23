@@ -28,10 +28,10 @@ export default function AddAdminModal({
 
     console.log("Admin Name:", adminName);
     console.log("Email Address:", emailAddress);
-
-    // Show success toast
-    toast.success("Admin added successfully!");
+    // Add your submit logic here
   };
+
+
 
   if (!isOpen) return null;
 
@@ -47,6 +47,7 @@ export default function AddAdminModal({
 
         {/* Form */}
         <div className="space-y-6 mb-8">
+          {/* Admin Name */}
           <div>
             <label
               htmlFor="adminName"
@@ -64,6 +65,7 @@ export default function AddAdminModal({
             />
           </div>
 
+          {/* Email Address */}
           <div>
             <label
               htmlFor="emailAddress"
