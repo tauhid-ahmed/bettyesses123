@@ -48,7 +48,7 @@ export default function DashboardSidebar({ children }: DashboardSidebarProps) {
 function SidebarHeader() {
   const { isExpanded } = useSidebar();
   return (
-    <div className="px-5 -mx-5 flex items-center justify-center h-16 relative after:absolute after:inset-x-0 after:bottom-0 after:h-px after:bg-gray-200">
+    <div className="py-16 px-5 -mx-5 flex items-center justify-center h-16 relative after:absolute after:inset-x-0 after:bottom-0 after:h-px after:bg-gray-200">
       <motion.div
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
@@ -56,13 +56,13 @@ function SidebarHeader() {
       >
         {!isExpanded && (
           <Link href={"/"}>
-            <Image src="/Logo.svg" alt="logo" width={100} height={150} />
+            <Image src="/Logo.svg" alt="logo" width={100} height={80} />
           </Link>
         )}
 
         {isExpanded && (
           <Link href={"/"} className="flex justify-center items-center">
-            <Image src="/Logo.svg" alt="logo" width={80} height={110} />
+            <Image src="/Logo.svg" alt="logo" width={180} height={150} />
           </Link>
         )}
       </motion.div>

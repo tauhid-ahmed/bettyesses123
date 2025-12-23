@@ -159,9 +159,9 @@ export default function ImageUploadStep() {
                 </div>
                 <button
                   onClick={handleRemoveImage}
-                  className="absolute -top-2 -right-2 w-10 h-10 bg-red-500 hover:bg-red-600 text-white rounded-full flex items-center justify-center shadow-lg transition-colors"
+                  className="absolute -top-2 -right-2 w-10 h-10 bg-[#FF5E5E] hover:bg-red-600 text-white rounded-full flex items-center justify-center shadow-lg transition-colors mt-3 mr-3"
                 >
-                  <X className="w-5 h-5" />
+                  <X className="w-5 h-5 text-white" />
                 </button>
               </div>
 

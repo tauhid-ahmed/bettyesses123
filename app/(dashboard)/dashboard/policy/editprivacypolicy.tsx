@@ -17,6 +17,7 @@ interface EditPrivacyPolicyProps {
 }
 
 const EditPrivacyPolicy = ({ type }: EditPrivacyPolicyProps) => {
+  const pageTitle = type === "privacy" ? "Privacy Policy" : "Terms & Conditions";
   const [title, setTitle] = useState("New Feature unlocked");
   const [policyNo, setPolicyNo] = useState("1");
   const [features, setFeatures] = useState<string[]>([
@@ -170,12 +171,12 @@ const EditPrivacyPolicy = ({ type }: EditPrivacyPolicyProps) => {
         </div>
 
         <div>
-          <h2 className="text-4xl font-semibold">Privacy Policy</h2>
+          <h2 className="text-4xl font-semibold">{pageTitle}</h2>
           {policies.map((policy) => (
             <div key={policy.id} className="pt-6">
               <div className="bg-gray-50 rounded-lg p-2 lg:p-0 md:p-2 ">
                 <h3 className="text-lg font-semibold mb-4">
-                  Policy No {policy.policyNo}
+                  {pageTitle} {policy.policyNo}
                 </h3>
 
                 <div className="bg-white rounded-lg p-6">

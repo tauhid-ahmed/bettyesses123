@@ -4,7 +4,6 @@ import Container from "./Container";
 import HeadingReveal from "./HeadingReveal";
 import { DiagonalWipeReveal } from "./Animations";
 import { DescriptionChars } from "./TextAnimation";
-import { AlignLeft } from "lucide-react";
 
 type SectionProps = {
   eyebrow?: React.ReactNode;
@@ -29,15 +28,15 @@ export default function Section({
     <section
       className={cn(
         {
-          "py-6 md:py-10 lg:py-20 space-y-6 lg:space-y-10": padding === "lg",
-          "py-6 lg:py-10": padding === "md",
-          "py-6": padding === "sm",
-          "py-0": padding === "none",
+          "py-0  space-y-6 lg:space-y-10": padding === "lg",
+          "": padding === "md",
+          "": padding === "sm",
+          "": padding === "none",
         },
         className
       )}
     >
-      <Container className="space-y-4 text-center">
+      <Container className="space-y-4 text-center mb-4  lg:pt-12 md:pt-6 pt-0">
         {eyebrow && <Eyebrow>{eyebrow}</Eyebrow>}
         {title && <Title align={titleAlign}>{title}</Title>}
         {description && <Description>{description}</Description>}
@@ -49,7 +48,12 @@ export default function Section({
 
 function Eyebrow({ children }: React.PropsWithChildren) {
   return (
-    <Heading as="h2" className="text-primary-500" size="h6" align="center">
+    <Heading
+      as="h2"
+      className="text-primary-500 pt-12"
+      size="h6"
+      align="center"
+    >
       <DiagonalWipeReveal className="inline-block">
         {children}
       </DiagonalWipeReveal>

@@ -8,10 +8,7 @@ import Link from "next/link";
 
 export default function AllBooksList() {
   return (
-    <Section
-      eyebrow="Book List"
-      title="Turn your imagination into a masterpiece."
-    >
+    <Section eyebrow="Book List" title="Customize & Upload New Books">
       <Container>
         <ul className="grid sm:grid-cols-2 md:grid-cols-3 gap-4 sm:gap-6">
           {verticalBooks.map((book) => (

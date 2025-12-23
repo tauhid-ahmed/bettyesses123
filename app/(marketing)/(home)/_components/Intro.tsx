@@ -3,11 +3,6 @@ import Container from "@/components/Container";
 import Heading from "@/components/Heading";
 import HeadingReveal from "@/components/HeadingReveal";
 import Section from "@/components/Section";
-import {
-  Description,
-  DescriptionChars,
-  DescriptionWords,
-} from "@/components/TextAnimation";
 import { Button } from "@/components/ui/button";
 import introImage from "@/images/homeIntro.webp";
 import { booksPath } from "@/paths";
@@ -24,16 +19,22 @@ export default function Intro() {
               <Heading
                 as="h1"
                 size="h1"
-                className="xl:text-[64px] primary-gradient-text"
-              >
-                Give a thoughtful Gift to a child you love
+                className="
+    primary-gradient-text
+    w-full
+    tracking-tighter
+    text-3xl
+    sm:text-4xl
+    md:text-5xl
+    xl:text-[64px]
+    md:leading-[1.2]
+    lg:leading-[1.3]
+    font-semibold">
+                Make your child feel special with a book made just
+                <br className="hidden md:block" />
+                for them
               </Heading>
             </HeadingReveal>
-            <DescriptionChars
-              text={
-                "Discover products designed with love to make life easier for moms and kids. We prioritize uncompromising quality, offering only the best for you and your little ones."
-              }
-            />
 
             <CardSlide>
               {" "}
@@ -51,4 +52,14 @@ export default function Intro() {
       </Container>
     </Section>
   );
+}
+
+{
+  /* <Heading
+                as="h1"
+                size="h1"
+                className="xl:text-[64px] primary-gradient-text w-full tracking-tighter"
+              >
+                Make your child feel special with a book made just <br />for them
+              </Heading> */
 }
