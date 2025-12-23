@@ -27,56 +27,56 @@ import { Suspense } from "react";
 
 const navItems = [
   {
-    href: "/overview",
+    href: "/dashboard/overview",
     name: "Overview",
     icon: <PanelsLeftBottom />,
     children: [],
   },
   {
-    href: "/user-management",
+    href: "/dashboard/user-management",
     name: "User Management",
     icon: <LucideUser />,
     children: [],
   },
   {
-    href: "/order-management",
+    href: "/dashboard/order-management",
     name: "Order Management",
     icon: <ClipboardCheck />,
     children: [],
   },
   {
-    href: "/book",
+    href: "/dashboard/books",
     name: "Books",
     icon: <Book />,
     children: [],
   },
   {
-    href: "/privacy-and-policy",
+    href: "/dashboard/privacy-and-policy",
     name: "Privacy Policy",
     icon: <BookOpenCheck />,
     children: [],
   },
   {
-    href: "/terms-and-condition",
+    href: "/dashboard/terms-and-condition",
     name: "Terms & Condition",
     icon: <CgNotes />,
     children: [],
   },
   {
-    href: "/promo-codes",
+    href: "/dashboard/promo-codes",
     name: "Promo Codes",
     icon: <BadgePercent />,
     children: [],
   },
 
   {
-    href: "/rating-reviews",
+    href: "/dashboard/rating-reviews",
     name: "Rating & Reviews",
     icon: <HandHeart />,
     children: [],
   },
   {
-    href: "/settings",
+    href: "/dashboard/settings",
     name: "Settings",
     icon: <Settings />,
     children: [],
