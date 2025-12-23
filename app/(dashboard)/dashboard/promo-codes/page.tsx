@@ -5,7 +5,6 @@ import Link from "next/link";
 import { useState } from "react";
 import { toast } from "sonner";
 
-
 export default function PromoCodesDashboard() {
   const [disabledIds, setDisabledIds] = useState<number[]>([]);
 
@@ -117,7 +116,6 @@ export default function PromoCodesDashboard() {
                   ? "Stopped"
                   : "Stop This Promo Code"}
               </button>
-
             </div>
           </div>
         ))}
@@ -159,11 +157,7 @@ export default function PromoCodesDashboard() {
               </div>
 
               <button
-
-               
-
                 onClick={() => toast.success("Promo code sent successfully.")}
-
                 className="w-full bg-[#73b7ff] hover:bg-blue-500 text-white py-3 rounded-lg mt-6 transition-colors"
               >
                 Send This Promo Code
@@ -175,4 +169,3 @@ export default function PromoCodesDashboard() {
     </div>
   );
 }
-

@@ -14,7 +14,7 @@ import { SortDirection } from "@/features/table/types/table.type";
 import { cn } from "@/lib/utils";
 import Link from "next/link";
 
-// -------------------- Types --------------------
+// -------------------- Types -------------------
 type UserTier = "FREE" | "PREMIUM";
 type UserRole = "USER" | "ADMIN" | "SUPER_ADMIN";
 type UserGender = "male" | "female" | "other" | null;
