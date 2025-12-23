@@ -27,7 +27,7 @@ import { Suspense } from "react";
 
 const navItems = [
   {
-    href: "/dashboard/overview",
+    href: "/dashboard",
     name: "Overview",
     icon: <PanelsLeftBottom />,
     children: [],
