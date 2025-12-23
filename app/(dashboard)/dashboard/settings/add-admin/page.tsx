@@ -1,8 +1,8 @@
 "use client";
 
 import { useState } from "react";
-import Link from "next/link";
 import { toast } from "sonner";
+import { useRouter } from "next/navigation";
 
 interface AddAdminModalProps {
   isOpen?: boolean;
@@ -11,8 +11,8 @@ interface AddAdminModalProps {
 
 export default function AddAdminModal({
   isOpen = true,
-  onClose,
 }: AddAdminModalProps) {
+  const router = useRouter();
   const [adminName, setAdminName] = useState<string>("");
   const [emailAddress, setEmailAddress] = useState<string>("");
 
@@ -31,14 +31,6 @@ export default function AddAdminModal({
 
     // Show success toast
     toast.success("Admin added successfully!");
-
-
-  };
-
-  const handleCancel = () => {
-    setAdminName("");
-    setEmailAddress("");
-    if (onClose) onClose();
   };
 
   if (!isOpen) return null;
@@ -55,7 +47,7 @@ export default function AddAdminModal({
 
         {/* Form */}
         <div className="space-y-6 mb-8">
-        <div>
+          <div>
             <label
               htmlFor="adminName"
               className="block text-sm text-gray-700 mb-2"
@@ -72,7 +64,6 @@ export default function AddAdminModal({
             />
           </div>
 
-  
           <div>
             <label
               htmlFor="emailAddress"
@@ -93,13 +84,12 @@ export default function AddAdminModal({
 
         {/* Buttons */}
         <div className="flex justify-end gap-3">
-          <Link
-            href={"/settings?t=top-providers"}
-            onClick={handleCancel}
+          <button
+            onClick={() => router.back()}
             className="px-8 py-2.5 border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50 transition-colors font-medium"
           >
             Cancel
-          </Link>
+          </button>
           <button
             onClick={handleSubmit}
             className="px-8 py-2.5 bg-[#00244A] text-white rounded-lg font-medium"

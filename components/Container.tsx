@@ -10,7 +10,7 @@ export default function Container({ children, className, size = "lg" }: Props) {
   return (
     <div
       className={cn(
-        "w-full mx-auto px-6 lg:px-8",
+        "w-full mx-auto px-6 lg:px-7",
         {
           "max-w-344": size === "lg",
           "max-w-267.75": size === "md",

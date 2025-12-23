@@ -169,8 +169,7 @@ export default function PersonalizeBookForm() {
 
             <Button
               type="submit"
-              className="w-full primary-gradient rounded-lg"
-            >
+              className="w-full primary-gradient rounded-lg">
               Go To Next Step <ArrowRight className="ml-2" /> Upload photo
             </Button>
           </form>

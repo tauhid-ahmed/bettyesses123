@@ -10,7 +10,7 @@ export default function BooksList() {
   return (
     <Section
       eyebrow="Book List"
-      title="Turn your imagination into a masterpiece."
+      title="Customize & Upload New Books"
     >
       <Container>
         <ul className="grid sm:grid-cols-2 md:grid-cols-3 gap-4 sm:gap-6">

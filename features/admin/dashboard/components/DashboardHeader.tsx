@@ -28,12 +28,7 @@ export default function DashboardHeader() {
         href={"/"}
         className="font-medium md:text-lg lg:text-xl cursor-pointer"
       >
-        <Image
-          src="/dashboard-logo-header.png"
-          alt="dashboard-header-logo"
-          width={50}
-          height={150}
-        />
+        <h2 className="text-[#FFFFFF] font-medium text-[18px]">My Jewish Tales</h2>
       </Link>
       <Profile
         name="Seema Badaya"

@@ -2,7 +2,6 @@ import Image from "next/image";
 import Container from "./Container";
 import Heading from "./Heading";
 import Section from "./Section";
-import { useScreenSize } from "@/hooks/useScreenSize";
 import { DescriptionChars } from "./TextAnimation";
 
 type Props = {
@@ -46,6 +45,6 @@ export default function PageIntro({ title, description, image }: Props) {
 
 function Background() {
   return (
-    <div className="primary-gradient primary-gradient absolute inset-0 opacity-20 -z-10" />
+    <div className="primary-gradient primary-gradient absolute inset-0 opacity-35 -z-10" />
   );
 }

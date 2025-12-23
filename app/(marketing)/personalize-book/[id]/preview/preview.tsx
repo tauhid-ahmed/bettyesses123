@@ -11,12 +11,11 @@ import React, {
 import { motion, AnimatePresence } from "motion/react";
 import { LucideArrowLeft, LucideArrowRight } from "lucide-react";
 import Image from "next/image";
-
 import bookCoverImage1 from "@/images/book-cover-1.webp";
 import bookCoverImage2 from "@/images/book-cover-2.webp";
-import bookCoverImage3 from "@/images/book-cover-3.webp";
+import bookCoverImage3 from "@/images/a-b-c-.png";
 import bookCoverImage4 from "@/images/book-cover-4.webp";
-import bookCoverImage5 from "@/images/book-cover-5.webp";
+import bookCoverImage5 from "@/images/tuhin-image-book.png";
 import { StaticImageData } from "next/image";
 import Section from "@/components/Section";
 import Container from "@/components/Container";
@@ -25,7 +24,6 @@ import { Button } from "@/components/ui/button";
 import Link from "next/link";
 import { cartPath } from "@/paths";
 
-// =============== TYPES ===============
 export type Variant = {
   id: string;
   image: StaticImageData;
@@ -42,7 +40,6 @@ export type SelectionState = {
   [pageId: string]: string;
 };
 
-// =============== MOCK DATA ===============
 const MOCK_PAGES: BookPage[] = [
   {
     pageId: "page_1",
@@ -95,7 +92,6 @@ function useSelection() {
 
 function SelectionProvider({ children }: { children: React.ReactNode }) {
   const [selections, setSelections] = useState<SelectionState>(() => {
-    // Initialize with first variant of each page
     const initial: SelectionState = {};
     MOCK_PAGES.forEach((page) => {
       if (page.variants.length > 0) {
@@ -222,6 +218,10 @@ function VariantSlider({ page, index }: VariantSliderProps) {
             transition={{ duration: 0.3, ease: "easeInOut" }}
             className="absolute inset-0"
           >
+            <p className="mx-auto font-medium text-xl text-[#1F2937] flex absolute top-4 right-4 p-2 px-8 backdrop-blur-[10px] border border-gray-200/20 rounded-md bg-linear-to-r from-[#6c8cff62] to-[#cf6fff15]">
+              Made with My Jewish Tales
+            </p>
+
             <Image
               src={currentVariant.image}
               className="w-full h-full bg-cover bg-center"
@@ -229,7 +229,6 @@ function VariantSlider({ page, index }: VariantSliderProps) {
             />
           </motion.div>
         </AnimatePresence>
-        {/* Controls */}
         <div className="flex items-center justify-between absolute top-1/2 -translate-y-1/2 w-full">
           <Button
             onClick={goToPrev}
@@ -308,9 +307,11 @@ function PreviewContent() {
       padding="sm"
     >
       <Container size="xs" className="max-w-xl">
-        {MOCK_PAGES.map((page, index) => (
-          <PageSection key={page.pageId} page={page} index={index} />
-        ))}
+        <div>
+          {MOCK_PAGES.map((page, index) => (
+            <PageSection key={page.pageId} page={page} index={index} />
+          ))}
+        </div>
         <Button size="lg" className="primary-gradient mx-auto flex" asChild>
           <Link href={cartPath()}>Save Preview & Continue to Payment</Link>
         </Button>
