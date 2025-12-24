@@ -8,19 +8,17 @@ import { Plus } from "lucide-react";
 
 export default function BooksList() {
   return (
-    <Section title="" titleAlign="left" padding="sm">
+    <Section padding="none">
       <div className="@container">
         <div className="flex items-center justify-between gap-4 flex-wrap">
           <h2 className="text-dark-800 font-medium text-[32px] mb-4">
             Customize & Upload New Books
           </h2>
-          <div className="max-w-sm mx-auto mt-8">
-            <Button className="w-full" size="lg" asChild>
-              <Link href="/dashboard/books/create-book">
-                <Plus /> Add New Books
-              </Link>
-            </Button>
-          </div>
+          <Button asChild>
+            <Link href="/dashboard/books/create-book">
+              <Plus /> Add New Books
+            </Link>
+          </Button>
         </div>
         <ul
           className="
