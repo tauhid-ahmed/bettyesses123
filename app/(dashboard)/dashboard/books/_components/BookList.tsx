@@ -10,9 +10,18 @@ export default function BooksList() {
   return (
     <Section title="" titleAlign="left" padding="sm">
       <div className="@container">
-        <h2 className="text-dark-800 font-medium text-[32px] mb-4">
-          Customize & Upload New Books
-        </h2>
+        <div className="flex items-center justify-between gap-4 flex-wrap">
+          <h2 className="text-dark-800 font-medium text-[32px] mb-4">
+            Customize & Upload New Books
+          </h2>
+          <div className="max-w-sm mx-auto mt-8">
+            <Button className="w-full" size="lg" asChild>
+              <Link href="/dashboard/books/create-book">
+                <Plus /> Add New Books
+              </Link>
+            </Button>
+          </div>
+        </div>
         <ul
           className="
               grid
@@ -37,14 +46,6 @@ export default function BooksList() {
             />
           ))}
         </ul>
-      </div>
-
-      <div className="max-w-sm mx-auto mt-8">
-        <Button className="w-full" size="lg" asChild>
-          <Link href="/books">
-            <Plus /> Add New Books
-          </Link>
-        </Button>
       </div>
     </Section>
   );
