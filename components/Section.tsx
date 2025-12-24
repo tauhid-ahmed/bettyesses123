@@ -28,7 +28,7 @@ export default function Section({
     <section
       className={cn(
         {
-          "py-0  space-y-6 lg:space-y-10": padding === "lg",
+          "py-6 md:py-8 lg:py-10 space-y-6 lg:space-y-10": padding === "lg",
           "": padding === "md",
           "": padding === "sm",
           "": padding === "none",
