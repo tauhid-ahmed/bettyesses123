@@ -36,7 +36,7 @@ export default function Section({
         className
       )}
     >
-      {eyebrow && title && description && (
+      {(eyebrow || title || description) && (
         <Container className="space-y-4 text-center mb-4  lg:pt-12 md:pt-6 pt-0">
           {eyebrow && <Eyebrow>{eyebrow}</Eyebrow>}
           {title && <Title align={titleAlign}>{title}</Title>}
