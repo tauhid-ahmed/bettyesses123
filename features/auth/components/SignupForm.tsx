@@ -41,13 +41,13 @@ export default function SignUpForm() {
                   label="First Name"
                   type="text"
                   name="firstName"
-                  placeholder="Jon"
+                  placeholder=""
                 />
                 <TextField
                   label="Last Name"
                   type="text"
                   name="lastName"
-                  placeholder="Snow"
+                  placeholder=""
                 />
               </div>
 
@@ -55,21 +55,21 @@ export default function SignUpForm() {
                 label="Email address"
                 type="email"
                 name="email"
-                placeholder="jonsnow464@gmail.com"
+                placeholder=""
               />
 
               <TextField
                 label="Password"
                 type="password"
                 name="password"
-                placeholder="1423566"
+                placeholder=""
               />
 
               <TextField
                 label="Confirm Password"
                 type="password"
                 name="confirmPassword"
-                placeholder="********"
+                placeholder=""
               />
 
               <Button
