@@ -1,58 +1,69 @@
-import "next-auth";
-import "next-auth/jwt";
+import { DefaultSession, DefaultUser } from "next-auth";
+import { JWT, DefaultJWT } from "next-auth/jwt";
 
+// API Response Types
+export interface LoginResponse {
+  success: boolean;
+  statusCode: number;
+  message: string;
+  data: UserData;
+}
+
+export interface UserData {
+  id: string;
+  firstName: string;
+  lastName: string;
+  email: string;
+  role: "SUPERADMIN" | "ADMIN" | "USER";
+  image: string | null;
+  status: "ACTIVE" | "INACTIVE";
+  isVerified: boolean;
+  accessToken: string;
+  refreshToken: string;
+}
+
+// Extend Next-Auth types
 declare module "next-auth" {
   interface Session {
     user: {
       id: string;
       email: string;
-      name: string;
-      role: "SUPER_ADMIN" | "ADMIN" | "USER";
-      accountTypes: string[];
-      profileImage?: string | null;
-      emailVerified?: Date | null;
+      firstName: string;
+      lastName: string;
+      role: "SUPERADMIN" | "ADMIN" | "USER";
+      image: string | null;
+      status: "ACTIVE" | "INACTIVE";
+      isVerified: boolean;
       accessToken: string;
       refreshToken: string;
-    };
-    accessToken: string;
-    refreshToken: string;
+    } & DefaultSession["user"];
   }
 
-  interface User {
+  interface User extends DefaultUser {
     id: string;
     email: string;
-    name: string;
-    emailVerified?: Date | null;
-    image?: string | null;
-    role: "SUPER_ADMIN" | "ADMIN" | "USER";
-    accountTypes: string[];
+    firstName: string;
+    lastName: string;
+    role: "SUPERADMIN" | "ADMIN" | "USER";
+    image: string | null;
+    status: "ACTIVE" | "INACTIVE";
+    isVerified: boolean;
     accessToken: string;
     refreshToken: string;
-    profileImage?: string | null;
   }
 }
 
 declare module "next-auth/jwt" {
-  interface JWT {
+  interface JWT extends DefaultJWT {
+    id: string;
+    email: string;
+    firstName: string;
+    lastName: string;
+    role: "SUPERADMIN" | "ADMIN" | "USER";
+    image: string | null;
+    status: "ACTIVE" | "INACTIVE";
+    isVerified: boolean;
     accessToken: string;
     refreshToken: string;
-    user: {
-      id: string;
-      email: string;
-      name: string;
-      role: "SUPER_ADMIN" | "ADMIN" | "USER";
-      accountTypes: string[];
-      profileImage?: string | null;
-    };
-  }
-}
-
-declare module "@auth/core/adapters" {
-  interface AdapterUser {
-    role: "SUPER_ADMIN" | "ADMIN" | "USER";
-    accountTypes: string[];
-    accessToken: string;
-    refreshToken: string;
-    profileImage?: string | null;
   }
 }

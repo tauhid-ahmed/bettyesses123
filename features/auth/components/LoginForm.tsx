@@ -9,21 +9,26 @@ import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import AuthCard from "./AuthCard";
 import { loginSchema, type LoginFormData } from "../schema";
+import { signIn } from "next-auth/react";
+import { toast } from "sonner";
 
 export default function LoginForm() {
   const form = useForm<LoginFormData>({
     resolver: zodResolver(loginSchema),
     defaultValues: {
-      email: "",
-      password: "",
-      rememberMe: false,
+      email: "admin@gmail.com",
+      password: "12345678",
+      rememberMe: true,
     },
   });
 
-  const onSubmit = (data: LoginFormData) => {
-    console.log("Login data:", data);
-    // Handle login logic here
-  };
+  const onSubmit = form.handleSubmit(async (data) => {
+    await signIn("credentials", {
+      email: data.email,
+      password: data.password,
+      redirect: false,
+    });
+  });
 
   return (
     <div className="w-full">
@@ -34,7 +39,7 @@ export default function LoginForm() {
         message="Don't have an account?"
       >
         <Form {...form}>
-          <form onSubmit={form.handleSubmit(onSubmit)}>
+          <form onSubmit={onSubmit}>
             <fieldset className="space-y-4 lg:space-y-6">
               <TextField
                 label="Email Address"
