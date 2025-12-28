@@ -1,12 +1,10 @@
-import { NextResponse } from "next/server";
-import type { NextRequest } from "next/server";
+import { NextRequest, NextResponse } from "next/server";
 
 const authRoutes = [
   "/login",
   "/reset-success",
   "/forgot-password",
   "/reset-password",
-  "/reset-success",
   "/signup",
   "/verify-otp",
 ];
@@ -29,23 +27,20 @@ export function proxy(request: NextRequest) {
 
   const isAuthenticated = !!sessionToken;
   const isAuthRoute = authRoutes.some((route) => pathname.startsWith(route));
+  const isProtectedRoute = pathname.startsWith("/dashboard");
 
-  // If user is authenticated and trying to access auth pages, redirect to home
+  // If user is authenticated and trying to access auth pages, redirect to dashboard
   if (isAuthenticated && isAuthRoute) {
-    return NextResponse.redirect(new URL("/", request.url));
+    return NextResponse.redirect(new URL("/dashboard", request.url));
   }
 
-  // If user is NOT authenticated and trying to access protected pages, redirect to login
-  if (!isAuthenticated && !isAuthRoute) {
+  // If user is NOT authenticated and trying to access protected dashboard routes, redirect to login
+  if (!isAuthenticated && isProtectedRoute) {
     const loginUrl = new URL("/login", request.url);
     loginUrl.searchParams.set("callbackUrl", pathname);
     return NextResponse.redirect(loginUrl);
   }
 
-  // Allow access
+  // Allow access to all other routes (marketing pages are public)
   return NextResponse.next();
 }
-
-export const config = {
-  matcher: ["/((?!api|_next/static|_next/image|favicon.ico).*)"],
-};

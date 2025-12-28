@@ -4,13 +4,16 @@ import { Button } from "@/components/ui/button";
 import { useSidebar } from "./SidebarProvider";
 import { LucideLogOut } from "lucide-react";
 import { useRouter } from "next/navigation";
+import { signOut } from "next-auth/react";
+import { signinPath } from "@/paths";
 
 export default function DashboardFooter() {
   const { isExpanded } = useSidebar();
   const router = useRouter();
 
   const handleLogout = () => {
-    router.push("/");
+    signOut();
+    router.push(signinPath());
   };
 
   return (
