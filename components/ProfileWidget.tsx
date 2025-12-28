@@ -6,7 +6,6 @@ import {
   DropdownMenuContent,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import { signinPath } from "@/paths";
 import { UserData } from "@/types/next-auth";
 import { signOut } from "next-auth/react";
 import { useRouter } from "next/navigation";
@@ -74,7 +73,7 @@ function SignOutButton() {
   const router = useRouter();
   const handleSignOut = () => {
     signOut();
-    router.push(signinPath());
+    router.push("/");
   };
   return (
     <Button className="w-full" onClick={handleSignOut} variant="destructive">

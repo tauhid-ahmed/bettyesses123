@@ -56,7 +56,7 @@ export default function TextField({
                     field.onChange(e);
                   }}
                   className={cn(
-                    "w-full p-5 py-5 placeholder-transparent outline-none bg-gray-25 border-gray-100 text-sm",
+                    "w-full p-5 py-5 placeholder-transparent outline-none bg-gray-25 border-primary-200/60 text-sm",
                     isPassword && "pr-10",
                     errorMessage && "border-danger-500"
                   )}
@@ -64,7 +64,7 @@ export default function TextField({
                 {isPassword && (
                   <Button
                     type="button"
-                    className="absolute right-0 top-1/2 -translate-y-1/2 text-gray-500"
+                    className="absolute right-0 top-1/2 -translate-y-1/2 text-gray-500 [&_svg]:w-4! [&_svg]:h-4!"
                     variant="ghost"
                     size="icon"
                     onClick={() => setIsToggled((toggle) => !toggle)}
