@@ -17,7 +17,6 @@ export default function ForgotPasswordForm() {
   });
 
   const onSubmit = (data: ForgotPasswordFormData) => {
-    console.log("Forgot password data:", data);
     // Handle forgot password logic here (send OTP to email)
   };
 

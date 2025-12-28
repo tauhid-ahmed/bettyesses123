@@ -133,7 +133,6 @@ export default function UserDetailsPage() {
                 />
               </div>
             )}
-           
           </div>
         </div>
       </div>
@@ -154,7 +153,6 @@ export default function UserDetailsPage() {
               <button
                 onClick={() => {
                   setShowSuspendModal(false);
-                  console.log("User Suspended");
                 }}
                 className="flex-1 rounded-md border border-gray-300 px-4 py-2 text-sm font-medium text-gray-700 hover:bg-gray-100 hover:text-red-800 hover:border hover:border-red-600 hover:font-bold
                 "

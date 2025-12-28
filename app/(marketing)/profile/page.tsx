@@ -86,7 +86,6 @@ const ProfileProvider: React.FC<{ children: React.ReactNode }> = ({
       await new Promise((resolve) => setTimeout(resolve, 1000));
 
       setProfileData(data);
-      console.log("Profile updated:", data);
       alert("Profile updated successfully!");
     } catch (error) {
       console.error("Error updating profile:", error);

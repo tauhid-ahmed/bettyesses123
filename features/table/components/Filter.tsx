@@ -177,7 +177,6 @@ const CATEGORY_OPTIONS: FilterOption[] = [
 
 export function CategoryFilter() {
   const handleCategoryChange = (value: string) => {
-    console.log("Category changed to:", value);
     // You can trigger analytics, API calls, etc.
   };
 

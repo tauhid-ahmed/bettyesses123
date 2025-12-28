@@ -18,13 +18,9 @@ function PaymentSuccessPage({ orderId = "123456ZX" }) {
     }
   };
 
-  const handleDownloadReceipt = (): void => {
-    console.log("Downloading receipt...");
-  };
+  const handleDownloadReceipt = (): void => {};
 
-  const handleBackToHome = (): void => {
-    console.log("Navigating to home...");
-  };
+  const handleBackToHome = (): void => {};
 
   return (
     <div className="min-h-[90vh] bg-primary-100/90 flex items-center justify-center p-4">

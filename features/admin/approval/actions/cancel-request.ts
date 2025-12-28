@@ -7,8 +7,6 @@ export async function cancelProviderRequest(providerId: string) {
     // TODO: Replace with actual API call
     await new Promise((resolve) => setTimeout(resolve, 1000));
 
-    console.log(`Canceling provider ${providerId}`);
-
     revalidatePath("/admin/providers");
 
     return {
