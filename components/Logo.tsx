@@ -4,7 +4,7 @@ import logo from "@/images/logo.png";
 
 export default function Logo({ className }: { className?: string }) {
   return (
-    <Link href="/" className="w-fit mx-auto">
+    <Link href="/" className="w-fit shrink-0 mx-auto">
       <Image
         className={className}
         src={logo}

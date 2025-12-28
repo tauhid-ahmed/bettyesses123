@@ -28,12 +28,15 @@ export function ProfileWidget({ user }: Props) {
   return (
     <DropdownMenu>
       <DropdownMenuTrigger asChild>
-        <Button variant="default" className="h-11 primary-gradient">
+        <Button
+          variant="default"
+          className="flex-col md:flex-row md:h-11 primary-gradient gap-0 md:gap-1"
+        >
           <ProfilePicture name={name} image={user?.image} />
-          <span className="text-left leading-none">
-            <span className="text-sm">{name}</span>
+          <span className="text-left leading-none hidden md:block">
+            <span className="text-xs md:text-sm">{name}</span>
             <br />
-            <span className="text-xs">{role[user?.role]}</span>
+            <span className="text-xs hidden md:inline">{role[user?.role]}</span>
           </span>
         </Button>
       </DropdownMenuTrigger>
@@ -51,7 +54,7 @@ type ProfilePictureProps = {
 
 function ProfilePicture({ name, image }: ProfilePictureProps) {
   return (
-    <div className="flex items-center justify-center border-2 border-primary-100 rounded-full size-8">
+    <div className="flex items-center justify-center border-2 border-primary-100 rounded-full size-6 md:size-8">
       {image ? (
         <Image
           src={image}
@@ -61,7 +64,7 @@ function ProfilePicture({ name, image }: ProfilePictureProps) {
           className="rounded-full"
         />
       ) : (
-        <span className="text-primary-100 font-bold text-lg">{name[0]}</span>
+        <span className="text-primary-100 font-bold md:text-lg">{name[0]}</span>
       )}
     </div>
   );
