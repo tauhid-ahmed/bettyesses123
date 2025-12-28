@@ -1,4 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
+import { signinPath } from "./paths";
+import { auth } from "./auth";
 
 const authRoutes = [
   "/login",
@@ -9,8 +11,12 @@ const authRoutes = [
   "/verify-otp",
 ];
 
-export function proxy(request: NextRequest) {
+export async function proxy(request: NextRequest) {
   const { pathname } = request.nextUrl;
+  const session = await auth();
+
+  const SUPER_ADMIN = "SUPERADMIN";
+  const isSuperAdmin = session?.user?.role === SUPER_ADMIN;
 
   if (
     pathname.startsWith("/api") ||
@@ -27,16 +33,16 @@ export function proxy(request: NextRequest) {
 
   const isAuthenticated = !!sessionToken;
   const isAuthRoute = authRoutes.some((route) => pathname.startsWith(route));
-  const isProtectedRoute = pathname.startsWith("/dashboard");
+  const isProtectedRoute = pathname.startsWith("/dashboard") && !isSuperAdmin;
 
   // If user is authenticated and trying to access auth pages, redirect to dashboard
-  if (isAuthenticated && isAuthRoute) {
+  if (isAuthenticated && isAuthRoute && isSuperAdmin) {
     return NextResponse.redirect(new URL("/dashboard", request.url));
   }
 
   // If user is NOT authenticated and trying to access protected dashboard routes, redirect to login
   if (!isAuthenticated && isProtectedRoute) {
-    const loginUrl = new URL("/login", request.url);
+    const loginUrl = new URL(signinPath(), request.url);
     loginUrl.searchParams.set("callbackUrl", pathname);
     return NextResponse.redirect(loginUrl);
   }
