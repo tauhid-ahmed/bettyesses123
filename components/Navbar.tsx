@@ -2,6 +2,7 @@ import Container from "./Container";
 import DesktopNav from "./DesktopNav";
 import MobileNav from "./MobileNav";
 import { auth } from "@/auth";
+import { ProfileWidget } from "./ProfileWidget";
 
 interface NavItem {
   name: string;

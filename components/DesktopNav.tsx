@@ -44,7 +44,7 @@ export default function DesktopNav({ navItems, session }: Props) {
         <CartButton />
 
         {session ? (
-          <ProfileWidget />
+          <ProfileWidget user={session.user} />
         ) : (
           <>
             <Button className="primary-gradient font-medium" size="lg" asChild>
