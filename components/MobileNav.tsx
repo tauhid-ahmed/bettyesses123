@@ -105,7 +105,7 @@ export default function MobileNav({ navItems, session }: Props) {
         </div>
         <div className="flex items-center gap-2">
           <CartButton />
-          <ProfileWidget />
+          {session && <ProfileWidget user={session.user} />}
 
           <Button
             variant="ghost"
