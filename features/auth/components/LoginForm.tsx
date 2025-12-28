@@ -11,8 +11,10 @@ import AuthCard from "./AuthCard";
 import { loginSchema, type LoginFormData } from "../schema";
 import { signIn } from "next-auth/react";
 import { toast } from "sonner";
+import { useRouter } from "next/navigation";
 
 export default function LoginForm() {
+  const router = useRouter();
   const form = useForm<LoginFormData>({
     resolver: zodResolver(loginSchema),
     defaultValues: {
@@ -23,11 +25,27 @@ export default function LoginForm() {
   });
 
   const onSubmit = form.handleSubmit(async (data) => {
-    await signIn("credentials", {
+    const result = await signIn("credentials", {
       email: data.email,
       password: data.password,
+      remember: data.rememberMe,
       redirect: false,
     });
+
+    if (!result) {
+      toast.error("Unexpected authentication error");
+      return;
+    }
+
+    if (result.error) {
+      toast.error("Invalid email or password");
+      return;
+    }
+
+    if (result.ok) {
+      toast.success("Login successful");
+      router.push("/dashboard");
+    }
   });
 
   return (
