@@ -1,136 +1,108 @@
 import NextAuth from "next-auth";
-import Credentials from "next-auth/providers/credentials";
+import CredentialsProvider from "next-auth/providers/credentials";
 import type { NextAuthConfig } from "next-auth";
-import type {
-  BackendAuthResponse,
-  CredentialsLoginRequest,
-} from "@/types/auth";
 
-const BACKEND_URL = process.env.BACKEND_API_URL;
-
-const authConfig: NextAuthConfig = {
+export const authConfig: NextAuthConfig = {
   providers: [
-    Credentials({
-      name: "credentials",
+    CredentialsProvider({
+      name: "Credentials",
       credentials: {
         email: { label: "Email", type: "email" },
         password: { label: "Password", type: "password" },
       },
       async authorize(credentials) {
         if (!credentials?.email || !credentials?.password) {
-          return null;
+          throw new Error("Email and password are required");
         }
 
         try {
-          const loginData: CredentialsLoginRequest = {
-            email: credentials.email as string,
-            password: credentials.password as string,
-          };
-
-          const response = await fetch(`${BACKEND_URL}/auth/login`, {
+          // Replace with your actual API endpoint
+          const res = await fetch(`${process.env.BACKEND_API_URL}/auth/login`, {
             method: "POST",
             headers: { "Content-Type": "application/json" },
-            body: JSON.stringify(loginData),
+            body: JSON.stringify({
+              email: credentials.email,
+              password: credentials.password,
+            }),
           });
 
-          if (!response.ok) {
-            const errorData = await response.json().catch(() => ({}));
-            return null;
+          const response = await res.json();
+
+          if (!res.ok || !response.success) {
+            throw new Error(response.message || "Login failed");
           }
 
-          const result: BackendAuthResponse = await response.json();
-
-          if (!result.success || !result.data) {
-            return null;
-          }
-
-          const { user, accessToken, refreshToken } = result.data;
-
-          if (!user || !accessToken || !refreshToken) {
-            return null;
-          }
-
+          // Return user data that will be stored in the session
           return {
-            id: user.id,
-            email: user.email,
-            name: user.name,
-            emailVerified: null,
-            image: user.profileImage ?? null,
-            role: user.role,
-            accountTypes: user.accountTypes || [],
-            accessToken,
-            refreshToken,
-            profileImage: user.profileImage ?? null,
+            id: response.data.id,
+            email: response.data.email,
+            firstName: response.data.firstName,
+            lastName: response.data.lastName,
+            role: response.data.role,
+            image: response.data.image,
+            status: response.data.status,
+            isVerified: response.data.isVerified,
+            accessToken: response.data.accessToken,
+            refreshToken: response.data.refreshToken,
           };
         } catch (error) {
-          return null;
+          console.error("Authorization error:", error);
+          throw new Error("Invalid credentials");
         }
       },
     }),
   ],
-
   callbacks: {
-    async jwt({ token, user }) {
+    async jwt({ token, user, trigger, session }) {
+      // Initial sign in
       if (user) {
+        token.id = user.id;
+        token.email = user.email;
+        token.firstName = user.firstName;
+        token.lastName = user.lastName;
+        token.role = user.role;
+        token.image = user.image;
+        token.status = user.status;
+        token.isVerified = user.isVerified;
         token.accessToken = user.accessToken;
         token.refreshToken = user.refreshToken;
-        token.user = {
-          id: user.id,
-          email: user.email,
-          name: user.name,
-          role: user.role,
-          profileImage: user.profileImage ?? null,
-          accountTypes: user.accountTypes || [],
-        };
+      }
+
+      // Handle session updates
+      if (trigger === "update" && session) {
+        return { ...token, ...session.user };
       }
 
       return token;
     },
-
     async session({ session, token }) {
-      if (token.user) {
-        session.user = {
-          id: token.user.id,
-          email: token.user.email,
-          name: token.user.name,
-          role: token.user.role,
-          profileImage: token.user.profileImage ?? null,
-          accountTypes: token.user.accountTypes || [],
-          emailVerified: null,
-          accessToken: token.accessToken as string,
-          refreshToken: token.refreshToken as string,
-        };
-        session.accessToken = token.accessToken;
-        session.refreshToken = token.refreshToken;
+      // Send properties to the client
+      if (token) {
+        session.user.id = token.id as string;
+        session.user.email = token.email as string;
+        session.user.firstName = token.firstName as string;
+        session.user.lastName = token.lastName as string;
+        session.user.role = token.role as "SUPERADMIN" | "ADMIN" | "USER";
+        session.user.image = token.image as string | null;
+        session.user.status = token.status as "ACTIVE" | "INACTIVE";
+        session.user.isVerified = token.isVerified as boolean;
+        session.user.accessToken = token.accessToken as string;
+        session.user.refreshToken = token.refreshToken as string;
       }
 
       return session;
     },
-
-    async redirect({ url, baseUrl }) {
-      if (url.startsWith("/")) {
-        return `${baseUrl}${url}`;
-      } else if (new URL(url).origin === baseUrl) {
-        return url;
-      }
-      return baseUrl;
-    },
   },
-
   pages: {
     signIn: "/login",
+    signOut: "/",
     error: "/login",
   },
-
   session: {
     strategy: "jwt",
-    maxAge: 30 * 24 * 60 * 60,
+    maxAge: 30 * 24 * 60 * 60, // 30 days
   },
-
-  trustHost: true,
-
-  debug: true,
+  secret: process.env.NEXTAUTH_SECRET,
 };
 
 export const { handlers, auth, signIn, signOut } = NextAuth(authConfig);
-export const { GET, POST } = handlers;
