@@ -10,6 +10,7 @@ import ActiveLink from "./ActiveLink";
 import Link from "next/link";
 import { useScreenSize } from "@/hooks/useScreenSize";
 import { Session } from "next-auth";
+import { ProfileWidget } from "./ProfileWidget";
 
 interface MobileNavProps {
   isOpen: boolean;
@@ -104,6 +105,7 @@ export default function MobileNav({ navItems, session }: Props) {
         </div>
         <div className="flex items-center gap-2">
           <CartButton />
+          <ProfileWidget />
 
           <Button
             variant="ghost"
