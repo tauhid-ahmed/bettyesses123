@@ -1,5 +1,3 @@
-"use client";
-
 import Container from "@/components/Container";
 import AuthContainer from "@/features/auth/components/AuthContainer";
 import { Suspense } from "react";
