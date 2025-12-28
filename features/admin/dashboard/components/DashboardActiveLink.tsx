@@ -16,9 +16,7 @@ export default function DashboardActiveLink({
 }: ActiveLinkProps) {
   const { isExpanded } = useSidebar();
   const pathname = usePathname();
-  const isActive = pathname === href; 
-
-  console.log(href);
+  const isActive = pathname === href;
 
   return (
     <Link

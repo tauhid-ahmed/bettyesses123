@@ -9,9 +9,7 @@ interface AddAdminModalProps {
   onClose?: () => void;
 }
 
-export default function AddAdminModal({
-  isOpen = true,
-}: AddAdminModalProps) {
+export default function AddAdminModal({ isOpen = true }: AddAdminModalProps) {
   const router = useRouter();
   const [adminName, setAdminName] = useState<string>("");
   const [emailAddress, setEmailAddress] = useState<string>("");
@@ -26,12 +24,8 @@ export default function AddAdminModal({
       return;
     }
 
-    console.log("Admin Name:", adminName);
-    console.log("Email Address:", emailAddress);
     // Add your submit logic here
   };
-
-
 
   if (!isOpen) return null;
 

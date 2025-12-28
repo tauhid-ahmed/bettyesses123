@@ -52,7 +52,6 @@ export default function Actions<TItem>({
       label: "View",
       icon: LucideEye,
       onClick: async (item) => {
-        console.log("Viewing:", item);
         await new Promise((resolve) => setTimeout(resolve, 1000));
       },
     },
@@ -60,7 +59,6 @@ export default function Actions<TItem>({
       label: "Edit",
       icon: LucideEdit,
       onClick: async (item) => {
-        console.log("Editing:", item);
         await new Promise((resolve) => setTimeout(resolve, 1000));
       },
     },
@@ -69,7 +67,6 @@ export default function Actions<TItem>({
       icon: LucideTrash2,
       variant: "danger",
       onClick: async (item) => {
-        console.log("Deleting:", item);
         await new Promise((resolve) => setTimeout(resolve, 1000));
       },
     },
@@ -78,7 +75,6 @@ export default function Actions<TItem>({
       icon: LucideTrash2,
       variant: "danger",
       onClick: async (item) => {
-        console.log("Deleting:", item);
         await new Promise((resolve) => setTimeout(resolve, 1000));
       },
     },
@@ -87,7 +83,6 @@ export default function Actions<TItem>({
       icon: LucideTrash2,
       variant: "danger",
       onClick: async (item) => {
-        console.log("Deleting:", item);
         await new Promise((resolve) => setTimeout(resolve, 1000));
       },
     },

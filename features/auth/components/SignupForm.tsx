@@ -21,7 +21,6 @@ export default function SignUpForm() {
   });
 
   const onSubmit = (data: SignUpFormData) => {
-    console.log("Sign up data:", data);
     // Handle sign up logic here
   };
 

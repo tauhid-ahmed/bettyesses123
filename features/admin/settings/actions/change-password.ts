@@ -22,7 +22,6 @@ export async function changePassword(data: PasswordFormData) {
     await new Promise((resolve) => setTimeout(resolve, 1000));
 
     // Simulate success
-    console.log("Changing password");
 
     return {
       success: true,

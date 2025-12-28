@@ -18,8 +18,6 @@ export async function approveProviderRequest(providerId: string) {
 
     await new Promise((resolve) => setTimeout(resolve, 1000));
 
-    console.log(`Approving provider ${providerId}`);
-
     revalidatePath("/admin/providers");
 
     return {

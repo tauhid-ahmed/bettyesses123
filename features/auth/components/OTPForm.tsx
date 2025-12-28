@@ -60,7 +60,6 @@ export function OTPForm() {
       localStorage.removeItem("otp-timer");
 
       toast.success(data.message || "OTP verified successfully.");
-      console.log(data);
 
       window.location.href = "/dashboard";
     } catch (error) {

@@ -7,8 +7,6 @@ export async function suspendMover(moverId: string) {
     // TODO: Replace with actual API call
     await new Promise((resolve) => setTimeout(resolve, 1000));
 
-    console.log(`Suspending mover ${moverId}`);
-
     revalidatePath("/admin/movers");
 
     return {

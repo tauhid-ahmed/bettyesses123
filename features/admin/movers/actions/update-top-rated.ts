@@ -10,8 +10,6 @@ export async function updateTopRatedStatus(
     // TODO: Replace with actual API call
     await new Promise((resolve) => setTimeout(resolve, 1000));
 
-    console.log(`Updating mover ${moverId} top rated status to:`, isTopRated);
-
     revalidatePath(`/admin/movers/${moverId}`);
 
     return {

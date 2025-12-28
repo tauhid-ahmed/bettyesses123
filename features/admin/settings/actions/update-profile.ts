@@ -20,7 +20,6 @@ export async function updateProfile(data: ProfileFormData) {
     await new Promise((resolve) => setTimeout(resolve, 1000));
 
     // Simulate success
-    console.log("Updating profile:", data);
 
     revalidatePath("/admin/settings");
 

@@ -7,8 +7,6 @@ export async function suspendUser(userId: string) {
     // TODO: Replace with actual API call
     await new Promise((resolve) => setTimeout(resolve, 1000));
 
-    console.log(`Suspending user ${userId}`);
-
     revalidatePath("/admin/user-management");
 
     return {

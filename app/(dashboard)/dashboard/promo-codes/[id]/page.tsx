@@ -73,8 +73,6 @@ export default function EditPromoCodePage() {
   }, [id, reset]);
 
   const onSubmit: SubmitHandler<FormValues> = (data) => {
-    console.log("Saved data:", { id, ...data });
-
     const index = promoCodes.findIndex((p) => p.id === id);
     if (index !== -1) {
       promoCodes[index] = { id, ...data };
@@ -182,8 +180,7 @@ export default function EditPromoCodePage() {
 
         <div className="pt-4">
           <button
-
-          onClick={() => toast.success("Promo code updated successfully.")}
+            onClick={() => toast.success("Promo code updated successfully.")}
             type="submit"
             className="w-full px-6 py-3 bg-blue-400 hover:bg-blue-500 text-white rounded-lg transition-colors font-medium"
           >

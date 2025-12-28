@@ -6,7 +6,7 @@ import { useState } from "react";
 import { toast } from "sonner";
 
 export default function CreatePromoCodeForm() {
-    const router = useRouter();
+  const router = useRouter();
   const [formData, setFormData] = useState({
     code: "NEW10",
     discount: "20%",
@@ -39,11 +39,7 @@ export default function CreatePromoCodeForm() {
     setFormData((prev) => ({ ...prev, [field]: value }));
   };
 
-  const handleSubmit = () => {
-    console.log("Form submitted:", formData);
-  };
-
-
+  const handleSubmit = () => {};
 
   return (
     <div className=" bg-white p-4 sm:p-6 lg:p-8">
@@ -157,7 +153,7 @@ export default function CreatePromoCodeForm() {
         {/* Action Buttons */}
         <div className="flex flex-col sm:flex-row gap-4 pt-4">
           <button
-           onClick={()=> router.back()}
+            onClick={() => router.back()}
             className="flex-1 px-6 py-3 border-2 border-gray-900 rounded-lg hover:bg-gray-50 transition-colors text-center text-gray-900 font-medium"
           >
             Cancel

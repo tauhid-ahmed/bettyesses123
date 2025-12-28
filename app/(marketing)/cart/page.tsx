@@ -52,8 +52,6 @@ function CheckoutFlow() {
   const [saveInfo, setSaveInfo] = useState<boolean>(false);
   const { cartItems } = useCart();
 
-  console.log("Cart Items:", cartItems);
-
   const router = useRouter();
 
   const [addressDetails, setAddressDetails] = useState<AddressDetails>({
