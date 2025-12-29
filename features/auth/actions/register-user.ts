@@ -20,7 +20,6 @@ export async function registerUser(
     });
 
     const data: SuccessResponse | ErrorResponse = await response.json();
-    console.log("Response data:", data);
 
     if (!response.ok) {
       const message =
@@ -46,7 +45,7 @@ export async function registerUser(
     const errorMessage =
       error instanceof Error
         ? error.message
-        : "Failed to register user due to unknown error error";
+        : "Failed to register user due to unknown error";
 
     return {
       message: errorMessage,
