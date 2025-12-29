@@ -13,14 +13,16 @@ import ResendOTP from "./ResendOTP";
 import { REGEXP_ONLY_DIGITS } from "input-otp";
 import Timer from "./Timer";
 
+const OTP_LENGTH = 6;
+
 export function OTPForm() {
   const [otp, setOtp] = useState("");
   const [isVerifying, setIsVerifying] = useState(false);
   const router = useRouter();
 
   const handleVerify = async () => {
-    if (otp.length !== 4) {
-      toast.error("Please enter a valid 6-digit OTP");
+    if (otp.length !== 6) {
+      toast.error(`Please enter a valid ${OTP_LENGTH}-digit OTP`);
       return;
     }
 
@@ -80,15 +82,15 @@ export function OTPForm() {
 
         <div>
           <h2 className="text-sm text-gray-500 text-center max-w-md mx-auto mt-4">
-            Please enter the 6-digit code we just sent to your email address.
-            The code will expire in
+            Please enter the {OTP_LENGTH}-digit code we just sent to your email
+            address. The code will expire in
           </h2>
           <Timer />
         </div>
       </div>
       <div className="flex justify-center">
         <InputOTP
-          maxLength={6}
+          maxLength={OTP_LENGTH}
           pattern={REGEXP_ONLY_DIGITS}
           value={otp}
           onChange={(value) => setOtp(value)}
@@ -111,7 +113,7 @@ export function OTPForm() {
         <Button
           className="w-full mx-auto mt-4"
           onClick={handleVerify}
-          disabled={isVerifying || otp.length !== 4}
+          disabled={isVerifying || otp.length !== OTP_LENGTH}
         >
           {isVerifying ? "Verifying..." : "Verify"}
         </Button>
