@@ -17,7 +17,9 @@ export default function AuthContainer({ children }: React.PropsWithChildren) {
         />
       </div>
 
-      <div className="flex size-full items-center">{children}</div>
+      <div className="flex size-full items-center justify-center">
+        {children}
+      </div>
     </div>
   );
 }

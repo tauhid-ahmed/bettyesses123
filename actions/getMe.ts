@@ -35,12 +35,7 @@ export const getMe = cache(async () => {
     }
 
     return null;
-  } catch (error) {
-    if (error instanceof Error) {
-      console.error("=== getMe Error ===");
-      console.error("Error message:", error?.message);
-      console.error("Full error:", error);
-    }
+  } catch {
     return null;
   }
 });

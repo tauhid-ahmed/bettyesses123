@@ -7,21 +7,39 @@ import { Form } from "@/components/ui/form";
 import { Button } from "@/components/ui/button";
 import AuthCard from "./AuthCard";
 import { signUpSchema, type SignUpFormData } from "../schema";
+import { registerUser } from "../actions/register-user";
+import { toast } from "sonner";
+import { useRouter } from "next/navigation";
+import { verifyOtpPath } from "@/paths";
 
 export default function SignUpForm() {
+  const router = useRouter();
   const form = useForm<SignUpFormData>({
     resolver: zodResolver(signUpSchema),
     defaultValues: {
-      firstName: "",
-      lastName: "",
-      email: "",
-      password: "",
-      confirmPassword: "",
+      firstName: "Tauhid",
+      lastName: "Ahmed",
+      email: "superadmin@gmail.com",
+      password: "Password123@@",
+      confirmPassword: "Password123@@",
     },
   });
 
-  const onSubmit = (data: SignUpFormData) => {
-    // Handle sign up logic here
+  const onSubmit = async (data: SignUpFormData) => {
+    const response = await registerUser({
+      firstName: data.firstName,
+      lastName: data.lastName,
+      email: data.email,
+      password: data.password,
+    });
+
+    if (response.success) {
+      toast.success(response.message);
+      form.reset();
+      router.push(verifyOtpPath());
+      localStorage.setItem("otp-timer", "300");
+      localStorage.setItem("email", data.email);
+    } else if (!response.success) toast.error(response.message);
   };
 
   return (
