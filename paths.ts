@@ -7,3 +7,4 @@ export const cartPath = () => "/cart";
 
 export const signinPath = () => "/login";
 export const signupPath = () => "/signup";
+export const verifyOtpPath = () => "/verify-otp";

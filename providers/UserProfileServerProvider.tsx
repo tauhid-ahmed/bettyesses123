@@ -5,7 +5,7 @@ import { type UserProfile } from "@/types/user-profile";
 export default async function UserProfileServerProvider({
   children,
 }: React.PropsWithChildren) {
-  const userProfile: UserProfile = await getMe();
+  const userProfile: UserProfile | null = await getMe();
   return (
     <UserProfileProvider userProfile={userProfile}>
       {children}
