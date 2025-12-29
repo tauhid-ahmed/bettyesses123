@@ -6,13 +6,13 @@ import {
   DropdownMenuContent,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import { UserData } from "@/types/next-auth";
 import { signOut } from "next-auth/react";
 import { useRouter } from "next/navigation";
 import Image from "next/image";
+import { UserProfile } from "@/types/user-profile";
 
 type Props = {
-  user: UserData;
+  user: UserProfile;
 };
 
 const role = {
@@ -23,6 +23,7 @@ const role = {
 
 export function ProfileWidget({ user }: Props) {
   const name = user?.firstName + " " + user?.lastName;
+  console.log(user);
 
   return (
     <DropdownMenu>
@@ -35,7 +36,9 @@ export function ProfileWidget({ user }: Props) {
           <span className="text-left leading-none hidden md:block">
             <span className="text-xs md:text-sm">{name}</span>
             <br />
-            <span className="text-xs hidden md:inline">{role[user?.role]}</span>
+            <span className="text-xs hidden md:inline">
+              {role[user?.role as keyof typeof role]}
+            </span>
           </span>
         </Button>
       </DropdownMenuTrigger>

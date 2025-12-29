@@ -4,6 +4,8 @@ import "@/styles/globals.css";
 import { Toaster } from "@/components/ui/sonner";
 import { Suspense } from "react";
 import QueryProvider from "@/providers/QueryProvider";
+import AuthSession from "@/providers/AuthSessionProvider";
+import UserProfileServerProvider from "@/providers/UserProfileServerProvider";
 
 export const metadata: Metadata = {
   title: "Smart Book App",
@@ -23,9 +25,13 @@ export default function RootLayout({ children }: Readonly<LayoutProps>) {
   return (
     <html lang="en">
       <body className={`${sans.variable} ${sans.className} antialiased`}>
-        <Suspense fallback={<div>Loading...</div>}>
-          <QueryProvider>{children}</QueryProvider>
-        </Suspense>
+        <AuthSession>
+          <Suspense fallback={<div>Loading...</div>}>
+            <UserProfileServerProvider>
+              <QueryProvider>{children}</QueryProvider>
+            </UserProfileServerProvider>
+          </Suspense>
+        </AuthSession>
         <Toaster
           position="top-right"
           closeButton
