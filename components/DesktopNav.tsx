@@ -6,8 +6,8 @@ import Logo from "./Logo";
 import { Button } from "./ui/button";
 import Link from "next/link";
 import { useScreenSize } from "@/hooks/useScreenSize";
-import { Session } from "next-auth";
 import { ProfileWidget } from "./ProfileWidget";
+import { UserProfile } from "@/types/user-profile";
 
 interface NavItem {
   name: string;
@@ -16,7 +16,7 @@ interface NavItem {
 
 type Props = {
   navItems: NavItem[];
-  session: Session | null;
+  session: UserProfile | null;
 };
 
 export default function DesktopNav({ navItems, session }: Props) {
@@ -44,7 +44,7 @@ export default function DesktopNav({ navItems, session }: Props) {
         <CartButton />
 
         {session ? (
-          <ProfileWidget user={session.user} />
+          <ProfileWidget user={session} />
         ) : (
           <>
             <Button className="primary-gradient font-medium" size="lg" asChild>

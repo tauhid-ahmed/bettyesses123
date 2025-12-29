@@ -9,13 +9,8 @@ import React from "react";
 import ActiveLink from "./ActiveLink";
 import Link from "next/link";
 import { useScreenSize } from "@/hooks/useScreenSize";
-import { Session } from "next-auth";
 import { ProfileWidget } from "./ProfileWidget";
-
-interface MobileNavProps {
-  isOpen: boolean;
-  onOpenChange: (open: boolean) => void;
-}
+import { type UserProfile } from "@/types/user-profile";
 
 const menuVariants: Variants = {
   closed: {
@@ -80,7 +75,7 @@ interface NavItem {
 
 type Props = {
   navItems: NavItem[];
-  session: Session | null;
+  session: UserProfile | null;
 };
 
 export default function MobileNav({ navItems, session }: Props) {
@@ -105,7 +100,7 @@ export default function MobileNav({ navItems, session }: Props) {
         </div>
         <div className="flex items-center gap-2">
           <CartButton />
-          {session && <ProfileWidget user={session.user} />}
+          {session && <ProfileWidget user={session} />}
 
           <Button
             variant="ghost"
