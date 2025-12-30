@@ -24,20 +24,6 @@ export function OTPForm() {
   const router = useRouter();
 
   const handleVerify = async () => {
-    if (otp.length !== 6) {
-      toast.error(`Please enter a valid ${OTP_LENGTH}-digit OTP`);
-      return;
-    }
-
-    const email =
-      typeof window !== "undefined" ? localStorage.getItem("email") : null;
-
-    if (!email) {
-      toast.error("Email not found. Please login again.");
-      router.push("/");
-      return;
-    }
-
     setIsVerifying(true);
 
     try {

@@ -27,6 +27,7 @@ export async function registerUser(
     });
 
     const data: SuccessResponse | ErrorResponse = await response.json();
+    console.log(data);
 
     if (!response.ok) {
       const message =
