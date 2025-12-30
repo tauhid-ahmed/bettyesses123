@@ -6,10 +6,17 @@ import {
   type ErrorResponse,
   type RegisterUserData,
 } from "../types/register-user";
+import { isApiError, isApiSuccess } from "@/utils/authResponseGuard";
+
+type RegisterUserResponse = Promise<{
+  message: string;
+  success: boolean;
+  userId: string | null;
+}>;
 
 export async function registerUser(
   registerUserData: RegisterUserData
-): Promise<{ message: string; success: boolean }> {
+): RegisterUserResponse {
   try {
     const response = await fetch(`${BACKEND_API_URL}/auth/create-account`, {
       method: "POST",
@@ -23,13 +30,13 @@ export async function registerUser(
 
     if (!response.ok) {
       const message =
-        isErrorResponse(data) && data.message
+        isApiError(data) && data.message
           ? data.message
           : `Request failed with status ${response.status}`;
       throw new Error(message);
     }
 
-    if (isErrorResponse(data)) {
+    if (isApiError(data)) {
       throw new Error(data.message);
     }
 
@@ -37,6 +44,7 @@ export async function registerUser(
       return {
         message: data.message,
         success: true,
+        userId: data.data.id,
       };
     }
 
@@ -50,19 +58,13 @@ export async function registerUser(
     return {
       message: errorMessage,
       success: false,
+      userId: null,
     };
   }
 }
 
-// Type guards
 function isSuccessResponse(
   response: SuccessResponse | ErrorResponse
 ): response is SuccessResponse {
-  return response.success === true && response.statusCode === 201;
-}
-
-function isErrorResponse(
-  response: SuccessResponse | ErrorResponse
-): response is ErrorResponse {
-  return response.success === false;
+  return isApiSuccess(response) && response.statusCode === 201;
 }

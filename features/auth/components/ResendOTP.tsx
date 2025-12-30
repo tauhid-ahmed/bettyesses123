@@ -4,22 +4,29 @@ import { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { useRouter } from "next/navigation";
 import { toast } from "sonner";
+import {
+  OTP_EXPIRATION_TIME,
+  OTP_EXPIRATION_TIMER_KEY,
+  OTP_TIMER_KEY,
+  OTP_VALIDATION_TIME,
+  REGISTER_USER_KEY,
+} from "../constant";
+import { resendOTP } from "../actions/resend-otp";
+import { useOTPTimer } from "../provider/OTPTimer";
 
 export default function ResendOTP() {
   const [isDisabled, setIsDisabled] = useState(true);
   const [isLoading, setIsLoading] = useState(false);
   const [isMounted, setIsMounted] = useState(false);
-  const router = useRouter();
+  const { setNewExpireTime } = useOTPTimer();
 
   useEffect(() => {
-    // Set mounted flag to ensure we're on the client
     setIsMounted(true);
 
     const checkTimer = () => {
-      // Only access localStorage after component is mounted
       if (typeof window === "undefined") return;
 
-      const expiryTime = localStorage.getItem("otp-expiry");
+      const expiryTime = localStorage.getItem(OTP_EXPIRATION_TIMER_KEY);
 
       if (!expiryTime) {
         setIsDisabled(false);
@@ -32,11 +39,7 @@ export default function ResendOTP() {
 
       setIsDisabled(remaining > 0);
     };
-
-    // Check immediately
     checkTimer();
-
-    // Check every second
     const interval = setInterval(checkTimer, 1000);
 
     return () => clearInterval(interval);
@@ -45,52 +48,22 @@ export default function ResendOTP() {
   const handleResend = async () => {
     if (isDisabled || isLoading) return;
 
-    setIsLoading(true);
+    const registerUserId = localStorage.getItem(REGISTER_USER_KEY);
+    const isFoundRegisterUserId = Boolean(registerUserId);
+    if (!isFoundRegisterUserId)
+      return toast.error("User not found! Please register again");
 
-    try {
-      const email =
-        typeof window !== "undefined" ? localStorage.getItem("email") : null;
+    const response = await resendOTP(registerUserId as string);
+    localStorage.setItem(OTP_EXPIRATION_TIMER_KEY, Date.now().toString());
 
-      if (!email) {
-        toast.error("Email not found. Please try logging in again.");
-        router.push("/auth/login");
-        return;
-      }
-
-      const response = await fetch(
-        process.env.NEXT_PUBLIC_API_BASE_URL + "/auth/admin/login/resend-otp",
-        {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ email }),
-        }
-      );
-
-      const responseData = await response.json();
-
-      if (!response.ok) {
-        toast.error(responseData.message);
-        return;
-      }
-
-      // Set new timer - 10 minutes (600 seconds)
-      const expiryTime = Date.now() + 600 * 1000;
-      localStorage.setItem("otp-expiry", expiryTime.toString());
-      localStorage.setItem("otp-timer", "600");
-
-      setIsDisabled(true);
-      toast.success(responseData.message);
-      window.location.reload();
-    } catch (error) {
-      if (error instanceof Error) {
-        toast.error(error.message);
-      }
-    } finally {
-      setIsLoading(false);
-    }
+    if (response.success) {
+      toast.success(response.message);
+      localStorage.setItem(OTP_TIMER_KEY, OTP_VALIDATION_TIME);
+      localStorage.setItem(OTP_EXPIRATION_TIMER_KEY, OTP_EXPIRATION_TIME());
+      setNewExpireTime(Number(OTP_EXPIRATION_TIME()) - Date.now());
+    } else if (!response.success) toast.error(response.message);
   };
 
-  // Optionally prevent render flash during hydration
   if (!isMounted) {
     return (
       <Button
