@@ -2,74 +2,52 @@
 
 import { useState, useEffect } from "react";
 import { Clock5 } from "lucide-react";
+import { useOTPTimer } from "../provider/OTPTimer";
 
 export default function Timer({ onExpire }: { onExpire?: () => void }) {
+  const { expireTime, clearExpireTime } = useOTPTimer();
   const [timeLeft, setTimeLeft] = useState<number | null>(null);
   const [isMounted, setIsMounted] = useState(false);
 
-  // Initialize from localStorage after mount
   useEffect(() => {
     setIsMounted(true);
 
-    const storedSeconds = localStorage.getItem("otp-timer");
-    const expiryTime = localStorage.getItem("otp-expiry");
-
-    // If we have seconds but no expiry time, convert to expiry time
-    if (storedSeconds && !expiryTime) {
-      const seconds = Number(storedSeconds);
-      const expiry = Date.now() + seconds * 1000;
-      localStorage.setItem("otp-expiry", expiry.toString());
-      localStorage.removeItem("otp-timer"); // Clean up old format
-      setTimeLeft(seconds);
-    }
-    // If we have expiry time, calculate remaining
-    else if (expiryTime) {
+    if (expireTime > 0) {
       const now = Date.now();
-      const expiry = Number(expiryTime);
-      const remaining = Math.max(0, Math.floor((expiry - now) / 1000));
-      setTimeLeft(remaining);
+      const remaining = Math.max(0, Math.floor((expireTime - now) / 1000));
 
+      // If already expired on load, clear immediately
       if (remaining === 0) {
-        localStorage.removeItem("otp-expiry");
+        clearExpireTime();
+        setTimeLeft(0);
+      } else {
+        setTimeLeft(remaining);
       }
     } else {
       setTimeLeft(0);
     }
-  }, []);
+  }, [expireTime, clearExpireTime]);
 
-  // Handle countdown with real clock time
   useEffect(() => {
-    if (timeLeft === null) return;
-
-    if (timeLeft <= 0) {
-      onExpire?.();
-      localStorage.removeItem("otp-expiry");
+    if (timeLeft === null || timeLeft <= 0) {
       return;
     }
 
     const timer = setInterval(() => {
-      const expiryTime = localStorage.getItem("otp-expiry");
-
-      if (!expiryTime) {
-        setTimeLeft(0);
-        return;
-      }
-
       const now = Date.now();
-      const expiry = Number(expiryTime);
-      const remaining = Math.max(0, Math.floor((expiry - now) / 1000));
+      const remaining = Math.max(0, Math.floor((expireTime - now) / 1000));
 
       setTimeLeft(remaining);
 
       if (remaining === 0) {
-        localStorage.removeItem("otp-expiry");
+        clearExpireTime();
+        onExpire?.();
       }
     }, 1000);
 
     return () => clearInterval(timer);
-  }, [timeLeft, onExpire]);
+  }, [timeLeft, expireTime, onExpire, clearExpireTime]);
 
-  // Format time as MM:SS
   const formatTime = (seconds: number) => {
     const mins = Math.floor(seconds / 60);
     const secs = seconds % 60;
@@ -78,7 +56,6 @@ export default function Timer({ onExpire }: { onExpire?: () => void }) {
       .padStart(2, "0")}`;
   };
 
-  // Prevent layout shift by rendering placeholder until mounted
   if (!isMounted || timeLeft === null) {
     return (
       <div className="flex items-center gap-2 justify-center text-sm mt-2">
@@ -99,7 +76,7 @@ export default function Timer({ onExpire }: { onExpire?: () => void }) {
       <Clock5
         className={`size-4 ${
           isExpired
-            ? "text-red-500"
+            ? "text-rose-500"
             : isWarning
             ? "text-orange-500"
             : "text-gray-500"
@@ -108,7 +85,7 @@ export default function Timer({ onExpire }: { onExpire?: () => void }) {
       <span
         className={`text-sm font-medium leading-1 ${
           isExpired
-            ? "text-red-500"
+            ? "text-rose-500"
             : isWarning
             ? "text-orange-500"
             : "text-gray-700"

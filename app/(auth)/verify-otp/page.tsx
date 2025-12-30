@@ -1,11 +1,10 @@
-import Message from "@/features/auth/components/Message";
 import { OTPForm } from "@/features/auth/components/OTPForm";
+import { OTPTimerProvider } from "@/features/auth/provider/OTPTimer";
 
 export default function VerifyOtp() {
   return (
-    <div>
+    <OTPTimerProvider>
       <OTPForm />
-      <Message />
-    </div>
+    </OTPTimerProvider>
   );
 }

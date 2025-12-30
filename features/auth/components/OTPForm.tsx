@@ -12,8 +12,11 @@ import { toast } from "sonner";
 import ResendOTP from "./ResendOTP";
 import { REGEXP_ONLY_DIGITS } from "input-otp";
 import Timer from "./Timer";
-
-const OTP_LENGTH = 6;
+import {
+  OTP_EXPIRATION_TIMER_KEY,
+  OTP_LENGTH,
+  OTP_VALIDATION_TIME,
+} from "../constant";
 
 export function OTPForm() {
   const [otp, setOtp] = useState("");
@@ -58,8 +61,8 @@ export function OTPForm() {
 
       // Success - cleanup localStorage
       localStorage.removeItem("email");
-      localStorage.removeItem("otp-expiry");
-      localStorage.removeItem("otp-timer");
+      localStorage.removeItem(OTP_EXPIRATION_TIMER_KEY);
+      localStorage.removeItem(OTP_VALIDATION_TIME);
 
       toast.success(data.message || "OTP verified successfully.");
 

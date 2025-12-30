@@ -11,6 +11,13 @@ import { registerUser } from "../actions/register-user";
 import { toast } from "sonner";
 import { useRouter } from "next/navigation";
 import { verifyOtpPath } from "@/paths";
+import {
+  OTP_EXPIRATION_TIME,
+  OTP_EXPIRATION_TIMER_KEY,
+  OTP_TIMER_KEY,
+  OTP_VALIDATION_TIME,
+  REGISTER_USER_KEY,
+} from "../constant";
 
 export default function SignUpForm() {
   const router = useRouter();
@@ -37,8 +44,11 @@ export default function SignUpForm() {
       toast.success(response.message);
       form.reset();
       router.push(verifyOtpPath());
-      localStorage.setItem("otp-timer", "300");
+      localStorage.setItem(OTP_TIMER_KEY, OTP_VALIDATION_TIME);
       localStorage.setItem("email", data.email);
+      localStorage.setItem(OTP_EXPIRATION_TIMER_KEY, OTP_EXPIRATION_TIME());
+      response.userId &&
+        localStorage.setItem(REGISTER_USER_KEY, response.userId);
     } else if (!response.success) toast.error(response.message);
   };
 
