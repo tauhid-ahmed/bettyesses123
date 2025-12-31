@@ -26,6 +26,15 @@ export const authConfig: NextAuthConfig = {
               refreshToken: string;
             };
 
+            // Check user status before allowing login
+            if (user.status !== "ACTIVE") {
+              throw new Error("ACCOUNT_NOT_ACTIVE");
+            }
+
+            if (!user.isVerified) {
+              throw new Error("ACCOUNT_NOT_VERIFIED");
+            }
+
             return {
               id: user.id,
               email: user.email,
@@ -62,24 +71,37 @@ export const authConfig: NextAuthConfig = {
             const response = await res.json();
 
             if (!res.ok || !response.success) {
-              throw new Error(response.message || "Login failed");
+              // Pass through specific error messages from backend
+              throw new Error(response.message || "LOGIN_FAILED");
+            }
+
+            const userData = response.data;
+
+            // Check user status BEFORE creating session
+            if (userData.status !== "ACTIVE") {
+              throw new Error("ACCOUNT_NOT_ACTIVE");
+            }
+
+            if (!userData.isVerified) {
+              throw new Error("ACCOUNT_NOT_VERIFIED");
             }
 
             return {
-              id: response.data.id,
-              email: response.data.email,
-              firstName: response.data.firstName,
-              lastName: response.data.lastName,
-              role: response.data.role,
-              image: response.data.image,
-              status: response.data.status,
-              isVerified: response.data.isVerified,
-              accessToken: response.data.accessToken,
-              refreshToken: response.data.refreshToken,
+              id: userData.id,
+              email: userData.email,
+              firstName: userData.firstName,
+              lastName: userData.lastName,
+              role: userData.role,
+              image: userData.image,
+              status: userData.status,
+              isVerified: userData.isVerified,
+              accessToken: userData.accessToken,
+              refreshToken: userData.refreshToken,
             };
           } catch (error) {
             console.error("Authorization error:", error);
-            return null;
+            // Re-throw the error so it can be caught by signIn
+            throw error;
           }
         }
 
