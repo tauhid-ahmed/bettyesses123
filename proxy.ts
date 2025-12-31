@@ -45,16 +45,18 @@ export async function proxy(request: NextRequest) {
   const isAuthRoute = authRoutes.some((route) => pathname.startsWith(route));
   const isDashboardRoute = pathname.startsWith("/dashboard");
 
-  // Case 1: Authenticated users trying to access auth pages
+  // Case 1: Authenticated users should NOT access auth pages
   if (isAuthenticated && isAuthRoute) {
+    console.log(
+      "Authenticated user trying to access auth route, redirecting..."
+    );
     if (isSuperAdmin || isAdmin) {
       console.log("Redirecting admin to dashboard");
       return NextResponse.redirect(new URL("/dashboard", request.url));
     }
-    if (isUser) {
-      console.log("Redirecting user to home");
-      return NextResponse.redirect(new URL("/", request.url));
-    }
+    // All other authenticated users (including USER role) go to home
+    console.log("Redirecting authenticated user to home");
+    return NextResponse.redirect(new URL("/", request.url));
   }
 
   // Case 2: Unauthenticated users trying to access dashboard
