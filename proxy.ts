@@ -13,11 +13,6 @@ const authRoutes = [
 
 export async function proxy(request: NextRequest) {
   const { pathname } = request.nextUrl;
-  const session = await auth();
-
-  const SUPER_ADMIN = "SUPERADMIN";
-  const isSuperAdmin = session?.user?.role === SUPER_ADMIN;
-  const isUser = session?.user?.role === "USER";
 
   // Skip middleware for API routes, Next.js internals, and static assets
   if (
@@ -29,36 +24,68 @@ export async function proxy(request: NextRequest) {
     return NextResponse.next();
   }
 
-  const sessionToken =
-    request.cookies.get("authjs.session-token") ||
-    request.cookies.get("__Secure-authjs.session-token");
+  // Get session - this is crucial for Vercel
+  const session = await auth();
 
-  const isAuthenticated = !!sessionToken;
+  // Debug logging for Vercel deployment (check logs in Vercel dashboard)
+  console.log("Middleware Debug:", {
+    pathname,
+    hasSession: !!session,
+    userRole: session?.user?.role,
+    userId: session?.user?.id,
+    cookies: request.cookies.getAll().map((c) => c.name),
+  });
+
+  const isAuthenticated = !!session;
+  const userRole = session?.user?.role;
+  const isSuperAdmin = userRole === "SUPERADMIN";
+  const isAdmin = userRole === "ADMIN";
+  const isUser = userRole === "USER";
+
   const isAuthRoute = authRoutes.some((route) => pathname.startsWith(route));
   const isDashboardRoute = pathname.startsWith("/dashboard");
 
-  // If user is authenticated and trying to access auth pages, redirect to dashboard (only for SUPERADMIN)
-  if (isAuthenticated && isAuthRoute && isSuperAdmin) {
-    return NextResponse.redirect(new URL("/dashboard", request.url));
+  // Case 1: Authenticated users trying to access auth pages
+  if (isAuthenticated && isAuthRoute) {
+    if (isSuperAdmin || isAdmin) {
+      console.log("Redirecting admin to dashboard");
+      return NextResponse.redirect(new URL("/dashboard", request.url));
+    }
+    if (isUser) {
+      console.log("Redirecting user to home");
+      return NextResponse.redirect(new URL("/", request.url));
+    }
   }
 
-  // If user is authenticated and trying to access auth pages, redirect to home (for regular users)
-  if (isAuthenticated && isAuthRoute && isUser) {
-    return NextResponse.redirect(new URL("/", request.url));
-  }
-
-  // If user is NOT authenticated and trying to access dashboard, redirect to login
+  // Case 2: Unauthenticated users trying to access dashboard
   if (!isAuthenticated && isDashboardRoute) {
+    console.log("Redirecting unauthenticated user to login");
     const loginUrl = new URL(signinPath(), request.url);
     loginUrl.searchParams.set("callbackUrl", pathname);
     return NextResponse.redirect(loginUrl);
   }
 
-  // If user has role "USER" and trying to access dashboard, redirect them away (e.g., to home or unauthorized page)
-  if (isAuthenticated && isUser && isDashboardRoute) {
-    return NextResponse.redirect(new URL("/", request.url)); // or "/unauthorized"
+  // Case 3: CRITICAL - Redirect USER role from dashboard to homepage
+  if (isAuthenticated && isDashboardRoute && isUser) {
+    console.log(
+      "Redirecting USER from dashboard to home:",
+      session.user?.email
+    );
+    return NextResponse.redirect(new URL("/", request.url));
   }
 
-  // Allow access to all other routes
+  // Case 4: Only SUPERADMIN and ADMIN can access dashboard
+  if (isAuthenticated && isDashboardRoute && !isSuperAdmin && !isAdmin) {
+    console.log("Redirecting unauthorized role to home:", userRole);
+    return NextResponse.redirect(new URL("/", request.url));
+  }
+
+  // Default: Allow access
   return NextResponse.next();
 }
+
+export const config = {
+  matcher: [
+    "/((?!_next/static|_next/image|favicon.ico|.*\\.(?:svg|png|jpg|jpeg|gif|webp)$).*)",
+  ],
+};
