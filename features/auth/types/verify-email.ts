@@ -6,8 +6,7 @@ export type VerifyEmailErrorResponse = {
   errorId: string;
   errorMessages: [
     {
-      path: "otpCode";
-      message: "otpCode must be 4 digit";
+      message: string;
     }
   ];
 };
@@ -30,3 +29,7 @@ export type VerifyEmailSuccessResponse = {
     message: string;
   };
 };
+
+export type VerifyEmailResponse =
+  | VerifyEmailSuccessResponse
+  | VerifyEmailErrorResponse;
