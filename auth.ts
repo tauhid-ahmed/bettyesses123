@@ -1,6 +1,11 @@
 import NextAuth from "next-auth";
 import CredentialsProvider from "next-auth/providers/credentials";
 import type { NextAuthConfig } from "next-auth";
+import { UserProfile } from "./types/user-profile";
+
+type Credentials = Partial<
+  Record<"email" | "password" | "accessToken" | "refreshToken", unknown>
+>;
 
 export const authConfig: NextAuthConfig = {
   providers: [
@@ -10,51 +15,80 @@ export const authConfig: NextAuthConfig = {
         email: { label: "Email", type: "email" },
         password: { label: "Password", type: "password" },
       },
-      async authorize(credentials) {
-        if (!credentials?.email || !credentials?.password) {
-          throw new Error("Email and password are required");
-        }
+      async authorize(credentials: Credentials) {
+        if (!credentials) return null;
 
-        try {
-          // Replace with your actual API endpoint
-          const res = await fetch(`${process.env.BACKEND_API_URL}/auth/login`, {
-            method: "POST",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({
-              email: credentials.email,
-              password: credentials.password,
-            }),
-          });
+        // Handle token-based authentication (e.g., from OTP verification)
+        if (credentials?.accessToken && credentials?.refreshToken) {
+          try {
+            const user = credentials as UserProfile & {
+              accessToken: string;
+              refreshToken: string;
+            };
 
-          const response = await res.json();
-
-          if (!res.ok || !response.success) {
-            throw new Error(response.message || "Login failed");
+            return {
+              id: user.id,
+              email: user.email,
+              firstName: user.firstName,
+              lastName: user.lastName,
+              role: user.role,
+              image: user.image,
+              status: user.status,
+              isVerified: user.isVerified,
+              accessToken: user.accessToken,
+              refreshToken: user.refreshToken,
+            };
+          } catch (error) {
+            console.error("Token authorization error:", error);
+            return null;
           }
-
-          // Return user data that will be stored in the session
-          return {
-            id: response.data.id,
-            email: response.data.email,
-            firstName: response.data.firstName,
-            lastName: response.data.lastName,
-            role: response.data.role,
-            image: response.data.image,
-            status: response.data.status,
-            isVerified: response.data.isVerified,
-            accessToken: response.data.accessToken,
-            refreshToken: response.data.refreshToken,
-          };
-        } catch (error) {
-          console.error("Authorization error:", error);
-          throw new Error("Invalid credentials");
         }
+
+        // Handle email/password authentication
+        if (credentials.email && credentials.password) {
+          try {
+            const res = await fetch(
+              `${process.env.BACKEND_API_URL}/auth/login`,
+              {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({
+                  email: credentials.email,
+                  password: credentials.password,
+                }),
+              }
+            );
+
+            const response = await res.json();
+
+            if (!res.ok || !response.success) {
+              throw new Error(response.message || "Login failed");
+            }
+
+            return {
+              id: response.data.id,
+              email: response.data.email,
+              firstName: response.data.firstName,
+              lastName: response.data.lastName,
+              role: response.data.role,
+              image: response.data.image,
+              status: response.data.status,
+              isVerified: response.data.isVerified,
+              accessToken: response.data.accessToken,
+              refreshToken: response.data.refreshToken,
+            };
+          } catch (error) {
+            console.error("Authorization error:", error);
+            return null;
+          }
+        }
+
+        return null;
       },
     }),
   ],
   callbacks: {
     async jwt({ token, user, trigger, session }) {
-      // Initial sign in
       if (user) {
         token.id = user.id;
         token.email = user.email;
