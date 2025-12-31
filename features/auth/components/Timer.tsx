@@ -3,9 +3,10 @@
 import { useState, useEffect } from "react";
 import { Clock5 } from "lucide-react";
 import { useOTPTimer } from "../provider/OTPTimer";
+import { OTP_VALIDATION_TIME } from "../constant";
 
 export default function Timer({ onExpire }: { onExpire?: () => void }) {
-  const { expireTime, clearExpireTime } = useOTPTimer();
+  const { expireTime, clearExpireTime, setNewExpireTime } = useOTPTimer();
   const [timeLeft, setTimeLeft] = useState<number | null>(null);
   const [isMounted, setIsMounted] = useState(false);
 
@@ -15,18 +16,16 @@ export default function Timer({ onExpire }: { onExpire?: () => void }) {
     if (expireTime > 0) {
       const now = Date.now();
       const remaining = Math.max(0, Math.floor((expireTime - now) / 1000));
+      setTimeLeft(remaining);
 
-      // If already expired on load, clear immediately
+      // If already expired on load, trigger onExpire callback
       if (remaining === 0) {
-        clearExpireTime();
-        setTimeLeft(0);
-      } else {
-        setTimeLeft(remaining);
+        onExpire?.();
       }
     } else {
       setTimeLeft(0);
     }
-  }, [expireTime, clearExpireTime]);
+  }, [expireTime, onExpire]);
 
   useEffect(() => {
     if (timeLeft === null || timeLeft <= 0) {
@@ -47,6 +46,10 @@ export default function Timer({ onExpire }: { onExpire?: () => void }) {
 
     return () => clearInterval(timer);
   }, [timeLeft, expireTime, onExpire, clearExpireTime]);
+
+  useEffect(() => {
+    setNewExpireTime(Number(OTP_VALIDATION_TIME));
+  }, []);
 
   const formatTime = (seconds: number) => {
     const mins = Math.floor(seconds / 60);
@@ -94,7 +97,7 @@ export default function Timer({ onExpire }: { onExpire?: () => void }) {
         <span className="text-gray-500">
           {isExpired ? "Expired" : formatTime(timeLeft)}
         </span>{" "}
-        <span className="font-semibold">s</span>
+        {!isExpired && <span className="font-semibold">s</span>}
       </span>
     </div>
   );

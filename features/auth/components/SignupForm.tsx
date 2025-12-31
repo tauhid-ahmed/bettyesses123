@@ -43,12 +43,12 @@ export default function SignUpForm() {
     if (response.success) {
       toast.success(response.message);
       form.reset();
-      router.push(verifyOtpPath());
+
       localStorage.setItem(OTP_TIMER_KEY, OTP_VALIDATION_TIME);
-      localStorage.setItem("email", data.email);
       localStorage.setItem(OTP_EXPIRATION_TIMER_KEY, OTP_EXPIRATION_TIME());
       response.userId &&
         localStorage.setItem(REGISTER_USER_KEY, response.userId);
+      router.push(verifyOtpPath());
     } else if (!response.success) toast.error(response.message);
   };
 

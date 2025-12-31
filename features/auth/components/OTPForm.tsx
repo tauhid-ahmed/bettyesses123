@@ -42,8 +42,6 @@ export function OTPForm() {
         });
       }
 
-      // Success - cleanup localStorage
-      localStorage.removeItem("email");
       localStorage.removeItem(OTP_EXPIRATION_TIMER_KEY);
       localStorage.removeItem(OTP_VALIDATION_TIME);
       router.push("/");
