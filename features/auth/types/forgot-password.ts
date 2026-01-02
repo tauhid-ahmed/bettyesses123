@@ -1,4 +1,4 @@
-export type ForgotPasswordResponse = {
+export type ForgotPasswordSuccessResponse = {
   success: true;
   statusCode: 200;
   message: string;
@@ -11,8 +11,8 @@ export type ForgotPasswordResponse = {
   };
 };
 
-export type ErrorResponse = {
-  success: boolean;
+export type ForgotPasswordErrorResponse = {
+  success: false;
   message: string;
   errorMessages: [
     {
@@ -22,4 +22,6 @@ export type ErrorResponse = {
   ];
 };
 
-export type ForgotPasswordApiResponse = ForgotPasswordResponse | ErrorResponse;
+export type ForgotPasswordApiResponse =
+  | ForgotPasswordSuccessResponse
+  | ForgotPasswordErrorResponse;

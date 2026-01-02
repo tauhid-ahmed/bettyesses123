@@ -8,3 +8,7 @@ export const cartPath = () => "/cart";
 export const signinPath = () => "/login";
 export const signupPath = () => "/signup";
 export const verifyOtpPath = () => "/verify-otp";
+export const verifyForgotPasswordOtpPath = () => "/verify-forgot-password-otp";
+export const forgotPasswordPath = () => "/forgot-password";
+export const resetPasswordPath = () => "/reset-password";
+export const resetSuccessPath = () => "/reset-success";
