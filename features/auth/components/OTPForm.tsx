@@ -55,7 +55,7 @@ export function OTPForm() {
   };
 
   return (
-    <div className="mx-auto w-full max-w-md mt-8 space-y-4">
+    <div className="mx-auto w-full max-w-md space-y-4">
       <div className="space-y-2">
         <h1 className="text-center font-medium text-2xl md:text-[32px] text-primary-800">
           Enter the 6-digit verification code sent to your email
