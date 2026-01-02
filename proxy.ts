@@ -9,6 +9,7 @@ const authRoutes = [
   "/reset-password",
   "/signup",
   "/verify-otp",
+  "/verify-forgot-password-otp",
 ];
 
 export async function proxy(request: NextRequest) {

@@ -1,32 +1,36 @@
 "use server";
 
 import { BACKEND_API_URL } from "@/constants";
-import { type ForgotPasswordApiResponse } from "../types/forgot-password";
+import { type ForgotPasswordOtpVerifyResponse } from "../types/forgot-password-otp-verify";
 import { isApiError, isApiSuccess } from "@/utils/authResponseGuard";
 
 type ForgotPasswordUserData = {
-  email: string;
+  userId: string;
+  otpCode: string;
 };
 
 type ForgotPasswordResponse = {
-  userId: string | null;
+  token: string;
   message: string;
   success: boolean;
 };
 
-export async function forgotPassword(
+export async function verifyForgotPasswordOtp(
   userData: ForgotPasswordUserData
 ): Promise<ForgotPasswordResponse> {
   try {
-    const response = await fetch(`${BACKEND_API_URL}/auth/forgot-password`, {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify(userData),
-    });
+    const response = await fetch(
+      `${BACKEND_API_URL}/auth/verify-reset-password-otp`,
+      {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(userData),
+      }
+    );
 
-    const data: ForgotPasswordApiResponse = await response.json();
+    const data: ForgotPasswordOtpVerifyResponse = await response.json();
 
     if (!response.ok) {
       const message =
@@ -44,7 +48,7 @@ export async function forgotPassword(
       return {
         message: data.message,
         success: true,
-        userId: data.data.id,
+        token: data.data.accessToken,
       };
     }
 
@@ -53,12 +57,11 @@ export async function forgotPassword(
     const errorMessage =
       error instanceof Error
         ? error.message
-        : "Failed to send password reset email due to unknown error"; // ✅ Correct message
-
+        : "Failed to send password reset email due to unknown error";
     return {
       message: errorMessage,
       success: false,
-      userId: null,
+      token: "",
     };
   }
 }
