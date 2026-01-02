@@ -34,12 +34,14 @@ export default function AuthCard({
   backIcon,
 }: AuthCardProps) {
   return (
-    <Card className="mx-auto w-full max-w-lg border-none bg-transparent shadow-none p-0 gap-4 md:gap-8">
+    <Card className="mx-auto w-full max-w-lg border-none bg-transparent shadow-none p-0">
       <CardHeader className="text-center">
         <Logo />
-        <CardTitle className="text-2xl font-semibold mt-4 lg:mt-6 text-primary-800 md:text-[32px]">
-          {title}
-        </CardTitle>
+        {title && (
+          <CardTitle className="text-2xl font-semibold text-primary-800 md:text-[32px]">
+            {title}
+          </CardTitle>
+        )}
 
         {description && (
           <CardDescription className="flex items-center justify-center gap-1">
@@ -51,24 +53,22 @@ export default function AuthCard({
 
       <CardContent className="p-0">{children}</CardContent>
 
-      {message && (
-        <CardFooter className="justify-center text-sm text-muted-foreground md:-mt-4">
-          {message}
-          {backHref && (
-            <CardAction>
-              <Button asChild variant="link" className="w-full">
-                <Link
-                  href={backHref}
-                  className="flex items-center justify-center gap-2"
-                >
-                  {backIcon}
-                  <span>{backText}</span>
-                </Link>
-              </Button>
-            </CardAction>
-          )}
-        </CardFooter>
-      )}
+      <CardFooter className="justify-center text-sm text-muted-foreground md:-mt-4">
+        {message && message}
+        {backHref && (
+          <CardAction>
+            <Button asChild variant="link" className="w-full">
+              <Link
+                href={backHref}
+                className="flex items-center justify-center gap-2"
+              >
+                {backIcon}
+                <span>{backText}</span>
+              </Link>
+            </Button>
+          </CardAction>
+        )}
+      </CardFooter>
     </Card>
   );
 }
