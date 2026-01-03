@@ -19,6 +19,7 @@ import {
 } from "../constant";
 import { verifyForgotPasswordOtp } from "../actions/verify-forgot-password-otp";
 import { resetPasswordPath } from "@/paths";
+import { ForgotPasswordOtpVerifyResponse } from "../types/forgot-password-otp-verify";
 
 export function ForgotPasswordOTPForm() {
   const [otp, setOtp] = useState("");
@@ -39,7 +40,7 @@ export function ForgotPasswordOTPForm() {
 
         localStorage.removeItem(OTP_EXPIRATION_TIMER_KEY);
         localStorage.removeItem(OTP_VALIDATION_TIME);
-        router.push(resetPasswordPath());
+        router.push(resetPasswordPath(encodeURIComponent(data.token)));
       }
 
       if (!data.success) {

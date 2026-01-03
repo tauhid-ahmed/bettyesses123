@@ -7,6 +7,7 @@ import { Form } from "@/components/ui/form";
 import { Button } from "@/components/ui/button";
 import AuthCard from "./AuthCard";
 import { resetPasswordSchema, type ResetPasswordFormData } from "../schema";
+import { useSearchParams } from "next/navigation";
 
 export default function ResetPasswordForm() {
   const form = useForm<ResetPasswordFormData>({
@@ -16,6 +17,9 @@ export default function ResetPasswordForm() {
       confirmPassword: "",
     },
   });
+
+  const searchParams = useSearchParams();
+  const token = decodeURIComponent(searchParams.get("token") || "");
 
   const onSubmit = (data: ResetPasswordFormData) => {
     // Handle reset password logic here

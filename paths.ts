@@ -10,5 +10,6 @@ export const signupPath = () => "/signup";
 export const verifyOtpPath = () => "/verify-otp";
 export const verifyForgotPasswordOtpPath = () => "/verify-forgot-password-otp";
 export const forgotPasswordPath = () => "/forgot-password";
-export const resetPasswordPath = () => "/reset-password";
+export const resetPasswordPath = (token: string) =>
+  "/reset-password?token=" + token;
 export const resetSuccessPath = () => "/reset-success";
