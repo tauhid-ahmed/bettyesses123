@@ -3,7 +3,7 @@ import { signinPath } from "./paths";
 import { auth } from "./auth";
 
 // Force Edge Runtime
-export const runtime = "edge";
+export const runtime = "experimental-edge";
 
 const authRoutes = [
   "/login",
