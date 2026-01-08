@@ -23,7 +23,7 @@ const publicRoutes = [
   // Add any other public pages here
 ];
 
-export async function proxy(request: NextRequest) {
+export async function middleware(request: NextRequest) {
   const { pathname } = request.nextUrl;
 
   // Skip middleware for API routes, Next.js internals, and static assets
