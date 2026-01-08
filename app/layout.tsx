@@ -6,6 +6,7 @@ import { Suspense } from "react";
 import QueryProvider from "@/providers/QueryProvider";
 import AuthSession from "@/providers/AuthSessionProvider";
 import UserProfileServerProvider from "@/providers/UserProfileServerProvider";
+import Loading from "@/components/Loading";
 
 export const metadata: Metadata = {
   title: "Smart Book App",
@@ -26,7 +27,7 @@ export default function RootLayout({ children }: Readonly<LayoutProps>) {
     <html lang="en">
       <body className={`${sans.variable} ${sans.className} antialiased`}>
         <AuthSession>
-          <Suspense fallback={<div>Loading...</div>}>
+          <Suspense fallback={<Loading />}>
             <UserProfileServerProvider>
               <QueryProvider>{children}</QueryProvider>
             </UserProfileServerProvider>
