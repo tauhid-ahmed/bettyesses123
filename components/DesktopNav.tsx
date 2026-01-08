@@ -8,6 +8,7 @@ import Link from "next/link";
 import { useScreenSize } from "@/hooks/useScreenSize";
 import { ProfileWidget } from "./ProfileWidget";
 import { UserProfile } from "@/types/user-profile";
+import { signinPath, signupPath } from "@/paths";
 
 interface NavItem {
   name: string;
@@ -48,7 +49,7 @@ export default function DesktopNav({ navItems, session }: Props) {
         ) : (
           <>
             <Button className="primary-gradient font-medium" size="lg" asChild>
-              <Link href="/signup">Sign up</Link>
+              <Link href={signupPath()}>Sign up</Link>
             </Button>
             <Button
               className="border-2 border-primary-500 text-primary-500 font-medium hover:bg-primary-500 hover:text-white transition-all duration-200"
@@ -56,7 +57,7 @@ export default function DesktopNav({ navItems, session }: Props) {
               size="lg"
               asChild
             >
-              <Link href="/login">Log in</Link>
+              <Link href={signinPath()}>Log in</Link>
             </Button>
           </>
         )}

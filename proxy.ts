@@ -2,6 +2,9 @@ import { NextRequest, NextResponse } from "next/server";
 import { signinPath } from "./paths";
 import { auth } from "./auth";
 
+// Force Edge Runtime
+export const runtime = "edge";
+
 const authRoutes = [
   "/login",
   "/reset-success",
@@ -10,6 +13,14 @@ const authRoutes = [
   "/signup",
   "/verify-otp",
   "/verify-forgot-password-otp",
+];
+
+// Add public routes that don't require authentication
+const publicRoutes = [
+  "/", // homepage
+  "/about",
+  "/contact",
+  // Add any other public pages here
 ];
 
 export async function proxy(request: NextRequest) {
@@ -25,17 +36,21 @@ export async function proxy(request: NextRequest) {
     return NextResponse.next();
   }
 
-  // Get session - this is crucial for Vercel
-  const session = await auth();
-
-  // Debug logging for Vercel deployment (check logs in Vercel dashboard)
-  console.log("Middleware Debug:", {
-    pathname,
-    hasSession: !!session,
-    userRole: session?.user?.role,
-    userId: session?.user?.id,
-    cookies: request.cookies.getAll().map((c) => c.name),
-  });
+  // Get session - wrap in try-catch for Vercel edge issues
+  let session;
+  try {
+    session = await auth();
+    console.log("Session retrieved:", {
+      exists: !!session,
+      email: session?.user?.email,
+      role: session?.user?.role,
+      pathname,
+    });
+  } catch (error) {
+    console.error("Auth error in middleware:", error);
+    // If auth fails, treat as unauthenticated
+    session = null;
+  }
 
   const isAuthenticated = !!session;
   const userRole = session?.user?.role;
@@ -45,6 +60,9 @@ export async function proxy(request: NextRequest) {
 
   const isAuthRoute = authRoutes.some((route) => pathname.startsWith(route));
   const isDashboardRoute = pathname.startsWith("/dashboard");
+  const isPublicRoute = publicRoutes.some(
+    (route) => pathname === route || pathname.startsWith(route + "/")
+  );
 
   // Case 1: Authenticated users should NOT access auth pages
   if (isAuthenticated && isAuthRoute) {
@@ -55,24 +73,23 @@ export async function proxy(request: NextRequest) {
       console.log("Redirecting admin to dashboard");
       return NextResponse.redirect(new URL("/dashboard", request.url));
     }
-    // All other authenticated users (including USER role) go to home
     console.log("Redirecting authenticated user to home");
     return NextResponse.redirect(new URL("/", request.url));
   }
 
   // Case 2: Unauthenticated users trying to access dashboard
   if (!isAuthenticated && isDashboardRoute) {
-    console.log("Redirecting unauthenticated user to login");
+    console.log("Redirecting unauthenticated user to login from dashboard");
     const loginUrl = new URL(signinPath(), request.url);
     loginUrl.searchParams.set("callbackUrl", pathname);
     return NextResponse.redirect(loginUrl);
   }
 
-  // Case 3: CRITICAL - Redirect USER role from dashboard to homepage
+  // Case 3: USER role cannot access dashboard
   if (isAuthenticated && isDashboardRoute && isUser) {
     console.log(
       "Redirecting USER from dashboard to home:",
-      session.user?.email
+      session?.user?.email
     );
     return NextResponse.redirect(new URL("/", request.url));
   }
@@ -83,12 +100,31 @@ export async function proxy(request: NextRequest) {
     return NextResponse.redirect(new URL("/", request.url));
   }
 
+  // Case 5: Unauthenticated users trying to access protected routes (not public, not auth)
+  if (!isAuthenticated && !isAuthRoute && !isPublicRoute) {
+    console.log(
+      "Redirecting unauthenticated user to login from protected route:",
+      pathname
+    );
+    const loginUrl = new URL(signinPath(), request.url);
+    loginUrl.searchParams.set("callbackUrl", pathname);
+    return NextResponse.redirect(loginUrl);
+  }
+
   // Default: Allow access
   return NextResponse.next();
 }
 
 export const config = {
   matcher: [
-    "/((?!_next/static|_next/image|favicon.ico|.*\\.(?:svg|png|jpg|jpeg|gif|webp)$).*)",
+    /*
+     * Match all request paths except:
+     * - _next/static (static files)
+     * - _next/image (image optimization files)
+     * - favicon.ico (favicon file)
+     * - public folder
+     * - api routes
+     */
+    "/((?!api|_next/static|_next/image|favicon.ico|.*\\.(?:svg|png|jpg|jpeg|gif|webp|ico)$).*)",
   ],
 };
