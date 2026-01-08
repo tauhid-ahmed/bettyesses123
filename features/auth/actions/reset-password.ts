@@ -1,37 +1,40 @@
 "use server";
 
 import { BACKEND_API_URL } from "@/constants";
-import { type ForgotPasswordApiResponse } from "../types/forgot-password";
+import { type ResetPasswordApiResponse } from "../types/reset-password";
 import { isApiError, isApiSuccess } from "@/utils/authResponseGuard";
 
-type ForgotPasswordUserData = {
-  email: string;
+type ResetPasswordUserData = {
+  newPassword: string;
+  token: string;
 };
 
-type ForgotPasswordResponse = {
-  userId: string | null;
-  message: string;
+type ResetPasswordResponse = {
   success: boolean;
+  message: string;
 };
 
-export async function forgotPassword(
-  userData: ForgotPasswordUserData
-): Promise<ForgotPasswordResponse> {
+export async function resetPassword(
+  userData: ResetPasswordUserData
+): Promise<ResetPasswordResponse> {
   try {
-    const response = await fetch(`${BACKEND_API_URL}/auth/forgot-password`, {
+    const response = await fetch(`${BACKEND_API_URL}/auth/reset-password`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
+        Authorization: `Bearer ${userData.token}`,
       },
-      body: JSON.stringify(userData),
+      body: JSON.stringify({
+        newPassword: userData.newPassword,
+      }),
     });
 
-    const data: ForgotPasswordApiResponse = await response.json();
+    const data: ResetPasswordApiResponse = await response.json();
 
     if (!response.ok) {
       const message =
         isApiError(data) && data.message
-          ? data.message
+          ? data.errorMessages[0].message
           : `Request failed with status ${response.status}`;
       throw new Error(message);
     }
@@ -44,21 +47,17 @@ export async function forgotPassword(
       return {
         message: data.message,
         success: true,
-        userId: data.data.id,
       };
     }
 
     throw new Error("Unexpected response from server");
   } catch (error) {
     const errorMessage =
-      error instanceof Error
-        ? error.message
-        : "Failed to send password reset email due to unknown error"; // ✅ Correct message
+      error instanceof Error ? error.message : "Failed to update password";
 
     return {
       message: errorMessage,
       success: false,
-      userId: null,
     };
   }
 }
