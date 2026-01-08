@@ -7,22 +7,36 @@ import { Form } from "@/components/ui/form";
 import { Button } from "@/components/ui/button";
 import AuthCard from "./AuthCard";
 import { resetPasswordSchema, type ResetPasswordFormData } from "../schema";
-import { useSearchParams } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
+import { resetPassword } from "../actions/reset-password";
+import { toast } from "sonner";
 
 export default function ResetPasswordForm() {
+  const router = useRouter();
   const form = useForm<ResetPasswordFormData>({
     resolver: zodResolver(resetPasswordSchema),
     defaultValues: {
       password: "",
       confirmPassword: "",
     },
+    mode: "onChange",
   });
 
   const searchParams = useSearchParams();
   const token = decodeURIComponent(searchParams.get("token") || "");
 
-  const onSubmit = (data: ResetPasswordFormData) => {
-    // Handle reset password logic here
+  const onSubmit = async (data: ResetPasswordFormData) => {
+    const response = await resetPassword({
+      newPassword: data.password,
+      token,
+    });
+
+    if (response.success) {
+      toast.success(response.message);
+      router.push("/login");
+    } else if (!response.success) {
+      toast.error(response.message);
+    }
   };
 
   return (
@@ -55,7 +69,9 @@ export default function ResetPasswordForm() {
                 type="submit"
                 className="w-full primary-gradient"
                 size="lg"
-                disabled={form.formState.isSubmitting}
+                disabled={
+                  form.formState.isSubmitting || !form.formState.isValid
+                }
               >
                 {form.formState.isSubmitting
                   ? "Resetting..."
