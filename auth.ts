@@ -108,48 +108,6 @@ export const authConfig: NextAuthConfig = {
     }),
   ],
   callbacks: {
-    // CRITICAL: This callback is required for middleware to work on Vercel
-    authorized({ auth, request: { nextUrl } }) {
-      const isLoggedIn = !!auth?.user;
-      const pathname = nextUrl.pathname;
-
-      // Define your auth routes
-      const authRoutes = [
-        "/login",
-        "/reset-success",
-        "/forgot-password",
-        "/reset-password",
-        "/signup",
-        "/verify-otp",
-        "/verify-forgot-password-otp",
-      ];
-
-      const isAuthRoute = authRoutes.some((route) =>
-        pathname.startsWith(route)
-      );
-      const isDashboardRoute = pathname.startsWith("/dashboard");
-
-      // If user is logged in and trying to access auth pages
-      if (isLoggedIn && isAuthRoute) {
-        return Response.redirect(new URL("/", nextUrl));
-      }
-
-      // If user is not logged in and trying to access dashboard
-      if (!isLoggedIn && isDashboardRoute) {
-        return false; // This will redirect to signIn page
-      }
-
-      // If user is logged in and trying to access dashboard
-      if (isLoggedIn && isDashboardRoute) {
-        const userRole = auth.user.role;
-        // Only SUPERADMIN and ADMIN can access dashboard
-        if (userRole !== "SUPERADMIN" && userRole !== "ADMIN") {
-          return Response.redirect(new URL("/", nextUrl));
-        }
-      }
-
-      return true;
-    },
     async jwt({ token, user, trigger, session }) {
       if (user) {
         token.id = user.id;
