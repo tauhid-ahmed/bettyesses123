@@ -18,14 +18,9 @@ export async function updateProfile(data: ProfileFormData) {
   const session = await auth();
 
   try {
-    // Split fullName into firstName and lastName
-    const nameParts = data.fullName.trim().split(/\s+/);
-    const firstName = nameParts.shift() || "";
-    const lastName = nameParts.length ? nameParts.join(" ") : null;
-
     const payload: UpdateProfilePayload = {
-      firstName,
-      lastName,
+      firstName: data.firstName,
+      lastName: data.lastName || null,
       email: data.email,
       location: data.location || null,
       phoneNumber: data.phoneNumber || null,
@@ -54,7 +49,7 @@ export async function updateProfile(data: ProfileFormData) {
     }
 
     try {
-      revalidatePath("/dashboard/settings");
+      revalidatePath("/dashboard/settings?t=admin-info");
     } catch (e) {
       // ignore revalidate failures
     }
