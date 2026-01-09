@@ -32,10 +32,10 @@ export function ProfileForm({ initialData }: ProfileFormProps) {
   const form = useForm<ProfileSchema>({
     resolver: zodResolver(profileSchema),
     defaultValues: {
-      fullName: initialData.fullName,
-      email: initialData.email,
-      location: initialData.location ?? "", // Use nullish coalescing operator
-      phoneNumber: initialData.phoneNumber ?? "", // Use nullish coalescing operator
+      fullName: initialData.fullName || "",
+      email: initialData.email || "",
+      location: initialData.location ?? "",
+      phoneNumber: initialData.phoneNumber ?? "",
     },
   });
 
@@ -169,13 +169,15 @@ export function ProfileForm({ initialData }: ProfileFormProps) {
             >
               Cancel
             </Button>
+
             <Button
               type="submit"
               disabled={isPending || !hasChanges}
-              className="bg-primary-500 hover:bg-primary-600 text-white"
+              className="bg-[#00244A] hover:bg-blue-900 text-white"
             >
               {isPending ? "Saving..." : "Save Changes"}
             </Button>
+            
           </div>
         </form>
       </Form>

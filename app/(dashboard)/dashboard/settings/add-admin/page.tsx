@@ -64,7 +64,6 @@ export default function AddAdminModal({ isOpen = true }: AddAdminModalProps) {
 
         {/* Form */}
         <div className="space-y-6 mb-8">
-          {/* Admin Name */}
           <div>
             <label
               htmlFor="adminName"
@@ -82,7 +81,6 @@ export default function AddAdminModal({ isOpen = true }: AddAdminModalProps) {
             />
           </div>
 
-          {/* Email Address */}
           <div>
             <label
               htmlFor="emailAddress"
@@ -101,7 +99,6 @@ export default function AddAdminModal({ isOpen = true }: AddAdminModalProps) {
           </div>
         </div>
 
-        {/* Buttons */}
         <div className="flex justify-end gap-3">
           <button
             onClick={() => router.back()}
