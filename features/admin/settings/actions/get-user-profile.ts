@@ -1,22 +1,57 @@
+"use server";
+
+import { auth } from "@/auth";
+import { BACKEND_API_URL } from "@/constants";
 import { UserProfile } from "../types";
 
-export async function getUserProfile(): Promise<UserProfile> {
-  // TODO: Replace with actual API call
-  // const token = await getAccessToken();
-  // const response = await fetch(`${process.env.API_BASE_URL}/users/profile`, {
-  //   headers: { Authorization: `Bearer ${token}` },
-  //   cache: 'no-store',
-  // });
-  // return response.json();
+export type AdminProfileApiResponse = {
+  id: string;
+  firstName: string;
+  lastName: string | null;
+  email: string;
+  image: string | null;
+  role: string;
+  location: string | null;
+  phoneNumber: string | null;
+  createdAt: string;
+};
 
-  // Dummy data for now
-  await new Promise((resolve) => setTimeout(resolve, 100));
-  return {
-    id: "user_123",
-    fullName: "Sorento Baudeya",
-    email: "null@gmail.com",
-    location: "New York, USA",
-    phoneNumber: "+1234567890",
-    profilePicture: "https://i.pravatar.cc/150?img=12",
-  };
+export async function getUserProfile(): Promise<UserProfile> {
+  const session = await auth();
+
+  try {
+    const res = await fetch(`${BACKEND_API_URL}/admin/users/my-profile`, {
+      credentials: "include",
+      method: "GET",
+      headers: {
+        Authorization: `Bearer ${session?.user?.accessToken}`,
+        "Content-Type": "application/json",
+      },
+      cache: "no-store",
+    });
+
+    if (!res.ok) {
+      throw new Error(res.statusText || "Failed to fetch profile");
+    }
+
+    const data = await res.json();
+
+    if (data?.success && data?.data) {
+      const profile = data.data as AdminProfileApiResponse;
+      return {
+        id: profile.id,
+        fullName: `${profile.firstName}${profile.lastName ? " " + profile.lastName : ""}`.trim(),
+        email: profile.email,
+        location: profile.location || null,
+        phoneNumber: profile.phoneNumber || null,
+        profilePicture: profile.image || null,
+      };
+    }
+
+    throw new Error(data?.message || "Invalid response format");
+  } catch (error) {
+    console.error("Error fetching user profile:", error);
+    throw error;
+  }
+
 }
