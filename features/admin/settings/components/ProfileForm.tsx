@@ -17,6 +17,7 @@ import { profileSchema, ProfileSchema } from "../constants/validation";
 import { UserProfile } from "../types";
 import { toast } from "sonner";
 import { Camera } from "lucide-react";
+import { updateProfile } from "../actions/update-profile";
 
 type ProfileFormProps = {
   initialData: UserProfile;
@@ -24,7 +25,7 @@ type ProfileFormProps = {
 
 export function ProfileForm({ initialData }: ProfileFormProps) {
   const [isPending, startTransition] = useTransition();
-  const [preview, setPreview] = useState<string | null>(null);
+  const [preview, setPreview] = useState<string | null>(initialData.image);
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
   const fileInputRef = useRef<HTMLInputElement | null>(null);
 
@@ -42,33 +43,41 @@ export function ProfileForm({ initialData }: ProfileFormProps) {
   const onSubmit = (data: ProfileSchema) => {
     startTransition(async () => {
       try {
-        const fd = new FormData();
+        let imagePath = initialData.image;
 
-        fd.append("firstName", data.firstName);
-        fd.append("lastName", data.lastName);
-        fd.append("email", data.email);
-        fd.append("location", data.location || "");
-        fd.append("phoneNumber", data.phoneNumber || "");
+        // if (selectedFile) {
+        //   const formData = new FormData();
+        //   formData.append("image", selectedFile);
 
-        if (selectedFile) {
-          fd.append("image", selectedFile, selectedFile.name);
-        }
+        //   const uploadRes = await fetch("/api/admin/users/upload-image", {
+        //     method: "POST",
+        //     body: formData,
+        //   });
 
-        const res = await fetch(`/api/admin/users/my-profile`, {
-          method: "PATCH",
-          body: fd,
+        //   const uploadData = await uploadRes.json();
+
+        //   if (!uploadRes.ok) {
+        //     toast.error(uploadData.message || "Failed to upload image");
+        //     return;
+        //   }
+
+        //   imagePath = uploadData.data;
+        // }
+
+        const res = await updateProfile({
+          ...data,
+          image: imagePath,
+          location: data.location || "",
+          phoneNumber: data.phoneNumber || "",
         });
 
-        const resData = await res.json().catch(() => null);
-
-        if (!res.ok) {
-          toast.error(resData?.message || "Failed to update profile");
+        if (!res.success) {
+          toast.error(res.message);
           return;
         }
 
-        toast.success(resData?.message || "Profile updated successfully");
+        toast.success(res.message);
         setSelectedFile(null);
-        setPreview(null);
       } catch (err) {
         console.error(err);
         toast.error("Server error");
@@ -125,9 +134,9 @@ export function ProfileForm({ initialData }: ProfileFormProps) {
                         className="w-full h-full object-cover"
                       />
                     ) : (
-                      <div className="w-full h-full flex items-center justify-center bg-linear-to-br from-blue-400 to-indigo-500">
+                      <div className="w-full h-full flex items-center justify-center bg-gradient-to-br from-blue-400 to-indigo-500">
                         <span className="text-4xl text-white font-semibold">
-                          U
+                          {initialData.firstName?.[0] || "U"}
                         </span>
                       </div>
                     )}
