@@ -17,3 +17,13 @@ export type PromoCodeResponse = {
   message: string;
   data: PromoCode[];
 };
+
+export type CreatePromoCodePayload = {
+  code: string;
+  startTime: string;
+  endTime: string;
+  minOrderAmount: number;
+  discountPercentage: number;
+  perPersonUseLimit: number;
+  isActive: boolean;
+};
