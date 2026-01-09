@@ -40,11 +40,14 @@ export async function getUserProfile(): Promise<UserProfile> {
       const profile = data.data as AdminProfileApiResponse;
       return {
         id: profile.id,
-        fullName: `${profile.firstName}${profile.lastName ? " " + profile.lastName : ""}`.trim(),
+        firstName: profile.firstName || "",
+        lastName: profile.lastName || "",
         email: profile.email,
+        role: profile.role,
         location: profile.location || null,
         phoneNumber: profile.phoneNumber || null,
-        profilePicture: profile.image || null,
+        image: profile.image || null,
+        createdAt: profile.createdAt,
       };
     }
 
@@ -53,5 +56,4 @@ export async function getUserProfile(): Promise<UserProfile> {
     console.error("Error fetching user profile:", error);
     throw error;
   }
-
 }
