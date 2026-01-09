@@ -1,15 +1,19 @@
 import { z } from "zod";
 
 export const profileSchema = z.object({
-  fullName: z
+  firstName: z
     .string()
-    .min(2, "Name must be at least 2 characters")
-    .max(100, "Name must be less than 100 characters"),
+    .min(2, "First name must be at least 2 characters")
+    .max(100, "First name must be less than 100 characters"),
+  lastName: z
+    .string()
+    .min(2, "Last name must be at least 2 characters")
+    .max(100, "Last name must be less than 100 characters"),
   email: z.string().email("Invalid email address"),
   location: z.string().optional(),
   phoneNumber: z
     .string()
-    .regex(/^\+?[1-9]\d{1,14}$/, "Invalid phone number format")
+    .regex(/^[+]?[0-9]{1,15}$/, "Invalid phone number format")
     .optional()
     .or(z.literal("")),
 });
