@@ -11,22 +11,25 @@ import { DEFAULT_ITEMS_PER_PAGE } from "../utils/constant";
 const pageLimits = ["5", "10", "15", "20", "50"];
 
 export default function PageLimits() {
-  const searchParams = new URLSearchParams(useSearchParams());
+  const searchParams = useSearchParams();
   const router = useRouter();
+
+  const currentLimit =
+    searchParams.get("limit") || DEFAULT_ITEMS_PER_PAGE.toString();
 
   const handlePageLimitChange = (limit: string) => {
     const params = new URLSearchParams(searchParams.toString());
     params.set("limit", limit);
     params.delete("page");
+    params.set("page", "1"); // Reset to page 1 when limit changes
     const url = `?${params.toString()}`;
     router.push(url, { scroll: false });
   };
 
   return (
     <Select
-      defaultValue={
-        searchParams.get("limit") || DEFAULT_ITEMS_PER_PAGE.toString()
-      }
+      key={currentLimit}
+      value={currentLimit}
       onValueChange={handlePageLimitChange}
     >
       <SelectTrigger className="text-sm">
@@ -38,7 +41,9 @@ export default function PageLimits() {
             {limit}
           </SelectItem>
         ))}
+        
       </SelectContent>
+      
     </Select>
   );
 }

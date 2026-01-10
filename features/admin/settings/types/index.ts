@@ -1,17 +1,22 @@
 export type UserProfile = {
   id: string;
-  fullName: string;
+  firstName: string;
+  lastName: string;
   email: string;
+  role: string;
   location: string | null;
   phoneNumber: string | null;
-  profilePicture: string | null;
+  image: string | null;
+  createdAt: string;
 };
 
 export type ProfileFormData = {
-  fullName: string;
+  firstName: string;
+  lastName: string;
   email: string;
   location: string;
   phoneNumber: string;
+  image?: string | null;
 };
 
 export type PasswordFormData = {

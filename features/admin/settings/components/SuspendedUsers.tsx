@@ -10,6 +10,8 @@ import {
 } from "@/features/table/components/Table";
 import { TableProvider } from "@/features/table/components/TableProvider";
 import { cn } from "@/lib/utils";
+import { getSuspendedUsers, SuspendedUserApiItem } from "../actions/get-suspended-user";
+import EndSuspensionButton from "./EndSuspensionButton";
 
 // -------------------- Types --------------------
 type SearchParams = {
@@ -18,37 +20,26 @@ type SearchParams = {
   q?: string;
 };
 
-type SuspendedUser = {
-  id: string;
-  userName: string;
-  suspendedFrom: string;
-  suspendedTo: string;
-};
-
-// -------------------- Dummy Data (IMAGE BASED) --------------------
-const DUMMY_SUSPENDED_USERS: SuspendedUser[] = Array.from(
-  { length: 1450 },
-  (_, i) => ({
-    id: `${i + 1}`,
-    userName: "Al Muntakim",
-    suspendedFrom: "21 Oct, 2025",
-    suspendedTo: "30 Aug 2026",
-  })
-);
+type SuspendedUser = SuspendedUserApiItem;
 
 // -------------------- Table Header --------------------
 const tableHeader = [
   { key: "userName", label: "User Name", sortable: false },
-  { key: "suspensionPeriod", label: "Suspension Period", sortable: false },
-  { key: "suspension", label: "Suspension", sortable: false },
+  { key: "suspendedUntil", label: "Suspended Until", sortable: false },
+  { key: "suspensionNote", label: "Note", sortable: false },
 ];
 
 // -------------------- Helpers --------------------
 function filterUsers(users: SuspendedUser[], query: SearchParams) {
   if (!query.q) return users;
-  return users.filter((u) =>
-    u.userName.toLowerCase().includes(query.q!.toLowerCase())
-  );
+  const q = query.q!.toLowerCase();
+  return users.filter((u) => {
+    const fullName = `${u.firstName} ${u.lastName}`.toLowerCase();
+    return (
+      fullName.includes(q) ||
+      (u.email || "").toLowerCase().includes(q)
+    );
+  });
 }
 
 function paginateUsers(users: SuspendedUser[], page: number, limit: number) {
@@ -76,7 +67,13 @@ export default async function Suspended({
   const page = parseInt(query.page || "1", 10);
   const limit = parseInt(query.limit || "11", 10);
 
-  const filteredUsers = filterUsers(DUMMY_SUSPENDED_USERS, query);
+  const apiUsers = (await getSuspendedUsers()) || [];
+
+  const normalized: SuspendedUser[] = apiUsers.map((u) => ({
+    ...u,
+  }));
+
+  const filteredUsers = filterUsers(normalized, query);
   const paginatedUsers = paginateUsers(filteredUsers, page, limit);
   const meta = calculateMeta(filteredUsers.length, page, limit);
 
@@ -121,23 +118,24 @@ export default async function Suspended({
               paginatedUsers.map((user) => (
                 <TableRow key={user.id}>
                   {/* User Name */}
-                  <TableBodyItem>{user.userName}</TableBodyItem>
-
-                  {/* Suspension Period */}
                   <TableBodyItem>
-                    {user.suspendedFrom} - {user.suspendedTo}
+                    {user.firstName} {user.lastName}
+                    <div className="text-xs text-gray-500">{user.email}</div>
                   </TableBodyItem>
 
-                  {/* Action */}
+                  {/* Suspended Until */}
                   <TableBodyItem>
-                    <button
-                      className={cn(
-                        "rounded-md bg-[#10B981] px-4 py-2 text-sm font-medium text-white",
-                        "hover:bg-[#10B981] transition"
-                      )}
-                    >
-                      End Suspension
-                    </button>
+                    {user.suspendedUntil
+                      ? new Date(user.suspendedUntil).toLocaleString()
+                      : "-"}
+                  </TableBodyItem>
+
+                  {/* Note / Action */}
+                  <TableBodyItem>
+                    <div className="mb-2 text-sm text-gray-700">
+                      {user.suspensionNote || "-"}
+                    </div>
+                    <EndSuspensionButton userId={user.id} />
                   </TableBodyItem>
                 </TableRow>
               ))

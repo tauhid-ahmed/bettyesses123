@@ -2,54 +2,64 @@
 
 import { Plus } from "lucide-react";
 import Link from "next/link";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { toast } from "sonner";
+import { getPromoCodes } from "@/features/admin/promo-codes/actions/get-promo-codes";
+import { PromoCode } from "@/features/admin/promo-codes/types";
 
 export default function PromoCodesDashboard() {
-  const [disabledIds, setDisabledIds] = useState<number[]>([]);
+  const [promoCodes, setPromoCodes] = useState<PromoCode[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [disabledIds, setDisabledIds] = useState<string[]>([]);
 
-  const stopPromoCodes = (id: number) => {
+  useEffect(() => {
+    const fetchPromoCodes = async () => {
+      try {
+        const result = await getPromoCodes();
+        if (result.success && result.data) {
+          setPromoCodes(result.data);
+        } else {
+          toast.error("Failed to load promo codes");
+        }
+      } catch (error) {
+        console.error(error);
+        toast.error("An error occurred while loading promo codes");
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchPromoCodes();
+  }, []);
+
+  const stopPromoCodes = (id: string) => {
     setDisabledIds((prev) => [...prev, id]);
+    // TODO: Implement stop promo code API call here if available
     toast.success("Promo code has been stopped successfully.");
   };
 
-  const [ongoingCodes] = useState([
-    {
-      id: 1,
-      code: "NEW10",
-      discount: "12% off",
-      minOrder: "€30",
-      hoursLeft: 30,
-      minutesLeft: 25,
-    },
-    {
-      id: 2,
-      code: "NEW10",
-      discount: "12% off",
-      minOrder: "€30",
-      hoursLeft: 30,
-      minutesLeft: 25,
-    },
-  ]);
+  const calculateTimeLeft = (endTime: string) => {
+    const total = Date.parse(endTime) - Date.now();
+    const hours = Math.floor((total / (1000 * 60 * 60)));
+    const minutes = Math.floor((total / 1000 / 60) % 60);
+    return { total, hours, minutes };
+  };
 
-  const [expiredCodes] = useState([
-    {
-      id: 1,
-      code: "NEW10",
-      discount: "12% off",
-      minOrder: "€30",
-      hoursLeft: 30,
-      minutesLeft: 25,
-    },
-    {
-      id: 2,
-      code: "NEW10",
-      discount: "12% off",
-      minOrder: "€30",
-      hoursLeft: 30,
-      minutesLeft: 25,
-    },
-  ]);
+  const now = new Date();
+
+  const ongoingCodes = promoCodes.filter((code) => {
+    const endTime = new Date(code.endTime);
+    return code.isActive && endTime > now;
+  });
+
+  const expiredCodes = promoCodes.filter((code) => {
+    const endTime = new Date(code.endTime);
+    return !code.isActive || endTime <= now;
+  });
+
+  if (loading) {
+    return <div className="p-6 text-center">Loading promo codes...</div>;
+  }
 
   return (
     <div className=" bg-gray-50 p-4 sm:p-6 md:p-2 lg:p-0">
@@ -67,58 +77,73 @@ export default function PromoCodesDashboard() {
       </div>
 
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-12">
-        {ongoingCodes.map((promo) => (
-          <div
-            key={promo.id}
-            className="bg-white rounded-xl shadow-sm p-6 hover:shadow-md transition-shadow"
-          >
-            <div className="flex flex-col sm:flex-row gap-4">
-              <div className="shrink-0 w-full sm:w-32 h-24 bg-pink-700 rounded-lg flex items-center justify-center">
-                <span className="text-white text-2xl font-semibold">
-                  {promo.discount}
-                </span>
-              </div>
-
-              <div className="flex-1">
-                <h3 className="text-lg font-medium text-gray-900 mb-1">
-                  Code : <span className="font-semibold">{promo.code}</span>
-                </h3>
-                <p className="text-gray-500 text-sm mb-2">
-                  Orders Over {promo.minOrder}
-                </p>
-                <p className="text-gray-900 text-sm">
-                  <span className="font-semibold">{promo.hoursLeft} H</span>{" "}
-                  <span className="font-semibold">{promo.minutesLeft} Min</span>{" "}
-                  Left
-                </p>
-              </div>
-            </div>
-
-            <div className="flex flex-col sm:flex-row gap-3 mt-6">
-              <Link
-                href={`/dashboard/promo-codes/${promo.id}`}
-                className="flex-1 bg-[#73b7ff] hover:bg-blue-500 text-white py-3 rounded-lg transition-colors text-center"
+        {ongoingCodes.length === 0 ? (
+          <p className="text-gray-500 col-span-2 text-center py-8">
+            No ongoing promo codes found.
+          </p>
+        ) : (
+          ongoingCodes.map((promo) => {
+             const timeLeft = calculateTimeLeft(promo.endTime);
+             return (
+              <div
+                key={promo.id}
+                className="bg-white rounded-xl shadow-sm p-6 hover:shadow-md transition-shadow"
               >
-                Edit
-              </Link>
+                <div className="flex flex-col sm:flex-row gap-4">
+                  <div className="shrink-0 w-full sm:w-32 h-24 bg-pink-700 rounded-lg flex items-center justify-center">
+                    <span className="text-white text-2xl font-semibold">
+                      {promo.discountPercentage}% off
+                    </span>
+                  </div>
 
-              <button
-                onClick={() => stopPromoCodes(promo.id)}
-                disabled={disabledIds.includes(promo.id)}
-                className={`flex-1 py-3 rounded-lg transition-colors text-white
-    ${
-      disabledIds.includes(promo.id)
-        ? "bg-gray-400 cursor-not-allowed"
-        : "bg-pink-700 hover:bg-red-600"
-    }`}
-              >
-                {disabledIds.includes(promo.id)
-                  ? "Stopped"
-                  : "Stop This Promo Code"}
-              </button>
-            </div>
-          </div>
-        ))}
+                  <div className="flex-1">
+                    <h3 className="text-lg font-medium text-gray-900 mb-1">
+                      Code : <span className="font-semibold">{promo.code}</span>
+                    </h3>
+                    <p className="text-gray-500 text-sm mb-2">
+                      Orders Over €{promo.minOrderAmount}
+                    </p>
+                    <p className="text-gray-900 text-sm">
+                      {timeLeft.total > 0 ? (
+                        <>
+                          <span className="font-semibold">{timeLeft.hours} H</span>{" "}
+                          <span className="font-semibold">{timeLeft.minutes} Min</span>{" "}
+                          Left
+                        </>
+                      ) : (
+                        <span className="text-red-500 font-semibold">Expired</span>
+                      )}
+                    </p>
+                  </div>
+                </div>
+
+                <div className="flex flex-col sm:flex-row gap-3 mt-6">
+                  <Link
+                    href={`/dashboard/promo-codes/${promo.id}`}
+                    className="flex-1 bg-[#73b7ff] hover:bg-blue-500 text-white py-3 rounded-lg transition-colors text-center"
+                  >
+                    Edit
+                  </Link>
+
+                  <button
+                    onClick={() => stopPromoCodes(promo.id)}
+                    disabled={disabledIds.includes(promo.id)}
+                    className={`flex-1 py-3 rounded-lg transition-colors text-white
+        ${
+          disabledIds.includes(promo.id)
+            ? "bg-gray-400 cursor-not-allowed"
+            : "bg-pink-700 hover:bg-red-600"
+        }`}
+                  >
+                    {disabledIds.includes(promo.id)
+                      ? "Stopped"
+                      : "Stop This Promo Code"}
+                  </button>
+                </div>
+              </div>
+            );
+          })
+        )}
       </div>
 
       <div>
@@ -127,43 +152,46 @@ export default function PromoCodesDashboard() {
         </h2>
 
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-          {expiredCodes.map((promo) => (
-            <div
-              key={promo.id}
-              className="bg-white rounded-xl shadow-sm p-6 hover:shadow-md transition-shadow"
-            >
-              <div className="flex flex-col sm:flex-row gap-4">
-                <div className="shrink-0 w-full sm:w-32 h-24 bg-pink-700 rounded-lg flex items-center justify-center">
-                  <span className="text-white text-2xl font-semibold">
-                    {promo.discount}
-                  </span>
-                </div>
-
-                <div className="flex-1">
-                  <h3 className="text-lg font-medium text-gray-900 mb-1">
-                    Code : <span className="font-semibold">{promo.code}</span>
-                  </h3>
-                  <p className="text-gray-500 text-sm mb-2">
-                    Orders Over {promo.minOrder}
-                  </p>
-                  <p className="text-gray-900 text-sm">
-                    <span className="font-semibold">{promo.hoursLeft} H</span>{" "}
-                    <span className="font-semibold">
-                      {promo.minutesLeft} Min
-                    </span>{" "}
-                    Left
-                  </p>
-                </div>
-              </div>
-
-              <button
-                onClick={() => toast.success("Promo code sent successfully.")}
-                className="w-full bg-[#73b7ff] hover:bg-blue-500 text-white py-3 rounded-lg mt-6 transition-colors"
+          {expiredCodes.length === 0 ? (
+            <p className="text-gray-500 col-span-2 text-center py-8">
+              No expired promo codes found.
+            </p>
+          ) : (
+             expiredCodes.map((promo) => (
+              <div
+                key={promo.id}
+                className="bg-white rounded-xl shadow-sm p-6 hover:shadow-md transition-shadow"
               >
-                Send This Promo Code
-              </button>
-            </div>
-          ))}
+                <div className="flex flex-col sm:flex-row gap-4">
+                  <div className="shrink-0 w-full sm:w-32 h-24 bg-pink-700 rounded-lg flex items-center justify-center">
+                    <span className="text-white text-2xl font-semibold">
+                      {promo.discountPercentage}% off
+                    </span>
+                  </div>
+
+                  <div className="flex-1">
+                    <h3 className="text-lg font-medium text-gray-900 mb-1">
+                      Code : <span className="font-semibold">{promo.code}</span>
+                    </h3>
+                    <p className="text-gray-500 text-sm mb-2">
+                       Orders Over €{promo.minOrderAmount}
+                    </p>
+                    <p className="text-gray-900 text-sm">
+                      <span className="text-red-500 font-semibold">Expired</span>
+                    </p>
+                  </div>
+                </div>
+                {/* 
+                <button
+                  onClick={() => toast.success("Promo code sent successfully.")}
+                  className="w-full bg-[#73b7ff] hover:bg-blue-500 text-white py-3 rounded-lg mt-6 transition-colors"
+                >
+                  Send This Promo Code
+                </button> 
+                */}
+              </div>
+            ))
+          )}
         </div>
       </div>
     </div>

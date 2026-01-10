@@ -24,7 +24,30 @@ export default function AddAdminModal({ isOpen = true }: AddAdminModalProps) {
       return;
     }
 
-    // Add your submit logic here
+    submitAdmin();
+  };
+
+  const submitAdmin = async () => {
+    try {
+      const res = await fetch("/api/admin/users/admins/create", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ adminName, emailAddress }),
+      });
+
+      const data = await res.json();
+
+      if (!res.ok || !data?.success) {
+        toast.error(data?.message || "Failed to create admin");
+        return;
+      }
+
+      toast.success(data.message || "Admin created successfully");
+      router.back();
+    } catch (error) {
+      console.error(error);
+      toast.error("Server error");
+    }
   };
 
   if (!isOpen) return null;
@@ -41,7 +64,6 @@ export default function AddAdminModal({ isOpen = true }: AddAdminModalProps) {
 
         {/* Form */}
         <div className="space-y-6 mb-8">
-          {/* Admin Name */}
           <div>
             <label
               htmlFor="adminName"
@@ -59,7 +81,6 @@ export default function AddAdminModal({ isOpen = true }: AddAdminModalProps) {
             />
           </div>
 
-          {/* Email Address */}
           <div>
             <label
               htmlFor="emailAddress"
@@ -78,7 +99,6 @@ export default function AddAdminModal({ isOpen = true }: AddAdminModalProps) {
           </div>
         </div>
 
-        {/* Buttons */}
         <div className="flex justify-end gap-3">
           <button
             onClick={() => router.back()}
