@@ -12,12 +12,14 @@ type PaginationProps = {
   totalPages: number;
   currentPage: number;
   pageSize: number;
+  totalItems?: number;
 };
 
 export default function Pagination({
   totalPages,
   currentPage,
   pageSize,
+  totalItems,
 }: PaginationProps) {
   const searchParams = new URLSearchParams(useSearchParams());
   const router = useRouter();
@@ -94,7 +96,7 @@ export default function Pagination({
           Showing <strong className="font-medium">{currentPage}</strong> of{" "}
           <strong className="font-medium">{totalPages}</strong>{" "}
           <div className="ml-2">
-            <PageLimits />
+            <PageLimits totalItems={totalItems} />
           </div>
         </span>
         <nav className="flex justify-center gap-2 flex-wrap">
