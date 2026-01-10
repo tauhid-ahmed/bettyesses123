@@ -4,37 +4,37 @@ import {
   LabeledField,
   FieldsGrid,
 } from "@/components/DetailsTable";
+import { UserDetails } from "../types";
 
 type UserDetailsSectionProps = {
-  data: {
-    totalService: number;
-    ongoingService: number;
-    completedService: number;
-    canceledService: number;
-  };
+  data: UserDetails;
 };
 
 export function UserDetailsSection({ data }: UserDetailsSectionProps) {
+  const ongoingCount = data.ongoingOrders?.length || 0;
+  const pastCount = data.pastOrders?.length || 0;
+  const totalOrders = ongoingCount + pastCount;
+
   return (
     <div className="border-b border-gray-200 pb-6">
       <DetailsTable>
-        <DetailsRow label="User Details:">
+        <DetailsRow label="Order Statistics:">
           <FieldsGrid cols={2}>
             <LabeledField
-              label="Total service"
-              value={data.totalService.toString()}
+              label="Total Orders"
+              value={totalOrders.toString()}
             />
             <LabeledField
-              label="Completed service"
-              value={data.completedService.toString()}
+              label="Ongoing Orders"
+              value={ongoingCount.toString()}
             />
             <LabeledField
-              label="Ongoing service"
-              value={data.ongoingService.toString()}
+              label="Past Orders"
+              value={pastCount.toString()}
             />
             <LabeledField
-              label="Canceled service"
-              value={data.canceledService.toString()}
+              label="Total Spent"
+              value={`€ ${data.totalSpent?.toLocaleString() || "0"}`}
             />
           </FieldsGrid>
         </DetailsRow>

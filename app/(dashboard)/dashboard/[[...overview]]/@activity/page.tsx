@@ -12,8 +12,12 @@ import { TableProvider } from "@/features/table/components/TableProvider";
 import { SortDirection } from "@/features/table/types/table.type";
 import { cn } from "@/lib/utils";
 import Link from "next/link";
+import { getRecentOrders } from "@/features/admin/analytics/actions/get-recent-orders";
 
-type OrderStatus = "Processing" | "Shipped" | "In Route" | "Delivered";
+// Force dynamic rendering
+export const dynamic = "force-dynamic";
+
+type OrderStatus = "COMPLETED" | "CANCELLED" | "PENDING";
 
 type Order = {
   id: string;
@@ -37,6 +41,7 @@ type SearchParams = {
   limit?: string;
   sort?: string;
   q?: string;
+  searchTerm?: string;
 };
 
 type TableHeaderConfig = {
@@ -45,53 +50,36 @@ type TableHeaderConfig = {
   sortable?: boolean;
 };
 
-const DUMMY_ORDERS: Order[] = [
-  {
-    id: "1",
-    userName: "Seema Badaya",
-    email: "null@gmail.com",
-    bookCount: 2,
-    bookPrice: 50,
-    shipping: 10,
-    status: "Processing",
-  },
-  {
-    id: "2",
-    userName: "Al Muntakim",
-    email: "null@gmail.com",
-    bookCount: 1,
-    bookPrice: 50,
-    shipping: 10,
-    status: "Processing",
-  },
-  {
-    id: "3",
-    userName: "Seema Badaya",
-    email: "null@gmail.com",
-    bookCount: 1,
-    bookPrice: 50,
-    shipping: 10,
-    status: "Processing",
-  },
-  {
-    id: "4",
-    userName: "Al Muntakim",
-    email: "null@gmail.com",
-    bookCount: 2,
-    bookPrice: 50,
-    shipping: 10,
-    status: "Processing",
-  },
-  {
-    id: "5",
-    userName: "Seema Badaya",
-    email: "null@gmail.com",
-    bookCount: 1,
-    bookPrice: 50,
-    shipping: 10,
-    status: "Processing",
-  },
-];
+// Map API status to component status
+function mapApiStatusToOrderStatus(apiStatus: string): OrderStatus {
+  const statusUpper = apiStatus.toUpperCase();
+  if (statusUpper === "COMPLETED" || statusUpper === "CANCELLED" || statusUpper === "PENDING") {
+    return statusUpper as OrderStatus;
+  }
+  // Default to PENDING if status doesn't match
+  return "PENDING";
+}
+
+// Helper to map API order to Order type
+function mapApiOrderToOrder(apiOrder: {
+  id: string;
+  userName: string;
+  email: string;
+  bookCount: number;
+  price: number;
+  shipping: number;
+  status: string;
+}): Order {
+  return {
+    id: apiOrder.id,
+    userName: apiOrder.userName,
+    email: apiOrder.email,
+    bookCount: apiOrder.bookCount,
+    bookPrice: apiOrder.price,
+    shipping: apiOrder.shipping,
+    status: mapApiStatusToOrderStatus(apiOrder.status),
+  };
+}
 
 const tableHeader: TableHeaderConfig[] = [
   { key: "userName", label: "User Name", sortable: true },
@@ -102,55 +90,12 @@ const tableHeader: TableHeaderConfig[] = [
   { key: "status", label: "Status", sortable: true },
 ];
 
-function filterOrders(orders: Order[], query: SearchParams) {
-  if (!query.q) return orders;
-  const q = query.q.toLowerCase();
-
-  return orders.filter(
-    (order) =>
-      order.userName.toLowerCase().includes(q) ||
-      order.email.toLowerCase().includes(q)
-  );
-}
-
-function sortOrders(orders: Order[], sortField: string, sortDirection: string) {
-  if (!sortField || !sortDirection) return orders;
-
-  return [...orders].sort((a, b) => {
-    const aVal = a[sortField as keyof Order];
-    const bVal = b[sortField as keyof Order];
-
-    let result = 0;
-    if (typeof aVal === "number" && typeof bVal === "number") {
-      result = aVal - bVal;
-    } else {
-      result = String(aVal).localeCompare(String(bVal));
-    }
-
-    return sortDirection === "asc" ? result : -result;
-  });
-}
-
-function paginate(orders: Order[], page: number, limit: number) {
-  const start = (page - 1) * limit;
-  return orders.slice(start, start + limit);
-}
-
-function calculateMeta(total: number, page: number, limit: number): Meta {
-  return {
-    page,
-    limit,
-    total,
-    totalPages: Math.ceil(total / limit),
-  };
-}
 
 function StatusBadge({ status }: { status: OrderStatus }) {
   const styles: Record<OrderStatus, string> = {
-    Processing: "bg-yellow-100 text-yellow-700 border border-yellow-300",
-    Shipped: "bg-pink-100 text-pink-600 border border-pink-300",
-    "In Route": "bg-purple-100 text-purple-600 border border-purple-300",
-    Delivered: "bg-green-100 text-green-600 border border-green-300",
+    PENDING: "bg-yellow-100 text-yellow-700 border border-yellow-300",
+    COMPLETED: "bg-green-100 text-green-600 border border-green-300",
+    CANCELLED: "bg-red-100 text-red-600 border border-red-300",
   };
 
   return (
@@ -176,10 +121,37 @@ const ActivityPage = async ({
   const limit = parseInt(query.limit || "10", 10);
   const [sortField = "", sortDirection = ""] = (query.sort || "").split(":");
 
-  const filtered = filterOrders(DUMMY_ORDERS, query);
-  const sorted = sortOrders(filtered, sortField, sortDirection);
-  const paginated = paginate(sorted, page, limit);
-  const meta = calculateMeta(filtered.length, page, limit);
+  // Get search term from URL (support both 'q' and 'searchTerm' for compatibility)
+  // Convert to lowercase as required
+  const searchTerm = query.searchTerm || query.q;
+  const searchTermLower = searchTerm ? searchTerm.toLowerCase() : undefined;
+
+  // Fetch recent orders from API
+  const ordersResponse = await getRecentOrders({
+    page,
+    limit,
+    searchTerm: searchTermLower,
+  });
+
+  // Map API orders to Order type
+  const orders: Order[] = ordersResponse?.data
+    ? ordersResponse.data.map(mapApiOrderToOrder)
+    : [];
+
+  // Use API meta or fallback
+  const meta: Meta = ordersResponse?.meta
+    ? {
+        page: ordersResponse.meta.page,
+        limit: ordersResponse.meta.limit,
+        total: ordersResponse.meta.total,
+        totalPages: ordersResponse.meta.totalPage,
+      }
+    : {
+        page: 1,
+        limit: 10,
+        total: 0,
+        totalPages: 0,
+      };
 
   return (
     <TableProvider>
@@ -190,7 +162,7 @@ const ActivityPage = async ({
           </h2>
           <SearchField
             placeholder="Search orders..."
-            initialValue={query.q || ""}
+            initialValue={searchTerm || ""}
           />
         </div>
 
@@ -212,7 +184,7 @@ const ActivityPage = async ({
           </TableHeader>
 
           <TableBody>
-            {paginated.length === 0 ? (
+            {orders.length === 0 ? (
               <TableRow>
                 <TableBodyItem colSpan={tableHeader.length + 1}>
                   <div className="text-center py-8 text-gray-500">
@@ -221,7 +193,7 @@ const ActivityPage = async ({
                 </TableBodyItem>
               </TableRow>
             ) : (
-              paginated.map((order) => (
+              orders.map((order) => (
                 <TableRow key={order.id}>
                   <TableBodyItem>{order.userName}</TableBodyItem>
                   <TableBodyItem>{order.email}</TableBodyItem>
@@ -249,6 +221,7 @@ const ActivityPage = async ({
           totalPages={meta.totalPages}
           currentPage={meta.page}
           pageSize={meta.limit}
+          totalItems={meta.total}
         />
       </div>
     </TableProvider>
