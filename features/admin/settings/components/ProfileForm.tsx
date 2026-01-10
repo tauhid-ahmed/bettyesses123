@@ -1,3 +1,5 @@
+/* eslint-disable prefer-const */
+/* eslint-disable @next/next/no-img-element */
 "use client";
 
 import { useForm } from "react-hook-form";
@@ -134,7 +136,7 @@ export function ProfileForm({ initialData }: ProfileFormProps) {
                         className="w-full h-full object-cover"
                       />
                     ) : (
-                      <div className="w-full h-full flex items-center justify-center bg-gradient-to-br from-blue-400 to-indigo-500">
+                      <div className="w-full h-full flex items-center justify-center bg-linear-to-br from-blue-400 to-indigo-500">
                         <span className="text-4xl text-white font-semibold">
                           {initialData.firstName?.[0] || "U"}
                         </span>
