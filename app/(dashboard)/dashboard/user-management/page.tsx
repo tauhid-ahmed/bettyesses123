@@ -254,6 +254,7 @@ export default async function UserTable({
           totalPages={meta.totalPages}
           currentPage={meta.page}
           pageSize={meta.limit}
+          totalItems={meta.total}
         />
       </div>
     </TableProvider>
