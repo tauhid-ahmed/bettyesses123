@@ -2,21 +2,12 @@
 /* eslint-disable react-hooks/rules-of-hooks */
 "use client";
 
-import { useState } from "react";
-
-type BookOrder = {
-  id: number;
-  title: string;
-  name: string;
-  age: number;
-  count: number;
-  price: string;
-  status: string;
-};
+import { BookOrder } from "../types";
+import { ChangeOrderStatusButton } from "@/features/admin/orders/components/ChangeOrderStatusButton";
 
 type BookDetailsPageProps = {
   bookData: BookOrder | null;
-  setSelectedBook: unknown;
+  setSelectedBook: (book: BookOrder | null) => void;
 };
 
 type BookInfo = {
@@ -31,13 +22,23 @@ type BookInfo = {
   orderId: string;
 };
 
+// Map API status to display status
+function mapApiStatusToDisplayStatus(apiStatus: string): "COMPLETED" | "CANCELLED" | "PENDING" {
+  const statusMap: Record<string, "COMPLETED" | "CANCELLED" | "PENDING"> = {
+    PENDING: "PENDING",
+    COMPLETED: "COMPLETED",
+    CANCELLED: "CANCELLED",
+  };
+  return statusMap[apiStatus.toUpperCase()] || "PENDING";
+}
+
 export default function BookDetailsPage({
   bookData,
   setSelectedBook,
 }: BookDetailsPageProps) {
   if (!bookData) return null;
 
-  const [status, setStatus] = useState<string>(bookData.status || "Processing");
+  const currentStatus = mapApiStatusToDisplayStatus(bookData.status);
 
   const books: BookInfo[] = Array.from({ length: bookData.count }).map(
     (_, index) => ({
@@ -109,21 +110,10 @@ export default function BookDetailsPage({
       ))}
 
       <div className="border-t-2 border-[#99A6B8] pt-6 flex flex-col sm:flex-row sm:justify-between gap-4">
-        <div className="flex gap-3">
-          <span>Status:</span>
-          <span>{status}</span>
-        </div>
-
-        <button
-          onClick={() =>
-            setStatus((prev) =>
-              prev === "Processing" ? "Shipped" : "Processing"
-            )
-          }
-          className="px-6 py-2 bg-[#00244A] text-white rounded-md"
-        >
-          Update Status
-        </button>
+        <ChangeOrderStatusButton
+          orderId={bookData.orderId}
+          currentStatus={currentStatus}
+        />
       </div>
     </div>
   );
