@@ -5,12 +5,24 @@ import Link from "next/link";
 import { useEffect, useState } from "react";
 import { toast } from "sonner";
 import { getPromoCodes } from "@/features/admin/promo-codes/actions/get-promo-codes";
+import { deletePromoCode } from "@/features/admin/promo-codes/actions/delete-promo-code";
 import { PromoCode } from "@/features/admin/promo-codes/types";
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+} from "@/components/ui/alert-dialog";
 
 export default function PromoCodesDashboard() {
   const [promoCodes, setPromoCodes] = useState<PromoCode[]>([]);
   const [loading, setLoading] = useState(true);
-  const [disabledIds, setDisabledIds] = useState<string[]>([]);
+  const [deleteId, setDeleteId] = useState<string | null>(null);
+  const [isDeleting, setIsDeleting] = useState(false);
 
   useEffect(() => {
     const fetchPromoCodes = async () => {
@@ -32,10 +44,24 @@ export default function PromoCodesDashboard() {
     fetchPromoCodes();
   }, []);
 
-  const stopPromoCodes = (id: string) => {
-    setDisabledIds((prev) => [...prev, id]);
-    // TODO: Implement stop promo code API call here if available
-    toast.success("Promo code has been stopped successfully.");
+  const handleDelete = async () => {
+    if (!deleteId) return;
+    setIsDeleting(true);
+    try {
+      const result = await deletePromoCode(deleteId);
+      if (result.success) {
+        setPromoCodes((prev) => prev.filter((p) => p.id !== deleteId));
+        toast.success(result.message);
+      } else {
+        toast.error(result.message);
+      }
+    } catch (error) {
+        console.error(error)
+        toast.error("An error occurred");
+    } finally {
+      setIsDeleting(false);
+      setDeleteId(null);
+    }
   };
 
   const calculateTimeLeft = (endTime: string) => {
@@ -126,18 +152,10 @@ export default function PromoCodesDashboard() {
                   </Link>
 
                   <button
-                    onClick={() => stopPromoCodes(promo.id)}
-                    disabled={disabledIds.includes(promo.id)}
-                    className={`flex-1 py-3 rounded-lg transition-colors text-white
-        ${
-          disabledIds.includes(promo.id)
-            ? "bg-gray-400 cursor-not-allowed"
-            : "bg-pink-700 hover:bg-red-600"
-        }`}
+                    onClick={() => setDeleteId(promo.id)}
+                    className="flex-1 py-3 rounded-lg transition-colors text-white bg-pink-700 hover:bg-red-600"
                   >
-                    {disabledIds.includes(promo.id)
-                      ? "Stopped"
-                      : "Stop This Promo Code"}
+                    Stop This Promo Code
                   </button>
                 </div>
               </div>
@@ -181,19 +199,35 @@ export default function PromoCodesDashboard() {
                     </p>
                   </div>
                 </div>
-                {/* 
-                <button
-                  onClick={() => toast.success("Promo code sent successfully.")}
-                  className="w-full bg-[#73b7ff] hover:bg-blue-500 text-white py-3 rounded-lg mt-6 transition-colors"
-                >
-                  Send This Promo Code
-                </button> 
-                */}
               </div>
             ))
           )}
         </div>
       </div>
+
+      <AlertDialog open={!!deleteId} onOpenChange={(open) => !open && setDeleteId(null)}>
+        <AlertDialogContent>
+          <AlertDialogHeader>
+            <AlertDialogTitle>Are you absolutely sure?</AlertDialogTitle>
+            <AlertDialogDescription>
+              This action cannot be undone. This will permanently delete the promo code.
+            </AlertDialogDescription>
+          </AlertDialogHeader>
+          <AlertDialogFooter>
+            <AlertDialogCancel disabled={isDeleting}>Cancel</AlertDialogCancel>
+            <AlertDialogAction
+              className="bg-red-600 hover:bg-red-700"
+              onClick={(e) => {
+                e.preventDefault();
+                handleDelete();
+              }}
+              disabled={isDeleting}
+            >
+              {isDeleting ? "Deleting..." : "Delete"}
+            </AlertDialogAction>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
     </div>
   );
 }

@@ -7,22 +7,39 @@ import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { toast } from "sonner";
 import { createPromoCodeSchema, CreatePromoCodeSchema } from "@/features/admin/promo-codes/schemas";
-import { createPromoCode } from "@/features/admin/promo-codes/actions/create-promo-code";
+import { updatePromoCode } from "@/features/admin/promo-codes/actions/update-promo-code";
+import { PromoCode } from "@/features/admin/promo-codes/types";
 
-export default function CreatePromoCodeForm() {
+type EditPromoCodeFormProps = {
+  initialData: PromoCode;
+};
+
+export default function EditPromoCodeForm({ initialData }: EditPromoCodeFormProps) {
   const router = useRouter();
   const [isPending, startTransition] = useTransition();
   const [showUseLimitDropdown, setShowUseLimitDropdown] = useState(false);
 
-  const form = useForm<CreatePromoCodeSchema>({
+  // Format initial dates to YYYY-MM-DD for input[type="date"]
+  const formatDate = (dateString: string) => {
+    return dateString ? new Date(dateString).toISOString().split('T')[0] : "";
+  };
+  
+  // Map initial use limit to string
+  const getUseLimitString = (limit: number) => {
+    if (limit >= 10000) return "Unlimited";
+    return `${limit} Time${limit > 1 ? "s" : ""}`;
+  };
+
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  const form = useForm<any>({
     resolver: zodResolver(createPromoCodeSchema),
     defaultValues: {
-      code: "",
-      discountPercentage: 0,
-      minOrderAmount: 0,
-      startTime: "",
-      endTime: "",
-      useLimit: "1 Time",
+      code: initialData.code,
+      discountPercentage: initialData.discountPercentage,
+      minOrderAmount: initialData.minOrderAmount,
+      startTime: formatDate(initialData.startTime),
+      endTime: formatDate(initialData.endTime),
+      useLimit: getUseLimitString(initialData.perPersonUseLimit),
     },
   });
 
@@ -36,6 +53,7 @@ export default function CreatePromoCodeForm() {
 
   const onSubmit = (data: CreatePromoCodeSchema) => {
     startTransition(async () => {
+      // Map Use Limit string to number
       let limit = 1;
       if (data.useLimit === "Unlimited") {
         limit = 1000000;
@@ -46,10 +64,9 @@ export default function CreatePromoCodeForm() {
         }
       }
 
-
       const startDate = new Date(data.startTime);
       const endDate = new Date(data.endTime);
-    
+      
       const payload = {
         code: data.code,
         discountPercentage: Number(data.discountPercentage),
@@ -57,10 +74,10 @@ export default function CreatePromoCodeForm() {
         perPersonUseLimit: limit,
         startTime: startDate.toISOString(),
         endTime: endDate.toISOString(),
-        isActive: true,
+        isActive: initialData.isActive, // Keep existing status or allow toggle? Usually edit allows changing values, status might be separate or here. Keeping existing for now.
       };
 
-      const result = await createPromoCode(payload);
+      const result = await updatePromoCode(initialData.id, payload);
 
       if (result.success) {
         toast.success(result.message);
@@ -74,13 +91,13 @@ export default function CreatePromoCodeForm() {
   return (
     <div className=" bg-white p-4 sm:p-6 lg:p-8">
       <h1 className="text-2xl sm:text-3xl font-semibold text-gray-900 mb-8">
-        Create New Promo Codes
+        Edit Promo Code
       </h1>
 
       <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
         <div>
           <label className="block text-gray-900 text-base font-normal mb-3">
-            Create Code
+            Promo Code
           </label>
           <input
             {...form.register("code")}
@@ -204,7 +221,7 @@ export default function CreatePromoCodeForm() {
             disabled={isPending}
             className="flex-1 px-6 py-3 bg-[#73B7FF] hover:bg-blue-500 text-white rounded-lg transition-colors font-medium"
           >
-            {isPending ? "Creating..." : "Send To"}
+            {isPending ? "Saving..." : "Save Changes"}
           </button>
         </div>
       </form>
