@@ -125,20 +125,20 @@ export default function Pagination({
             const isActive = pageNum === currentPage;
 
             return (
-            <Button
-  key={pageNum}
-  size="sm"
-  variant={isActive ? "default" : "outline"}
-  onClick={() => navigateToPage(pageNum)}
-  disabled={isPending}
-  className={cn(
-    "min-w-10",
-    isActive &&
-      "bg-[#0556AB] text-white hover:bg-[#044a92] pointer-events-none"
-  )}
->
-  {pageNum}
-</Button>
+              <Button
+                key={pageNum}
+                size="sm"
+                variant={isActive ? "default" : "outline"}
+                onClick={() => navigateToPage(pageNum)}
+                disabled={isPending}
+                className={cn(
+                  "min-w-10",
+                  isActive &&
+                  "bg-[#0556AB] text-white hover:bg-[#044a92] pointer-events-none"
+                )}
+              >
+                {pageNum}
+              </Button>
 
             );
           })}
