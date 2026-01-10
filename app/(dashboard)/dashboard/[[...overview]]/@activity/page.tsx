@@ -126,7 +126,7 @@ const ActivityPage = async ({
   const searchTerm = query.searchTerm || query.q;
   const searchTermLower = searchTerm ? searchTerm.toLowerCase() : undefined;
 
-  // Fetch recent orders from API
+  // Fetch recent orders from /admin/dashboard/recent-orders API
   const ordersResponse = await getRecentOrders({
     page,
     limit,

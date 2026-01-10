@@ -12,8 +12,12 @@ import { TableProvider } from "@/features/table/components/TableProvider";
 import { SortDirection } from "@/features/table/types/table.type";
 import { cn } from "@/lib/utils";
 import Link from "next/link";
+import { getOrders } from "@/features/admin/orders/actions/get-orders";
 
-type OrderStatus = "Processing" | "Shipped" | "In Route" | "Delivered";
+// Force dynamic rendering
+export const dynamic = "force-dynamic";
+
+type OrderStatus = "COMPLETED" | "CANCELLED" | "PENDING";
 
 type Order = {
   id: string;
@@ -37,6 +41,8 @@ type SearchParams = {
   limit?: string;
   sort?: string;
   q?: string;
+  searchTerm?: string;
+  status?: string;
 };
 
 type TableHeaderConfig = {
@@ -45,143 +51,50 @@ type TableHeaderConfig = {
   sortable?: boolean;
 };
 
-const DUMMY_ORDERS: Order[] = [
-  {
-    id: "1",
-    userName: "Seema Badaya",
-    email: "seema@gmail.com",
-    orderedBooks: 2,
-    price: 50,
-    orderId: "pi_1N8xXh2eZvKYlo2CabcDEF12",
-    status: "Processing",
-  },
-  {
-    id: "2",
-    userName: "Al Muntakim",
-    email: "almuntakim@gmail.com",
-    orderedBooks: 1,
-    price: 35,
-    orderId: "pi_1N8xXh2eZvKYlo2CabcDEF12",
-    status: "Shipped",
-  },
-  {
-    id: "3",
-    userName: "Nusrat Jahan",
-    email: "nusrat@gmail.com",
-    orderedBooks: 7,
-    price: 120,
-    orderId: "pi_1N8xXh2eZvKYlo2CabcDEF12",
-    status: "In Route",
-  },
-  {
-    id: "4",
-    userName: "Rafsan Rahman",
-    email: "rafsan@gmail.com",
-    orderedBooks: 4,
-    price: 80,
-    orderId: "pi_1N8xXh2eZvKYlo2CabcDEF12",
-    status: "Delivered",
-  },
-  {
-    id: "5",
-    userName: "Seema Badaya",
-    email: "seema@gmail.com",
-    orderedBooks: 1,
-    price: 25,
-    orderId: "pi_1N8xXh2eZvKYlo2CabcDEF12",
-    status: "Processing",
-  },
-  {
-    id: "6",
-    userName: "Tahmid Hasan",
-    email: "tahmid@gmail.com",
-    orderedBooks: 3,
-    price: 60,
-    orderId: "pi_1N8xXh2eZvKYlo2CabcDEF12",
-    status: "Shipped",
-  },
-  {
-    id: "7",
-    userName: "Ayesha Akter",
-    email: "ayesha@gmail.com",
-    orderedBooks: 6,
-    price: 110,
-    orderId: "pi_1N8xXh2eZvKYlo2CabcDEF12",
-    status: "In Route",
-  },
-  {
-    id: "8",
-    userName: "Imran Hossain",
-    email: "imran@gmail.com",
-    orderedBooks: 2,
-    price: 40,
-    orderId: "pi_1N8xXh2eZvKYlo2CabcDEF12",
-    status: "Delivered",
-  },
-  {
-    id: "9",
-    userName: "Farhan Ahmed",
-    email: "farhan@gmail.com",
-    orderedBooks: 5,
-    price: 95,
-    orderId: "pi_1N8xXh2eZvKYlo2CabcDEF12",
-    status: "Processing",
-  },
-  {
-    id: "10",
-    userName: "Sadia Islam",
-    email: "sadia@gmail.com",
-    orderedBooks: 8,
-    price: 150,
-    orderId: "pi_1N8xXh2eZvKYlo2CabcDEF12",
-    status: "Shipped",
-  },
-  {
-    id: "11",
-    userName: "Mehedi Hasan",
-    email: "mehedi@gmail.com",
-    orderedBooks: 3,
-    price: 55,
-    orderId: "pi_1N8xXh2eZvKYlo2CabcDEF12",
-    status: "Delivered",
-  },
-  {
-    id: "12",
-    userName: "Nabila Khan",
-    email: "nabila@gmail.com",
-    orderedBooks: 4,
-    price: 75,
-    orderId: "pi_1N8xXh2eZvKYlo2CabcDEF12",
-    status: "In Route",
-  },
-  {
-    id: "13",
-    userName: "Nabila Khan",
-    email: "nabila@gmail.com",
-    orderedBooks: 4,
-    price: 75,
-    orderId: "pi_1N8xXh2eZvKYlo2CabcDEF12",
-    status: "In Route",
-  },
-  {
-    id: "14",
-    userName: "Nabila Khan",
-    email: "nabila@gmail.com",
-    orderedBooks: 4,
-    price: 75,
-    orderId: "pi_1N8xXh2eZvKYlo2CabcDEF12",
-    status: "In Route",
-  },
-  {
-    id: "15",
-    userName: "Nabila Khan",
-    email: "nabila@gmail.com",
-    orderedBooks: 4,
-    price: 75,
-    orderId: "pi_1N8xXh2eZvKYlo2CabcDEF12",
-    status: "In Route",
-  },
-];
+// Map API status to component status
+function mapApiStatusToOrderStatus(apiStatus: string): OrderStatus {
+  const statusUpper = apiStatus.toUpperCase();
+  if (statusUpper === "COMPLETED" || statusUpper === "CANCELLED" || statusUpper === "PENDING") {
+    return statusUpper as OrderStatus;
+  }
+  // Default to PENDING if status doesn't match
+  return "PENDING";
+}
+
+// Helper to map API order to Order type
+function mapApiOrderToOrder(apiOrder: {
+  id: string;
+  userId: string;
+  orderNumber: string;
+  status: string;
+  email: string;
+  firstName: string;
+  lastName: string;
+  total: number;
+  orderItems: Array<{ id: string }>;
+  user?: {
+    firstName: string;
+    lastName: string;
+    email: string;
+  };
+}): Order {
+  // Use user object if available, otherwise use firstName/lastName from order
+  const userName = apiOrder.user
+    ? `${apiOrder.user.firstName} ${apiOrder.user.lastName}`.trim()
+    : `${apiOrder.firstName} ${apiOrder.lastName}`.trim();
+  
+  const email = apiOrder.user?.email || apiOrder.email;
+
+  return {
+    id: apiOrder.id,
+    userName: userName || "Unknown User",
+    email: email || "N/A",
+    orderedBooks: apiOrder.orderItems?.length || 0,
+    price: apiOrder.total || 0,
+    orderId: apiOrder.orderNumber,
+    status: mapApiStatusToOrderStatus(apiOrder.status),
+  };
+}
 
 const tableHeader: TableHeaderConfig[] = [
   { key: "userName", label: "User Name", sortable: true },
@@ -192,58 +105,12 @@ const tableHeader: TableHeaderConfig[] = [
   { key: "status", label: "Status", sortable: true },
 ];
 
-function filterOrders(orders: Order[], query: SearchParams) {
-  if (!query.q) return orders;
-
-  const q = query.q.toLowerCase();
-  return orders.filter(
-    (order) =>
-      order.userName.toLowerCase().includes(q) ||
-      order.email.toLowerCase().includes(q) ||
-      order.orderId.toLowerCase().includes(q)
-  );
-}
-
-function sortOrders(orders: Order[], sortField: string, sortDirection: string) {
-  if (!sortField || !sortDirection) return orders;
-
-  return [...orders].sort((a, b) => {
-    let result = 0;
-
-    if (typeof a[sortField as keyof Order] === "number") {
-      result =
-        (a[sortField as keyof Order] as number) -
-        (b[sortField as keyof Order] as number);
-    } else {
-      result = String(a[sortField as keyof Order]).localeCompare(
-        String(b[sortField as keyof Order])
-      );
-    }
-
-    return sortDirection === "asc" ? result : -result;
-  });
-}
-
-function paginate(orders: Order[], page: number, limit: number) {
-  const start = (page - 1) * limit;
-  return orders.slice(start, start + limit);
-}
-
-function calculateMeta(total: number, page: number, limit: number): Meta {
-  return {
-    page,
-    limit,
-    total,
-    totalPages: Math.ceil(total / limit),
-  };
-}
 
 function StatusBadge({ status }: { status: OrderStatus }) {
   const styles: Record<OrderStatus, string> = {
-    Processing: "bg-yellow-100 text-[#FFBB00] border-[#FFBB00] border",
-    Shipped: "bg-pink-100 text-[#FF008C] border-[#FF008C] border",
-    "In Route": "bg-purple-100 text-[#9935E5] border-[#9935E5] border",
-    Delivered: "bg-green-100 text-[#00FF44] border-[#00FF44] border",
+    PENDING: "bg-yellow-100 text-yellow-700 border border-yellow-300",
+    COMPLETED: "bg-green-100 text-green-600 border border-green-300",
+    CANCELLED: "bg-red-100 text-red-600 border border-red-300",
   };
 
   return (
@@ -266,20 +133,51 @@ export default async function OrderManagementTable({
   const query = await searchParams;
 
   const page = parseInt(query.page || "1", 10);
-  const limit = parseInt(query.limit || "12", 12);
+  const limit = parseInt(query.limit || "20", 20);
   const [sortField = "", sortDirection = ""] = (query.sort || "").split(":");
 
-  const filtered = filterOrders(DUMMY_ORDERS, query);
-  const sorted = sortOrders(filtered, sortField, sortDirection);
-  const paginated = paginate(sorted, page, limit);
-  const meta = calculateMeta(filtered.length, page, limit);
+  // Get search term from URL (support both 'q' and 'searchTerm' for compatibility)
+  const searchTerm = query.searchTerm || query.q;
+  
+  // Get status filter
+  const status = query.status as "COMPLETED" | "CANCELLED" | "PENDING" | undefined;
+
+  // Fetch orders from API
+  const ordersResponse = await getOrders({
+    page,
+    limit,
+    status,
+    searchTerm,
+  });
+
+  // Map API orders to Order type
+  const orders: Order[] = ordersResponse?.data
+    ? ordersResponse.data.map(mapApiOrderToOrder)
+    : [];
+
+  // Use API meta or fallback
+  const meta: Meta = ordersResponse?.meta
+    ? {
+        page: ordersResponse.meta.page,
+        limit: ordersResponse.meta.limit,
+        total: ordersResponse.meta.total,
+        totalPages: ordersResponse.meta.totalPage,
+      }
+    : {
+        page: 1,
+        limit: 20,
+        total: 0,
+        totalPages: 0,
+      };
+
+      // console.log(getOrders)
 
   return (
     <TableProvider>
       <div className="space-y-4">
         <PageHeading
           title="Order Management"
-          query={query.q || ""}
+          query={searchTerm || ""}
           placeholder="Search orders..."
         />
 
@@ -301,7 +199,7 @@ export default async function OrderManagementTable({
           </TableHeader>
 
           <TableBody>
-            {paginated.length === 0 ? (
+            {orders.length === 0 ? (
               <TableRow>
                 <TableBodyItem colSpan={tableHeader.length + 1}>
                   <div className="text-center py-8 text-gray-500">
@@ -310,7 +208,7 @@ export default async function OrderManagementTable({
                 </TableBodyItem>
               </TableRow>
             ) : (
-              paginated.map((order) => (
+              orders.map((order) => (
                 <TableRow key={order.id}>
                   <TableBodyItem>{order.userName}</TableBodyItem>
                   <TableBodyItem>{order.email}</TableBodyItem>
@@ -338,6 +236,7 @@ export default async function OrderManagementTable({
           totalPages={meta.totalPages}
           currentPage={meta.page}
           pageSize={meta.limit}
+          totalItems={meta.total}
         />
       </div>
     </TableProvider>
