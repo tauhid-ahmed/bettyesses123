@@ -107,7 +107,7 @@ export default function UserDetailsPage() {
                     See information about your ongoing
                   </p>
                 </div>
-                <BookCards setSelectedBook={setSelectedBook} />
+                <BookCards setSelectedBook={(book) => setSelectedBook({ ...book, orderId: book.orderId || "" })} />
               </div>
             ) : (
               <div>

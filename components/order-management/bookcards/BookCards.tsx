@@ -4,6 +4,7 @@ import Image from "next/image";
 
 export type BookOrder = {
   id: number;
+  orderId?: string; // Optional to maintain backward compatibility
   image: string;
   count: number;
   title: string;
