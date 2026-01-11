@@ -2,8 +2,9 @@
 
 import { auth } from "@/auth";
 import { BACKEND_API_URL } from "@/constants";
+import { ChangePasswordPayload } from "../types";
 
-export async function changePassword(payload: any) {
+export async function changePassword(payload: ChangePasswordPayload) {
   const session = await auth();
 
   try {
@@ -13,7 +14,11 @@ export async function changePassword(payload: any) {
         "Content-Type": "application/json",
         Authorization: `Bearer ${session?.user?.accessToken}`,
       },
-      body: JSON.stringify(payload),
+      body: JSON.stringify({
+        currentPassword: payload.currentPassword,
+        newPassword: payload.newPassword,
+        confirmPassword: payload.confirmPassword,
+      }),
     });
 
     const result = await res.json();
