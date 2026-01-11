@@ -23,9 +23,12 @@ export interface UpdateProfilePayload {
   firstName: string;
   lastName: string;
   email: string;
-  currentPassword?: string;
-  newPassword?: string;
-  confirmPassword?: string;
+}
+
+export interface ChangePasswordPayload {
+  currentPassword: string;
+  newPassword: string;
+  confirmPassword: string;
 }
 
 export interface ShippingAddress {
