@@ -21,7 +21,9 @@ export default function ShippingForm({ addresses }: ShippingFormProps) {
 
   const onSubmit = (data: any) => {
     startTransition(() => {
-      toast.info("Update shipping address is not implemented yet.");
+      toast.info("Update shipping address is not implemented yet."
+        
+      );
       console.log("Shipping Data:", data);
     });
   };
