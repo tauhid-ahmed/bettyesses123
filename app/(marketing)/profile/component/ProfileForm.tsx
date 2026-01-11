@@ -7,12 +7,14 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { User } from "lucide-react";
+import Image from "next/image";
 
 import { toast } from "sonner";
 import { UserProfile } from "@/features/profile/types";
 import { ProfileFormData, profileSchema } from "@/features/profile/schemas";
 import { uploadProfileImage } from "@/features/profile/actions/upload-image";
 import { updateProfile } from "@/features/profile/actions/update-profile";
+import { changePassword } from "@/features/profile/actions/change-password";
 
 
 interface ProfileFormProps {
@@ -22,6 +24,7 @@ interface ProfileFormProps {
 
 export default function ProfileForm({ profile, setProfile }: ProfileFormProps) {
   const [profileImage, setProfileImage] = useState<string | null>(profile.image || null);
+  const [selectedFile, setSelectedFile] = useState<File | null>(null);
   const [isPending, startTransition] = useTransition();
 
   const { register, handleSubmit, formState: { errors }, reset } = useForm<ProfileFormData>({
@@ -39,7 +42,7 @@ export default function ProfileForm({ profile, setProfile }: ProfileFormProps) {
   const getInitials = (first: string, last: string) =>
     `${first.charAt(0)}${last.charAt(0)}`.toUpperCase();
 
-  const handleImageUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
+  const handleImageSelect = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (!file) return;
 
@@ -47,46 +50,73 @@ export default function ProfileForm({ profile, setProfile }: ProfileFormProps) {
     const reader = new FileReader();
     reader.onloadend = () => setProfileImage(reader.result as string);
     reader.readAsDataURL(file);
-
-    const formData = new FormData();
-    formData.append("image", file);
-
-    startTransition(async () => {
-      const res = await uploadProfileImage(formData);
-      if (res.success) {
-        toast.success(res.message);
-        if (res.data?.image) setProfileImage(res.data.image);
-      } else {
-        toast.error(res.message);
-      }
-    });
+    
+    // Store file for later upload on submit
+    setSelectedFile(file);
   };
 
   const onSubmit = (data: ProfileFormData) => {
     startTransition(async () => {
-      // 1. Update Profile Info
-      const profileRes = await updateProfile({
-        firstName: data.firstName || "",
-        lastName: data.lastName || "",
-        email: data.email || "",
-        currentPassword: data.currentPassword,
-        newPassword: data.newPassword,
-        confirmPassword: data.confirmPassword,
-      });
+      try {
+        // 1. Upload Image (if image is selected)
+        if (selectedFile) {
+          const formData = new FormData();
+          formData.append("image", selectedFile);
+          
+          const imageRes = await uploadProfileImage(formData);
+          if (!imageRes.success) {
+            toast.error(imageRes.message || "Failed to upload image");
+            return;
+          }
+          if (imageRes.data?.image) {
+            setProfileImage(imageRes.data.image);
+          }
+          setSelectedFile(null);
+        }
 
-      if (!profileRes.success) {
-        toast.error(profileRes.message);
-        return;
+        // 2. Update Profile Info (firstName, lastName, email only)
+        const profileRes = await updateProfile({
+          firstName: data.firstName || "",
+          lastName: data.lastName || "",
+          email: data.email || "",
+        });
+
+        if (!profileRes.success) {
+          toast.error(profileRes.message);
+          return;
+        }
+
+        // 3. Change Password (only if password fields are filled)
+        if (data.currentPassword && data.newPassword && data.confirmPassword) {
+          const passwordRes = await changePassword({
+            currentPassword: data.currentPassword,
+            newPassword: data.newPassword,
+            confirmPassword: data.confirmPassword,
+          });
+
+          if (!passwordRes.success) {
+            toast.error(passwordRes.message || "Failed to change password");
+            return;
+          }
+        }
+
+        toast.success("Profile updated successfully");
+        setProfile(profileRes.data);
+        reset({
+          ...profileRes.data,
+          currentPassword: "",
+          newPassword: "",
+          confirmPassword: "",
+        });
+      } catch (error) {
+        console.error("Error updating profile:", error);
+        toast.error("An error occurred while updating profile");
       }
-
-      toast.success("Profile updated successfully");
-      setProfile(profileRes.data);
-      reset(profileRes.data);
     });
   };
 
   return (
-    <div className="bg-primary-100/90 shadow-lg rounded-lg p-6">
+    <div className="bg-primary-100/90 h-fit shadow-lg rounded-lg p-6">
       <h2 className="text-xl font-semibold mb-6 flex items-center gap-2">
         <User className="w-5 h-5" /> Edit Profile
       </h2>
@@ -95,7 +125,13 @@ export default function ProfileForm({ profile, setProfile }: ProfileFormProps) {
         <div className="relative">
           <div className="w-24 h-24 rounded-full bg-gradient-to-br from-blue-400 to-purple-500 flex items-center justify-center text-white text-2xl font-bold overflow-hidden">
             {profileImage ? (
-              <img src={profileImage} className="w-full h-full object-cover" />
+              <Image 
+                src={profileImage} 
+                alt={`${profile.firstName} ${profile.lastName}`}
+                width={96}
+                height={96}
+                className="w-full h-full object-cover"
+              />
             ) : (
               <span>{getInitials(profile.firstName, profile.lastName)}</span>
             )}
@@ -113,7 +149,7 @@ export default function ProfileForm({ profile, setProfile }: ProfileFormProps) {
             type="file"
             accept="image/*"
             className="hidden"
-            onChange={handleImageUpload}
+            onChange={handleImageSelect}
           />
         </div>
       </div>
