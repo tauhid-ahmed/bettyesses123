@@ -1,19 +1,32 @@
 "use client";
 
 import { Button } from "@/components/ui/button";
-import { LucideX } from "lucide-react";
+import { LucideX, Loader2 } from "lucide-react";
 import { useCart } from "../contexts/CartContext";
+import { useState } from "react";
 
 export default function RemoveCart({ id }: { id: string }) {
   const { removeFromCart } = useCart();
+  const [isRemoving, setIsRemoving] = useState(false);
+
+  const handleRemove = async () => {
+    setIsRemoving(true);
+    try {
+      await removeFromCart(id);
+    } finally {
+      setIsRemoving(false);
+    }
+  };
+
   return (
     <Button
-      onClick={() => removeFromCart(id)}
+      onClick={handleRemove}
       size="icon"
-      variant="destructive"
-      className="text-red-500"
+      variant="outline"
+      disabled={isRemoving}
+      className="text-black rounded-full hover:text-red-500 hover:border-red-500"
     >
-      <LucideX />
+      {isRemoving ? <Loader2 className="animate-spin" /> : <LucideX />}
     </Button>
   );
 }
