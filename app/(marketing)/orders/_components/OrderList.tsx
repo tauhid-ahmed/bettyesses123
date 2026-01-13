@@ -1,7 +1,15 @@
 import { getMyOrders } from "@/features/orders/actions/get-my-orders";
 import OrderCard from "./OrderCard";
 
-export type OrderStatus = "Processed" | "Shipped" | "En Route" | "Arrived" | "COMPLETED" | "PENDING" | "CANCELLED";
+export type OrderStatus = 
+  | "PENDING"
+  | "PAYMENT_FAILED"
+  | "ORDER_PROCESSED"
+  | "ORDER_SHIPPED"
+  | "ORDER_EN_ROUTE"
+  | "ORDER_ARRIVED"
+  | "COMPLETED"
+  | "CANCELLED";
 
 export interface OrderItemViewModel {
   id: string; 
