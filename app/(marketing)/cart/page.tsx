@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useState, useTransition } from "react";
 import { useCart } from "@/features/cart/contexts/CartContext";
 import { CartItem } from "@/features/cart/types";
 import { useRouter } from "next/navigation";
@@ -10,6 +10,10 @@ import RemoveCart from "@/features/cart/components/RemoveCart";
 import GradientBorder from "@/components/GradientBorder";
 import { Button } from "@/components/ui/button";
 import Link from "next/link";
+import { toast } from "sonner";
+import { createOrder } from "@/features/orders/actions/create-order";
+import { processPayment } from "@/features/orders/actions/process-payment";
+import StripeCardElement from "@/components/StripeCardElement";
 
 
 
@@ -17,6 +21,7 @@ type Step = 1 | 2 | 3;
 
 interface AddressDetails {
   contact: string;
+  phone: string;
   country: string;
   firstName: string;
   lastName: string;
@@ -36,11 +41,10 @@ interface DeliveryOption {
 
 interface PaymentDetails {
   billingAddress: "same" | "different";
-  cardNumber: string;
-  expiryDate: string;
-  cvv: string;
   nameOnCard: string;
 }
+
+type GetPaymentMethodFn = () => Promise<{ success: boolean; paymentMethodId?: string; error?: string }>;
 
 interface OrderSummary {
   subtotal: number;
@@ -53,7 +57,9 @@ interface OrderSummary {
 function CheckoutFlow() {
   const [currentStep, setCurrentStep] = useState<Step>(1);
   const [saveInfo, setSaveInfo] = useState<boolean>(false);
+  const [isProcessing, setIsProcessing] = useState<boolean>(false);
   const { cartItems, subtotal, isLoading } = useCart();
+  const [, startTransition] = useTransition();
 
   console.log("cart data",cartItems);
 
@@ -61,6 +67,7 @@ function CheckoutFlow() {
 
   const [addressDetails, setAddressDetails] = useState<AddressDetails>({
     contact: "",
+    phone: "",
     country: "Bangladesh",
     firstName: "",
     lastName: "",
@@ -78,11 +85,9 @@ function CheckoutFlow() {
 
   const [paymentDetails, setPaymentDetails] = useState<PaymentDetails>({
     billingAddress: "same",
-    cardNumber: "",
-    expiryDate: "",
-    cvv: "",
     nameOnCard: "",
   });
+  const [getPaymentMethodFn, setGetPaymentMethodFn] = useState<GetPaymentMethodFn | null>(null);
 
   const calculateOrderSummary = (): OrderSummary => {
     const selectedDeliveryOption = deliveryOptions.find(o => o.id === selectedDelivery);
@@ -96,13 +101,94 @@ function CheckoutFlow() {
 
   const orderSummary = calculateOrderSummary();
 
+
   // Navigation Handlers
-  const handleContinue = () => {
+  const handleContinue = async () => {
     if (currentStep < 3) {
       setCurrentStep((prev) => (prev + 1) as Step);
     } else {
-      router.push("/payment/success");
+      // Step 3: Process payment
+      await handlePlaceOrder();
     }
+  };
+
+  const handlePlaceOrder = async () => {
+    // Validate address details
+    if (!addressDetails.contact || !addressDetails.firstName || !addressDetails.lastName || 
+        !addressDetails.address || !addressDetails.city || !addressDetails.state || 
+        !addressDetails.pinCode) {
+      toast.error("Please fill in all address details");
+      return;
+    }
+
+    // Validate payment method function is available
+    if (!getPaymentMethodFn) {
+      toast.error("Please wait for card details to load");
+      return;
+    }
+
+    setIsProcessing(true);
+
+    startTransition(async () => {
+      try {
+        // Step 1: Create Order
+        const orderPayload = {
+          email: addressDetails.contact,
+          phone: addressDetails.phone || addressDetails.contact,
+          country: addressDetails.country,
+          firstName: addressDetails.firstName,
+          lastName: addressDetails.lastName,
+          streetAddress: addressDetails.address,
+          city: addressDetails.city,
+          state: addressDetails.state,
+          postalCode: addressDetails.pinCode,
+        };
+
+        const orderResult = await createOrder(orderPayload);
+        
+        if (!orderResult.success) {
+          toast.error(orderResult.message || "Failed to create order");
+          setIsProcessing(false);
+          return;
+        }
+
+        const orderId = orderResult.data.id;
+        toast.success("Order created successfully");
+
+        // Step 2: Create Stripe Payment Method using Stripe Elements
+        const paymentMethodResult = await getPaymentMethodFn();
+        
+        if (!paymentMethodResult.success || !paymentMethodResult.paymentMethodId) {
+          toast.error(paymentMethodResult.error || "Failed to create payment method");
+          setIsProcessing(false);
+          return;
+        }
+
+        const paymentMethodId = paymentMethodResult.paymentMethodId;
+        toast.success("Payment method created");
+
+        // Step 3: Process Payment
+        const processPaymentResult = await processPayment({
+          orderId,
+          paymentMethodId,
+        });
+
+        if (!processPaymentResult.success) {
+          toast.error(processPaymentResult.message || "Failed to process payment");
+          setIsProcessing(false);
+          return;
+        }
+
+        toast.success("Payment processed successfully!");
+        
+        // Redirect to success page
+        router.push("/payment/success");
+      } catch (error) {
+        console.error("Payment processing error:", error);
+        toast.error("An error occurred while processing your payment");
+        setIsProcessing(false);
+      }
+    });
   };
 
   // Form Handlers
@@ -210,10 +296,10 @@ function CheckoutFlow() {
 
         <button
           onClick={handleContinue}
-          disabled={cartItems.length === 0 || isLoading}
+          disabled={cartItems.length === 0 || isLoading || isProcessing}
           className="w-full bg-linear-to-r from-blue-500 to-purple-500 text-white py-3 rounded-lg font-medium hover:from-blue-600 hover:to-purple-600 transition-all mb-3 disabled:opacity-50"
         >
-          {isLoading ? "Loading..." : "Continue"}
+          {isLoading ? "Loading..." : isProcessing ? "Processing..." : currentStep === 3 ? "Place Order" : "Continue"}
         </button>
       </div>
     );
@@ -305,9 +391,22 @@ function CheckoutFlow() {
               className="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-transparent"
             />
             <p className="text-xs text-gray-500 mt-1">
-              We'll use this email address to send you details and updates about
+              We&apos;ll use this email address to send you details and updates about
               your order.
             </p>
+          </div>
+
+          <div>
+            <label className="block text-sm font-medium mb-1.5 text-gray-700">
+              Phone
+            </label>
+            <input
+              type="tel"
+              placeholder="Phone number"
+              value={addressDetails.phone}
+              onChange={(e) => handleAddressChange("phone", e.target.value)}
+              className="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-transparent"
+            />
           </div>
 
           <div>
@@ -470,7 +569,7 @@ function CheckoutFlow() {
         <h2 className="text-xl font-semibold mb-6">Payment Details</h2>
 
         <div className="space-y-4">
-          <div>
+          {/* <div>
             <label className="block text-sm font-medium mb-2 text-gray-700">
               Billing Address
             </label>
@@ -512,53 +611,16 @@ function CheckoutFlow() {
                 </span>
               </label>
             </div>
-          </div>
+          </div> */}
 
-          <div>
-            <label className="block text-sm font-medium mb-1.5 text-gray-700">
-              Card Number
-            </label>
-            <input
-              type="text"
-              placeholder="Card"
-              value={paymentDetails.cardNumber}
-              onChange={(e) =>
-                handlePaymentChange("cardNumber", e.target.value)
-              }
-              className="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-transparent"
-            />
-          </div>
+          {/* Stripe Card Element */}
+          <StripeCardElement
+            onPaymentMethodReady={(getPaymentMethod) => {
+              setGetPaymentMethodFn(() => getPaymentMethod);
+            }}
+          />
 
-          <div className="grid grid-cols-2 gap-4">
-            <div>
-              <label className="block text-sm font-medium mb-1.5 text-gray-700">
-                Expiry Date
-              </label>
-              <input
-                type="text"
-                placeholder="MM / YY"
-                value={paymentDetails.expiryDate}
-                onChange={(e) =>
-                  handlePaymentChange("expiryDate", e.target.value)
-                }
-                className="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-transparent"
-              />
-            </div>
-            <div>
-              <label className="block text-sm font-medium mb-1.5 text-gray-700">
-                CVV
-              </label>
-              <input
-                type="text"
-                placeholder="CVV"
-                value={paymentDetails.cvv}
-                onChange={(e) => handlePaymentChange("cvv", e.target.value)}
-                className="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-transparent"
-              />
-            </div>
-          </div>
-
-          <div>
+          {/* <div>
             <label className="block text-sm font-medium mb-1.5 text-gray-700">
               Name on Card
             </label>
@@ -571,9 +633,9 @@ function CheckoutFlow() {
               }
               className="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-transparent"
             />
-          </div>
+          </div> */}
 
-          <label className="flex items-center gap-2 text-sm pt-2">
+          {/* <label className="flex items-center gap-2 text-sm pt-2">
             <input
               type="checkbox"
               checked={saveInfo}
@@ -583,7 +645,7 @@ function CheckoutFlow() {
             <span className="text-gray-700">
               Save card information for next time
             </span>
-          </label>
+          </label> */}
         </div>
       </div>
     );
