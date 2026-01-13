@@ -27,18 +27,14 @@ export function ChangeRoleButton({
   const prevRoleRef = useRef(currentRole);
   const isInternalUpdateRef = useRef(false);
 
-  // Sync selectedRole with currentRole prop when it changes externally (not from our own updates)
-  // Use a ref callback pattern to avoid setState in effect
   const syncRoleRef = useRef<(() => void) | null>(null);
   
   useEffect(() => {
     if (prevRoleRef.current !== currentRole && !isInternalUpdateRef.current) {
-      // Schedule state update outside the effect using a callback
       syncRoleRef.current = () => {
         setSelectedRole(currentRole);
         prevRoleRef.current = currentRole;
       };
-      // Use queueMicrotask to defer the state update
       queueMicrotask(() => {
         if (syncRoleRef.current) {
           syncRoleRef.current();
@@ -46,7 +42,6 @@ export function ChangeRoleButton({
         }
       });
     } else if (isInternalUpdateRef.current) {
-      // Reset flag after internal update
       isInternalUpdateRef.current = false;
     }
     prevRoleRef.current = currentRole;
@@ -66,7 +61,6 @@ export function ChangeRoleButton({
         router.refresh();
       } else {
         toast.error(result.message);
-        // Revert to currentRole on error
         setSelectedRole(currentRole);
         isInternalUpdateRef.current = false;
       }
