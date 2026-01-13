@@ -12,19 +12,13 @@ type Admin = {
   role: string;
 };
 
+import { AdminRoleSelector } from "./AdminRoleSelector";
+
 export default function AdminListClient({ admins }: { admins: Admin[] }) {
   const [currentPage, setCurrentPage] = useState(1);
   const totalPages = 16;
   const totalItems = 1450;
   const itemsPerPage = 11;
-
-  const [selectedRoles, setSelectedRoles] = useState<Record<string | number, string>>(
-    admins.reduce((acc, admin) => ({ ...acc, [admin.id]: admin.role }), {})
-  );
-
-  const handleRoleChange = (adminId: string | number, newRole: string) => {
-    setSelectedRoles((prev) => ({ ...prev, [adminId]: newRole }));
-  };
 
   return (
     <div className=" pt-12">
@@ -60,20 +54,10 @@ export default function AdminListClient({ admins }: { admins: Admin[] }) {
                 <div className="text-gray-900">{admin.firstName} {admin.lastName}</div>
                 <div className="text-gray-900">{admin.email}</div>
                 <div>
-                  <select
-                    value={selectedRoles[admin.id]}
-                    onChange={(e) => handleRoleChange(admin.id, e.target.value)}
-                    className="flex items-center gap-2 bg-[#00244A] text-white px-4 py-2 rounded-md  text-sm cursor-pointer appearance-none pr-10"
-                    style={{
-                      backgroundImage: `url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 24 24' fill='none' stroke='white' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='6 9 12 15 18 9'%3E%3C/polyline%3E%3C/svg%3E")`,
-                      backgroundRepeat: "no-repeat",
-                      backgroundPosition: "right 0.5rem center",
-                      backgroundSize: "1rem",
-                    }}
-                  >
-                    <option value="ADMIN" className="bg-white text-gray-900">Admin</option>
-                    <option value="USER" className="bg-white text-gray-900">User</option>
-                  </select>
+                  <AdminRoleSelector 
+                    adminId={admin.id.toString()} 
+                    currentRole={admin.role} 
+                  />
                 </div>
               </div>
             ))}
