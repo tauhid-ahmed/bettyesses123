@@ -12,8 +12,8 @@ import { Button } from "@/components/ui/button";
 import Link from "next/link";
 import { toast } from "sonner";
 import { createOrder } from "@/features/orders/actions/create-order";
-import { createStripePaymentMethod } from "@/features/orders/actions/create-stripe-payment-method";
 import { processPayment } from "@/features/orders/actions/process-payment";
+import StripeCardElement from "@/components/StripeCardElement";
 
 
 
@@ -41,11 +41,10 @@ interface DeliveryOption {
 
 interface PaymentDetails {
   billingAddress: "same" | "different";
-  cardNumber: string;
-  expiryDate: string;
-  cvv: string;
   nameOnCard: string;
 }
+
+type GetPaymentMethodFn = () => Promise<{ success: boolean; paymentMethodId?: string; error?: string }>;
 
 interface OrderSummary {
   subtotal: number;
@@ -60,7 +59,7 @@ function CheckoutFlow() {
   const [saveInfo, setSaveInfo] = useState<boolean>(false);
   const [isProcessing, setIsProcessing] = useState<boolean>(false);
   const { cartItems, subtotal, isLoading } = useCart();
-  const [isPending, startTransition] = useTransition();
+  const [, startTransition] = useTransition();
 
   console.log("cart data",cartItems);
 
@@ -86,11 +85,9 @@ function CheckoutFlow() {
 
   const [paymentDetails, setPaymentDetails] = useState<PaymentDetails>({
     billingAddress: "same",
-    cardNumber: "",
-    expiryDate: "",
-    cvv: "",
     nameOnCard: "",
   });
+  const [getPaymentMethodFn, setGetPaymentMethodFn] = useState<GetPaymentMethodFn | null>(null);
 
   const calculateOrderSummary = (): OrderSummary => {
     const selectedDeliveryOption = deliveryOptions.find(o => o.id === selectedDelivery);
@@ -104,21 +101,6 @@ function CheckoutFlow() {
 
   const orderSummary = calculateOrderSummary();
 
-  // Parse expiry date from MM/YY format
-  const parseExpiryDate = (expiry: string): { month: number; year: number } | null => {
-    const parts = expiry.split("/").map((p) => p.trim());
-    if (parts.length !== 2) return null;
-    
-    const month = parseInt(parts[0], 10);
-    const year = parseInt(parts[1], 10);
-    
-    if (isNaN(month) || isNaN(year) || month < 1 || month > 12) return null;
-    
-    // Convert YY to YYYY (assuming 20YY for years < 100)
-    const fullYear = year < 100 ? 2000 + year : year;
-    
-    return { month, year: fullYear };
-  };
 
   // Navigation Handlers
   const handleContinue = async () => {
@@ -139,16 +121,9 @@ function CheckoutFlow() {
       return;
     }
 
-    // Validate payment details
-    if (!paymentDetails.cardNumber || !paymentDetails.expiryDate || !paymentDetails.cvv) {
-      toast.error("Please fill in all payment details");
-      return;
-    }
-
-    // Parse expiry date
-    const expiry = parseExpiryDate(paymentDetails.expiryDate);
-    if (!expiry) {
-      toast.error("Invalid expiry date format. Please use MM/YY");
+    // Validate payment method function is available
+    if (!getPaymentMethodFn) {
+      toast.error("Please wait for card details to load");
       return;
     }
 
@@ -180,27 +155,16 @@ function CheckoutFlow() {
         const orderId = orderResult.data.id;
         toast.success("Order created successfully");
 
-        // Step 2: Create Stripe Payment Method
-        const cardNumber = paymentDetails.cardNumber.replace(/\s/g, ""); // Remove spaces
-        const paymentMethodPayload = {
-          type: "card",
-          card: {
-            number: cardNumber,
-            exp_month: expiry.month,
-            exp_year: expiry.year,
-            cvc: paymentDetails.cvv,
-          },
-        };
-
-        const paymentMethodResult = await createStripePaymentMethod(paymentMethodPayload);
+        // Step 2: Create Stripe Payment Method using Stripe Elements
+        const paymentMethodResult = await getPaymentMethodFn();
         
-        if (!paymentMethodResult.success || !paymentMethodResult.data) {
+        if (!paymentMethodResult.success || !paymentMethodResult.paymentMethodId) {
           toast.error(paymentMethodResult.error || "Failed to create payment method");
           setIsProcessing(false);
           return;
         }
 
-        const paymentMethodId = paymentMethodResult.data.id;
+        const paymentMethodId = paymentMethodResult.paymentMethodId;
         toast.success("Payment method created");
 
         // Step 3: Process Payment
@@ -605,7 +569,7 @@ function CheckoutFlow() {
         <h2 className="text-xl font-semibold mb-6">Payment Details</h2>
 
         <div className="space-y-4">
-          <div>
+          {/* <div>
             <label className="block text-sm font-medium mb-2 text-gray-700">
               Billing Address
             </label>
@@ -647,53 +611,16 @@ function CheckoutFlow() {
                 </span>
               </label>
             </div>
-          </div>
+          </div> */}
 
-          <div>
-            <label className="block text-sm font-medium mb-1.5 text-gray-700">
-              Card Number
-            </label>
-            <input
-              type="text"
-              placeholder="Card"
-              value={paymentDetails.cardNumber}
-              onChange={(e) =>
-                handlePaymentChange("cardNumber", e.target.value)
-              }
-              className="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-transparent"
-            />
-          </div>
+          {/* Stripe Card Element */}
+          <StripeCardElement
+            onPaymentMethodReady={(getPaymentMethod) => {
+              setGetPaymentMethodFn(() => getPaymentMethod);
+            }}
+          />
 
-          <div className="grid grid-cols-2 gap-4">
-            <div>
-              <label className="block text-sm font-medium mb-1.5 text-gray-700">
-                Expiry Date
-              </label>
-              <input
-                type="text"
-                placeholder="MM / YY"
-                value={paymentDetails.expiryDate}
-                onChange={(e) =>
-                  handlePaymentChange("expiryDate", e.target.value)
-                }
-                className="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-transparent"
-              />
-            </div>
-            <div>
-              <label className="block text-sm font-medium mb-1.5 text-gray-700">
-                CVV
-              </label>
-              <input
-                type="text"
-                placeholder="CVV"
-                value={paymentDetails.cvv}
-                onChange={(e) => handlePaymentChange("cvv", e.target.value)}
-                className="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-transparent"
-              />
-            </div>
-          </div>
-
-          <div>
+          {/* <div>
             <label className="block text-sm font-medium mb-1.5 text-gray-700">
               Name on Card
             </label>
@@ -706,9 +633,9 @@ function CheckoutFlow() {
               }
               className="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-transparent"
             />
-          </div>
+          </div> */}
 
-          <label className="flex items-center gap-2 text-sm pt-2">
+          {/* <label className="flex items-center gap-2 text-sm pt-2">
             <input
               type="checkbox"
               checked={saveInfo}
@@ -718,7 +645,7 @@ function CheckoutFlow() {
             <span className="text-gray-700">
               Save card information for next time
             </span>
-          </label>
+          </label> */}
         </div>
       </div>
     );
