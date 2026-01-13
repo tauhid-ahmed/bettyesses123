@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useState, useTransition } from "react";
 import { useCart } from "@/features/cart/contexts/CartContext";
 import { CartItem } from "@/features/cart/types";
 import { useRouter } from "next/navigation";
@@ -10,6 +10,10 @@ import RemoveCart from "@/features/cart/components/RemoveCart";
 import GradientBorder from "@/components/GradientBorder";
 import { Button } from "@/components/ui/button";
 import Link from "next/link";
+import { toast } from "sonner";
+import { createOrder } from "@/features/orders/actions/create-order";
+import { createStripePaymentMethod } from "@/features/orders/actions/create-stripe-payment-method";
+import { processPayment } from "@/features/orders/actions/process-payment";
 
 
 
@@ -17,6 +21,7 @@ type Step = 1 | 2 | 3;
 
 interface AddressDetails {
   contact: string;
+  phone: string;
   country: string;
   firstName: string;
   lastName: string;
@@ -53,7 +58,9 @@ interface OrderSummary {
 function CheckoutFlow() {
   const [currentStep, setCurrentStep] = useState<Step>(1);
   const [saveInfo, setSaveInfo] = useState<boolean>(false);
+  const [isProcessing, setIsProcessing] = useState<boolean>(false);
   const { cartItems, subtotal, isLoading } = useCart();
+  const [isPending, startTransition] = useTransition();
 
   console.log("cart data",cartItems);
 
@@ -61,6 +68,7 @@ function CheckoutFlow() {
 
   const [addressDetails, setAddressDetails] = useState<AddressDetails>({
     contact: "",
+    phone: "",
     country: "Bangladesh",
     firstName: "",
     lastName: "",
@@ -96,13 +104,127 @@ function CheckoutFlow() {
 
   const orderSummary = calculateOrderSummary();
 
+  // Parse expiry date from MM/YY format
+  const parseExpiryDate = (expiry: string): { month: number; year: number } | null => {
+    const parts = expiry.split("/").map((p) => p.trim());
+    if (parts.length !== 2) return null;
+    
+    const month = parseInt(parts[0], 10);
+    const year = parseInt(parts[1], 10);
+    
+    if (isNaN(month) || isNaN(year) || month < 1 || month > 12) return null;
+    
+    // Convert YY to YYYY (assuming 20YY for years < 100)
+    const fullYear = year < 100 ? 2000 + year : year;
+    
+    return { month, year: fullYear };
+  };
+
   // Navigation Handlers
-  const handleContinue = () => {
+  const handleContinue = async () => {
     if (currentStep < 3) {
       setCurrentStep((prev) => (prev + 1) as Step);
     } else {
-      router.push("/payment/success");
+      // Step 3: Process payment
+      await handlePlaceOrder();
     }
+  };
+
+  const handlePlaceOrder = async () => {
+    // Validate address details
+    if (!addressDetails.contact || !addressDetails.firstName || !addressDetails.lastName || 
+        !addressDetails.address || !addressDetails.city || !addressDetails.state || 
+        !addressDetails.pinCode) {
+      toast.error("Please fill in all address details");
+      return;
+    }
+
+    // Validate payment details
+    if (!paymentDetails.cardNumber || !paymentDetails.expiryDate || !paymentDetails.cvv) {
+      toast.error("Please fill in all payment details");
+      return;
+    }
+
+    // Parse expiry date
+    const expiry = parseExpiryDate(paymentDetails.expiryDate);
+    if (!expiry) {
+      toast.error("Invalid expiry date format. Please use MM/YY");
+      return;
+    }
+
+    setIsProcessing(true);
+
+    startTransition(async () => {
+      try {
+        // Step 1: Create Order
+        const orderPayload = {
+          email: addressDetails.contact,
+          phone: addressDetails.phone || addressDetails.contact,
+          country: addressDetails.country,
+          firstName: addressDetails.firstName,
+          lastName: addressDetails.lastName,
+          streetAddress: addressDetails.address,
+          city: addressDetails.city,
+          state: addressDetails.state,
+          postalCode: addressDetails.pinCode,
+        };
+
+        const orderResult = await createOrder(orderPayload);
+        
+        if (!orderResult.success) {
+          toast.error(orderResult.message || "Failed to create order");
+          setIsProcessing(false);
+          return;
+        }
+
+        const orderId = orderResult.data.id;
+        toast.success("Order created successfully");
+
+        // Step 2: Create Stripe Payment Method
+        const cardNumber = paymentDetails.cardNumber.replace(/\s/g, ""); // Remove spaces
+        const paymentMethodPayload = {
+          type: "card",
+          card: {
+            number: cardNumber,
+            exp_month: expiry.month,
+            exp_year: expiry.year,
+            cvc: paymentDetails.cvv,
+          },
+        };
+
+        const paymentMethodResult = await createStripePaymentMethod(paymentMethodPayload);
+        
+        if (!paymentMethodResult.success || !paymentMethodResult.data) {
+          toast.error(paymentMethodResult.error || "Failed to create payment method");
+          setIsProcessing(false);
+          return;
+        }
+
+        const paymentMethodId = paymentMethodResult.data.id;
+        toast.success("Payment method created");
+
+        // Step 3: Process Payment
+        const processPaymentResult = await processPayment({
+          orderId,
+          paymentMethodId,
+        });
+
+        if (!processPaymentResult.success) {
+          toast.error(processPaymentResult.message || "Failed to process payment");
+          setIsProcessing(false);
+          return;
+        }
+
+        toast.success("Payment processed successfully!");
+        
+        // Redirect to success page
+        router.push("/payment/success");
+      } catch (error) {
+        console.error("Payment processing error:", error);
+        toast.error("An error occurred while processing your payment");
+        setIsProcessing(false);
+      }
+    });
   };
 
   // Form Handlers
@@ -210,10 +332,10 @@ function CheckoutFlow() {
 
         <button
           onClick={handleContinue}
-          disabled={cartItems.length === 0 || isLoading}
+          disabled={cartItems.length === 0 || isLoading || isProcessing}
           className="w-full bg-linear-to-r from-blue-500 to-purple-500 text-white py-3 rounded-lg font-medium hover:from-blue-600 hover:to-purple-600 transition-all mb-3 disabled:opacity-50"
         >
-          {isLoading ? "Loading..." : "Continue"}
+          {isLoading ? "Loading..." : isProcessing ? "Processing..." : currentStep === 3 ? "Place Order" : "Continue"}
         </button>
       </div>
     );
@@ -305,9 +427,22 @@ function CheckoutFlow() {
               className="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-transparent"
             />
             <p className="text-xs text-gray-500 mt-1">
-              We'll use this email address to send you details and updates about
+              We&apos;ll use this email address to send you details and updates about
               your order.
             </p>
+          </div>
+
+          <div>
+            <label className="block text-sm font-medium mb-1.5 text-gray-700">
+              Phone
+            </label>
+            <input
+              type="tel"
+              placeholder="Phone number"
+              value={addressDetails.phone}
+              onChange={(e) => handleAddressChange("phone", e.target.value)}
+              className="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-transparent"
+            />
           </div>
 
           <div>
