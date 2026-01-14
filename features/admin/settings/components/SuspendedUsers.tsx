@@ -9,7 +9,6 @@ import {
   TableBodyItem,
 } from "@/features/table/components/Table";
 import { TableProvider } from "@/features/table/components/TableProvider";
-import { cn } from "@/lib/utils";
 import { getSuspendedUsers, SuspendedUserApiItem } from "../actions/get-suspended-user";
 import EndSuspensionButton from "./EndSuspensionButton";
 

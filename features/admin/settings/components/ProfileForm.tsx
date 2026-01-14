@@ -20,6 +20,7 @@ import { UserProfile } from "../types";
 import { toast } from "sonner";
 import { Camera } from "lucide-react";
 import { updateProfile } from "../actions/update-profile";
+import { uploadProfileImage } from "../actions/upload-image";
 
 type ProfileFormProps = {
   initialData: UserProfile;
@@ -47,24 +48,19 @@ export function ProfileForm({ initialData }: ProfileFormProps) {
       try {
         let imagePath = initialData.image;
 
-        // if (selectedFile) {
-        //   const formData = new FormData();
-        //   formData.append("image", selectedFile);
+        if (selectedFile) {
+          const formData = new FormData();
+          formData.append("image", selectedFile);
 
-        //   const uploadRes = await fetch("/api/admin/users/upload-image", {
-        //     method: "POST",
-        //     body: formData,
-        //   });
+          const uploadRes = await uploadProfileImage(formData);
 
-        //   const uploadData = await uploadRes.json();
+          if (!uploadRes.success) {
+            toast.error(uploadRes.message || "Failed to upload image");
+            return;
+          }
 
-        //   if (!uploadRes.ok) {
-        //     toast.error(uploadData.message || "Failed to upload image");
-        //     return;
-        //   }
-
-        //   imagePath = uploadData.data;
-        // }
+          imagePath = uploadRes.data.image;
+        }
 
         const res = await updateProfile({
           ...data,
@@ -98,7 +94,6 @@ export function ProfileForm({ initialData }: ProfileFormProps) {
     if (file) {
       setSelectedFile(file);
 
-      // Create preview
       const reader = new FileReader();
       reader.onloadend = () => {
         setPreview(reader.result as string);
