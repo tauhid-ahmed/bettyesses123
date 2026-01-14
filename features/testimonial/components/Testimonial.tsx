@@ -9,10 +9,8 @@ import {
 import { Button } from "@/components/ui/button";
 import { LucideArrowLeft, LucideArrowRight } from "lucide-react";
 import TestimonialCard from "@/features/testimonial/components/TestimonialCard";
-import { testimonialData } from "@/features/testimonial/data";
 import Section from "@/components/Section";
 import Container from "@/components/Container";
-import { TestimonialData } from "../types";
 
 function CustomControls() {
   const { next, previous } = useCarouselControls();
@@ -63,7 +61,7 @@ export default function Testimonial() {
   useEffect(() => {
     const fetchReviews = async () => {
       try {
-        const res = await getReviews({ limit: 6 }); // Get a few reviews for the carousel
+        const res = await getReviews({ limit: 6 }); 
         if (res.success && res.data) {
           setReviews(res.data);
         }
