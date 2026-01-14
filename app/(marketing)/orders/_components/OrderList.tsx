@@ -37,7 +37,7 @@ export default async function OrderList() {
     );
   }
 
-  const apiOrders = response.data || [];
+  const apiOrders = (response.data || []).filter(order => order.status !== "CANCELLED");
 
   return (
     <div className="py-12">

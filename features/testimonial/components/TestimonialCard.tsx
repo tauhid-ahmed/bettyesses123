@@ -7,7 +7,7 @@ import Image from "next/image";
 type Props = {
   name: string;
   description: string;
-  image?: string; // made optional
+  image?: string; 
   age: string;
   rating: number;
 };
