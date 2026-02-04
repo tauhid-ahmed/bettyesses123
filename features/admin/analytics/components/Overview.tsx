@@ -42,14 +42,14 @@ export default async function OverviewStats() {
       iconBgColor: "bg-purple-50",
       iconColor: "text-purple-600",
     },
-    {
-      id: "new-users-this-month",
-      label: "New Users This Month",
-      value: stats?.newUsersThisMonth ?? 0,
-      icon: <TrendingUp className="w-5 h-5" />,
-      iconBgColor: "bg-slate-50",
-      iconColor: "text-slate-600",
-    },
+    // {
+    //   id: "new-users-this-month",
+    //   label: "New Users This Month",
+    //   value: stats?.newUsersThisMonth ?? 0,
+    //   icon: <TrendingUp className="w-5 h-5" />,
+    //   iconBgColor: "bg-slate-50",
+    //   iconColor: "text-slate-600",
+    // },
   ];
 
   // Add average order value if it exists
