@@ -9,10 +9,8 @@ import {
 import { Button } from "@/components/ui/button";
 import { LucideArrowLeft, LucideArrowRight } from "lucide-react";
 import TestimonialCard from "@/features/testimonial/components/TestimonialCard";
-import { testimonialData } from "@/features/testimonial/data";
 import Section from "@/components/Section";
 import Container from "@/components/Container";
-import { TestimonialData } from "../types";
 
 function CustomControls() {
   const { next, previous } = useCarouselControls();
@@ -52,11 +50,47 @@ function CustomControls() {
   );
 }
 
-export default function Testimonial({
-  data = testimonialData,
-}: {
-  data?: TestimonialData[];
-}) {
+import { useState, useEffect } from "react";
+import { getReviews } from "@/features/admin/reviews/actions/get-reviews";
+import { Review } from "@/features/admin/reviews/types";
+
+export default function Testimonial() {
+  const [reviews, setReviews] = useState<Review[]>([]);
+  const [isLoading, setIsLoading] = useState(true);
+
+  useEffect(() => {
+    const fetchReviews = async () => {
+      try {
+        const res = await getReviews({ limit: 6 }); 
+        if (res.success && res.data) {
+          setReviews(res.data);
+        }
+      } catch (error) {
+        console.error("Failed to fetch testimonials:", error);
+      } finally {
+        setIsLoading(false);
+      }
+    };
+
+    fetchReviews();
+  }, []);
+
+  if (isLoading) {
+    return (
+      <Section title="Smiles Shared by Our Customers" eyebrow="Testimonials">
+        <Container>
+          <div className="flex justify-center items-center py-20">
+            <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary-500"></div>
+          </div>
+        </Container>
+      </Section>
+    );
+  }
+
+  if (reviews.length === 0) {
+    return null; 
+  }
+
   return (
     <Section title="Smiles Shared by Our Customers" eyebrow="Testimonials">
       <Container>
@@ -67,14 +101,14 @@ export default function Testimonial({
           }}
         >
           <CarouselContent>
-            {data.map((testimonial, index) => (
-              <CarouselItem key={index} className="md:basis-1/2 lg:basis-1/3">
+            {reviews.map((review) => (
+              <CarouselItem key={review.id} className="md:basis-1/2 lg:basis-1/3">
                 <TestimonialCard
-                  age={testimonial.age}
-                  description={testimonial.description}
-                  image={testimonial.image}
-                  name={testimonial.name}
-                  rating={Number(testimonial.rating)}
+                  age={review.book?.childName || "Tale Seeker"}
+                  description={review.comment}
+                  image={review.reviewer?.image}
+                  name={`${review.reviewer?.firstName} ${review.reviewer?.lastName}`}
+                  rating={review.rating}
                 />
               </CarouselItem>
             ))}

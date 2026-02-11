@@ -53,7 +53,7 @@ export default async function SettingsPage({ searchParams }: Props) {
         </ul>
       </div>
       {t === ADMIN_INFO && <AdminInfo />}
-      <div className="lg:-mt-12">
+      <div className="relative z-10">
         {t === SUSPENDED_USERS && (
           <SuspendedUsers searchParams={searchParams} />
         )}

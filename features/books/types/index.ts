@@ -40,12 +40,11 @@ export type BookCardHorizontalProps = {
 };
 
 export type StepId =
-  | "welcome"
   | "child_details"
   | "story_idea"
   | "book_preview"
   | "book_details"
-  | "pricing";
+
 
 export type Language = "English" | "Spanish" | "French";
 export type Currency = "USD" | "EUR" | "GBP";

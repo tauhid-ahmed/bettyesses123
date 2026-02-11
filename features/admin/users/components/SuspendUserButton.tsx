@@ -6,18 +6,26 @@ import { SuspendUserDialog } from "./SuspendUserDialog";
 
 type SuspendUserButtonProps = {
   userId: string;
+  suspendedUntil: string | null;
 };
 
-export function SuspendUserButton({ userId }: SuspendUserButtonProps) {
+export function SuspendUserButton({ userId, suspendedUntil }: SuspendUserButtonProps) {
   const [showDialog, setShowDialog] = useState(false);
+
+  // Check if user is currently suspended
+  const isSuspended = suspendedUntil && new Date(suspendedUntil) > new Date();
 
   return (
     <>
       <Button
         onClick={() => setShowDialog(true)}
-        className="bg-danger-500 hover:bg-danger-600 text-white"
+        className={`px-6 py-2 rounded-md transition-colors font-normal ${
+          isSuspended
+            ? "bg-gray-500 hover:bg-gray-600 text-white"
+            : "bg-[#E63946] hover:bg-[#d32f2f] text-white"
+        }`}
       >
-        Suspend User
+        {isSuspended ? "Suspended" : "Suspend User"}
       </Button>
 
       <SuspendUserDialog
