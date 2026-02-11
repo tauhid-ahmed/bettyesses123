@@ -13,7 +13,10 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { Gender } from "../types";
-import { Upload } from "lucide-react";
+import { Upload, Sparkles } from "lucide-react";
+import Image from "next/image";
+import imageGuide1 from "@/images/imageGuide1.webp";
+import imageGuide2 from "@/images/imageGuide2.webp";
 
 const ages = Array.from({ length: 13 }, (_, i) => i + 1);
 const months = [
@@ -69,7 +72,7 @@ export default function ChildDetailsStep() {
   };
 
   return (
-    <div className="max-w-md mx-auto p-6 space-y-6">
+    <div className="max-w-2xl mx-auto p-6 space-y-6">
       {/* Child Details Section */}
       <div className="bg-blue-50/50 rounded-2xl p-6 border border-blue-100">
         <h2 className="text-xl font-semibold text-center mb-6">
@@ -88,6 +91,31 @@ export default function ChildDetailsStep() {
             />
             {errors.name && (
               <p className="text-red-500 text-xs mt-1">{errors.name.message}</p>
+            )}
+          </div>
+
+          {/* Age */}
+          <div>
+            <label className="block text-sm font-medium mb-2 text-gray-700">
+              Age
+            </label>
+            <Select
+              onValueChange={(value) => setValue("age", Number(value))}
+              value={selectedAge?.toString()}
+            >
+              <SelectTrigger className="bg-white w-full border-gray-200">
+                <SelectValue placeholder="Select age" />
+              </SelectTrigger>
+              <SelectContent>
+                {ages.map((age) => (
+                  <SelectItem key={age} value={age.toString()}>
+                    {age}
+                  </SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
+            {errors.age && (
+              <p className="text-red-500 text-xs mt-1">{errors.age.message}</p>
             )}
           </div>
 
@@ -147,53 +175,108 @@ export default function ChildDetailsStep() {
 
       {/* Upload Photo Section */}
       <div className="bg-blue-50/50 rounded-2xl p-6 border border-blue-100">
-        <h2 className="text-xl font-semibold text-center mb-4">
+        <h2 className="text-[#1F2937] text-[38px] font-semibold text-center mb-4">
           Upload your child's photo here!
         </h2>
 
-        <div className="flex justify-center gap-3 mb-4">
-          {[...Array(6)].map((_, i) => (
-            <div
-              key={i}
-              className="w-14 h-14 rounded-full bg-gray-200 border-2 border-white overflow-hidden"
-            >
-              <img
-                src={`https://api.dicebear.com/7.x/avataaars/svg?seed=${i}`}
-                alt={`Sample ${i + 1}`}
-                className="w-full h-full object-cover"
-              />
-            </div>
-          ))}
+        <div className="text-xs text-center text-gray-500 mb-4">
+          Reference images showing which photos are allowed and which are
+          not
         </div>
+        <div className="flex flex-col items-center justify-center gap-4">
+          <div className="flex flex-col gap-4 mb-4">
+            {[...Array(2)].map((_, i) => {
+              if (i === 0) {
+                return (
+                  <div
+                    key={i}
+                    className="flex gap-2 md:gap-4 rounded-full overflow-hidden"
+                  >
+                    <Image
+                      src={imageGuide1}
+                      alt={`Image Guide ${i + 1}`}
+                      width={50}
+                      height={50}
+                      className="size-6 sm:size-10 md:size-14 object-cover"
+                    />
+                    <Image
+                      src={imageGuide1}
+                      alt={`Image Guide ${i + 1}`}
+                      width={50}
+                      height={50}
+                      className="size-6 sm:size-10 md:size-14 object-cover"
+                    />
+                    <Image
+                      src={imageGuide1}
+                      alt={`Image Guide ${i + 1}`}
+                      width={50}
+                      height={50}
+                      className="size-6 sm:size-10 md:size-14 object-cover"
+                    />
+                  </div>
+                );
+              }
+              if (i === 1) {
+                return (
+                  <div
+                    key={i}
+                    className="flex gap-2 md:gap-4 overflow-hidden"
+                  >
+                    <Image
+                      src={imageGuide2}
+                      alt={`Image Guide ${i + 1}`}
+                      width={50}
+                      height={50}
+                      className="size-6 sm:size-10 md:size-14 object-cover"
+                    />
+                    <Image
+                      src={imageGuide2}
+                      alt={`Image Guide ${i + 1}`}
+                      width={50}
+                      height={50}
+                      className="size-6 sm:size-10 md:size-14 object-cover"
+                    />
+                    <Image
+                      src={imageGuide2}
+                      alt={`Image Guide ${i + 1}`}
+                      width={50}
+                      height={50}
+                      className="size-6 sm:size-10 md:size-14 object-cover"
+                    />
+                  </div>
+                );
+              }
+            })}
+          </div>
 
-        <p className="text-sm text-gray-600 text-center mb-4">
-          Upload a photo of your child
-        </p>
-
-        <div className="flex justify-center">
-          <label htmlFor="photo-upload">
+          <p className="text-gray-600 text-xs sm:text-sm md:text-base">
+            Upload a photo of your child
+          </p>
+          <label htmlFor="image-upload">
             <Button
               type="button"
               variant="outline"
-              className="border-2 border-blue-300 text-blue-600 hover:bg-blue-50 rounded-full"
-              onClick={() => document.getElementById("photo-upload")?.click()}
+              className="cursor-pointer font-bold border-primary-500 py-6 px-6! text-primary-500 bg-transparent hover:bg-primary-500 hover:text-white"
+              asChild
             >
-              <Upload className="w-4 h-4 mr-2" />
-              Upload Image
+              <span>
+                <Upload className="size-4!" />
+                Upload Image
+              </span>
             </Button>
+            <input
+              id="image-upload"
+              type="file"
+              accept="image/*"
+              onChange={handleImageUpload}
+              className="hidden"
+            />
           </label>
-          <input
-            id="photo-upload"
-            type="file"
-            accept="image/*"
-            onChange={handleImageUpload}
-            className="hidden"
-          />
+
+          <p className="text-xs text-gray-500 mt-2">PNG JPG, up to 10MB</p>
         </div>
 
-        <p className="text-xs text-gray-500 text-center mt-2">
-          PNG, JPG up to 10MB
-        </p>
+
       </div>
 
       {/* Uploaded Photo Display */}
@@ -229,8 +312,6 @@ export default function ChildDetailsStep() {
         </div>
       )}
 
-      {/* Language Selection */}
-
 
       {/* Story Idea Section */}
       <div className="bg-blue-50/50 rounded-2xl p-6 border border-blue-100">
@@ -239,15 +320,19 @@ export default function ChildDetailsStep() {
           rest!
         </h2>
 
-        <div>
-          <label className="block text-sm font-medium mb-2 text-gray-700">
-            Tell me your story idea...
+        <div className="w-full">
+          <label className="block text-base font-medium mb-3 text-gray-900">
+            Write your story idea
           </label>
-          <textarea
-            className="w-full px-4 py-3 rounded-lg border border-gray-200 bg-white focus:ring-2 focus:ring-blue-500 focus:border-transparent resize-none"
-            rows={4}
-            placeholder="Enter your story idea here..."
-          />
+          <div className="relative group">
+            <div className="absolute top-4 left-4 text-gray-400 pointer-events-none transition-colors group-hover:text-blue-500">
+              <Sparkles className="w-5 h-5" />
+            </div>
+            <textarea
+              className="w-full pl-12 pr-4 py-4 rounded-xl border bg-white  transition-all duration-200 resize-none min-h-[140px] placeholder:text-gray-400"
+              placeholder="Prompt......"
+            />
+          </div>
         </div>
       </div>
 
