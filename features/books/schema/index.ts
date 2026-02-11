@@ -12,7 +12,6 @@ export const childDetailsSchema = z.object({
   gender: z.enum(["Male", "Female", "Other"] as const),
   birthMonth: z.string().min(1, "Birth month is required"),
   image: z.string().nullable(),
-  language: z.enum(["English", "Spanish", "French"] as const),
 });
 
 export const characterSchema = z.object({

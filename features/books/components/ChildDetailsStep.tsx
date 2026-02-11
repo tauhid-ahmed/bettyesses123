@@ -2,7 +2,7 @@ import { useForm } from "react-hook-form";
 import { useBookForm } from "../context/CreateBookContext";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { ChildDetails, childDetailsSchema } from "../schema";
-import { GENDERS, LANGUAGES } from "../constant";
+import { GENDERS } from "../constant";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import {
@@ -12,7 +12,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { Gender, Language } from "../types";
+import { Gender } from "../types";
 import { Upload } from "lucide-react";
 
 const ages = Array.from({ length: 13 }, (_, i) => i + 1);
@@ -47,7 +47,7 @@ export default function ChildDetailsStep() {
   const selectedAge = watch("age");
   const selectedGender = watch("gender");
   const selectedBirthMonth = watch("birthMonth");
-  const selectedLanguage = watch("language");
+
 
   const onSubmit = (data: ChildDetails) => {
     dispatch({ type: "UPDATE_CHILD_DETAILS", payload: data });
@@ -230,33 +230,7 @@ export default function ChildDetailsStep() {
       )}
 
       {/* Language Selection */}
-      <div className="bg-blue-50/50 rounded-2xl p-6 border border-blue-100">
-        <h2 className="text-xl font-semibold text-center mb-4">
-          Select the language for the story!
-        </h2>
 
-        <div className="flex justify-center gap-4">
-          {LANGUAGES.map((lang) => (
-            <button
-              key={lang}
-              type="button"
-              onClick={() => setValue("language", lang as Language)}
-              className={`px-6 py-2 rounded-full border-2 transition-all ${
-                selectedLanguage === lang
-                  ? "bg-blue-500 text-white border-blue-500"
-                  : "bg-white text-gray-700 border-gray-300 hover:border-blue-300"
-              }`}
-            >
-              {lang}
-            </button>
-          ))}
-        </div>
-        {errors.language && (
-          <p className="text-red-500 text-xs mt-2 text-center">
-            {errors.language.message}
-          </p>
-        )}
-      </div>
 
       {/* Story Idea Section */}
       <div className="bg-blue-50/50 rounded-2xl p-6 border border-blue-100">
