@@ -1,28 +1,7 @@
-import { DefaultSession, DefaultUser } from "next-auth";
-import { JWT, DefaultJWT } from "next-auth/jwt";
+// types/next-auth.d.ts
+import { DefaultSession } from "next-auth";
+import { JWT } from "next-auth/jwt";
 
-// API Response Types
-export interface LoginResponse {
-  success: boolean;
-  statusCode: number;
-  message: string;
-  data: UserData;
-}
-
-export interface UserData {
-  id: string;
-  firstName: string;
-  lastName: string;
-  email: string;
-  role: "SUPERADMIN" | "ADMIN" | "USER";
-  image: string | null;
-  status: "ACTIVE" | "INACTIVE";
-  isVerified: boolean;
-  accessToken: string;
-  refreshToken: string;
-}
-
-// Extend Next-Auth types
 declare module "next-auth" {
   interface Session {
     user: {
@@ -39,7 +18,7 @@ declare module "next-auth" {
     } & DefaultSession["user"];
   }
 
-  interface User extends DefaultUser {
+  interface User {
     id: string;
     email: string;
     firstName: string;
@@ -54,7 +33,7 @@ declare module "next-auth" {
 }
 
 declare module "next-auth/jwt" {
-  interface JWT extends DefaultJWT {
+  interface JWT {
     id: string;
     email: string;
     firstName: string;

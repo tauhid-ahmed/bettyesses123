@@ -71,7 +71,6 @@ export const authConfig: NextAuthConfig = {
             const response = await res.json();
 
             if (!res.ok || !response.success) {
-              // Pass through specific error messages from backend
               throw new Error(response.message || "LOGIN_FAILED");
             }
 
@@ -100,7 +99,6 @@ export const authConfig: NextAuthConfig = {
             };
           } catch (error) {
             console.error("Authorization error:", error);
-            // Re-throw the error so it can be caught by signIn
             throw error;
           }
         }
