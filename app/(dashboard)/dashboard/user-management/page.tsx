@@ -10,9 +10,13 @@ import {
 } from "@/features/table/components/Table";
 import { TableProvider } from "@/features/table/components/TableProvider";
 import { SortDirection } from "@/features/table/types/table.type";
-import { cn } from "@/lib/utils";
 import { Users } from "lucide-react";
 import Link from "next/link";
+import { getUserStats } from "@/features/admin/users/actions/get-user-stats";
+import { getUsers } from "@/features/admin/users/actions/get-users";
+
+// Force dynamic rendering to prevent caching issues
+export const dynamic = "force-dynamic";
 
 // -------------------- Types --------------------
 type User = {
@@ -35,6 +39,8 @@ type SearchParams = {
   limit?: string;
   sort?: string;
   q?: string;
+  searchTerm?: string;
+  status?: string;
 };
 
 type TableHeaderConfig = {
@@ -43,128 +49,23 @@ type TableHeaderConfig = {
   sortable?: boolean;
 };
 
-// -------------------- Dummy Data (From Image) --------------------
-const DUMMY_USERS: User[] = [
-  {
-    id: "1",
-    name: "Seema Badaya",
-    email: "null@gmail.com",
-    orderedBook: 2,
-    ongoingOrder: "yes",
-  },
-  {
-    id: "2",
-    name: "Al Muntakim",
-    email: "null@gmail.com",
-    orderedBook: 3,
-    ongoingOrder: "no",
-  },
-  {
-    id: "3",
-    name: "Seema Badaya",
-    email: "null@gmail.com",
-    orderedBook: 0,
-    ongoingOrder: "no",
-  },
-  {
-    id: "4",
-    name: "Al Muntakim",
-    email: "null@gmail.com",
-    orderedBook: 12,
-    ongoingOrder: "yes",
-  },
-  {
-    id: "5",
-    name: "Al Muntakim",
-    email: "null@gmail.com",
-    orderedBook: 12,
-    ongoingOrder: "no",
-  },
-  {
-    id: "6",
-    name: "Seema Badaya",
-    email: "null@gmail.com",
-    orderedBook: 2,
-    ongoingOrder: "yes",
-  },
-  {
-    id: "6",
-    name: "Seema Badaya",
-    email: "null@gmail.com",
-    orderedBook: 2,
-    ongoingOrder: "yes",
-  },
-  {
-    id: "6",
-    name: "Seema Badaya",
-    email: "null@gmail.com",
-    orderedBook: 2,
-    ongoingOrder: "yes",
-  },
-  {
-    id: "6",
-    name: "Seema Badaya",
-    email: "null@gmail.com",
-    orderedBook: 2,
-    ongoingOrder: "yes",
-  },
-  {
-    id: "6",
-    name: "Seema Badaya",
-    email: "null@gmail.com",
-    orderedBook: 2,
-    ongoingOrder: "yes",
-  },
-  {
-    id: "6",
-    name: "Seema Badaya",
-    email: "null@gmail.com",
-    orderedBook: 2,
-    ongoingOrder: "yes",
-  },
-  {
-    id: "6",
-    name: "Seema Badaya",
-    email: "null@gmail.com",
-    orderedBook: 2,
-    ongoingOrder: "yes",
-  },
-  {
-    id: "6",
-    name: "Seema Badaya",
-    email: "null@gmail.com",
-    orderedBook: 2,
-    ongoingOrder: "yes",
-  },
-  {
-    id: "6",
-    name: "Seema Badaya",
-    email: "null@gmail.com",
-    orderedBook: 2,
-    ongoingOrder: "yes",
-  },
-  {
-    id: "6",
-    name: "Seema Badaya",
-    email: "null@gmail.com",
-    orderedBook: 2,
-    ongoingOrder: "yes",
-  },
-  {
-    id: "6",
-    name: "Seema Badaya",
-    email: "null@gmail.com",
-    orderedBook: 2,
-    ongoingOrder: "yes",
-  },
-  {
-    id: "6",
-    name: "Seema Badaya",
-    email: "null@gmail.com",
-    orderedBook: 2,
-    ongoingOrder: "yes",
-  },
-];
+// -------------------- Helper to map API user to User type --------------------
+function mapApiUserToUser(apiUser: {
+  id: string;
+  firstName: string;
+  lastName: string;
+  email: string;
+  orderedBooks: number;
+  hasOngoingOrder: boolean;
+}): User {
+  return {
+    id: apiUser.id,
+    name: `${apiUser.firstName} ${apiUser.lastName}`.trim(),
+    email: apiUser.email,
+    orderedBook: apiUser.orderedBooks,
+    ongoingOrder: apiUser.hasOngoingOrder ? "yes" : "no",
+  };
+}
 
 // -------------------- Table Header --------------------
 const tableHeader: TableHeaderConfig[] = [
@@ -174,41 +75,10 @@ const tableHeader: TableHeaderConfig[] = [
   { key: "ongoingOrder", label: "Ongoing Order", sortable: true },
 ];
 
-// -------------------- Helpers --------------------
-function filterUsers(users: User[], query: SearchParams): User[] {
-  if (!query.q) return users;
 
-  const q = query.q.toLowerCase();
-  return users.filter(
-    (u) => u.name.toLowerCase().includes(q) || u.email.toLowerCase().includes(q)
-  );
-}
-
-function sortUsers(users: User[], sortField: string, sortDirection: string) {
-  if (!sortField || !sortDirection) return users;
-
-  return [...users].sort((a, b) => {
-    const aVal = a[sortField as keyof User];
-    const bVal = b[sortField as keyof User];
-
-    if (aVal < bVal) return sortDirection === "asc" ? -1 : 1;
-    if (aVal > bVal) return sortDirection === "asc" ? 1 : -1;
-    return 0;
-  });
-}
-
-function paginateUsers(users: User[], page: number, limit: number) {
-  const start = (page - 1) * limit;
-  return users.slice(start, start + limit);
-}
-
-function calculateMeta(total: number, page: number, limit: number): Meta {
-  return {
-    page,
-    limit,
-    total,
-    totalPages: Math.ceil(total / limit),
-  };
+// -------------------- Helper --------------------
+function formatNumber(num: number): string {
+  return num.toLocaleString("en-US");
 }
 
 // -------------------- Component --------------------
@@ -220,13 +90,46 @@ export default async function UserTable({
   const query = await searchParams;
 
   const page = parseInt(query.page || "1", 10);
-  const limit = parseInt(query.limit || "15", 15);
+  // Ensure limit is properly parsed and is a valid number
+  const limitParam = query.limit ? parseInt(query.limit, 10) : 20;
+  const limit = isNaN(limitParam) || limitParam <= 0 ? 20 : limitParam;
   const [sortField = "", sortDirection = ""] = (query.sort || "").split(":");
 
-  const filteredUsers = filterUsers(DUMMY_USERS, query);
-  const sortedUsers = sortUsers(filteredUsers, sortField, sortDirection);
-  const paginatedUsers = paginateUsers(sortedUsers, page, limit);
-  const meta = calculateMeta(filteredUsers.length, page, limit);
+  // Get search term from URL (support both 'q' and 'searchTerm' for compatibility)
+  // Convert to lowercase as required
+  const searchTerm = query.searchTerm || query.q;
+  const searchTermLower = searchTerm ? searchTerm.toLowerCase() : undefined;
+
+  // Fetch users from API
+  const usersResponse = await getUsers({
+    page,
+    limit,
+    searchTerm: searchTermLower,
+    status: query.status,
+  });
+
+  // Map API users to User type
+  const users: User[] = usersResponse?.data
+    ? usersResponse.data.map(mapApiUserToUser)
+    : [];
+
+  // Use API meta or fallback
+  const meta: Meta = usersResponse?.meta
+    ? {
+        page: usersResponse.meta.page,
+        limit: usersResponse.meta.limit,
+        total: usersResponse.meta.total,
+        totalPages: usersResponse.meta.totalPage,
+      }
+    : {
+        page: 1,
+        limit: 20,
+        total: 0,
+        totalPages: 0,
+      };
+
+  // Fetch user stats
+  const userStats = await getUserStats();
 
   return (
     <TableProvider>
@@ -235,12 +138,12 @@ export default async function UserTable({
           User Overview
         </h1>
 
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+        <div className="grid md:grid-cols-2 xl:grid-cols-4 gap-6">
           <div className="bg-white rounded-lg shadow-sm p-6">
             <div className="flex items-start justify-between">
               <div>
                 <h2 className="text-4xl font-semibold text-gray-900 mb-2">
-                  2,20,000
+                  {userStats ? formatNumber(userStats.totalUsers) : "0"}
                 </h2>
                 <p className="text-base text-gray-600">Total Users</p>
               </div>
@@ -254,9 +157,37 @@ export default async function UserTable({
             <div className="flex items-start justify-between">
               <div>
                 <h2 className="text-4xl font-semibold text-gray-900 mb-2">
-                  1000
+                  {userStats ? formatNumber(userStats.newUsers) : "0"}
                 </h2>
                 <p className="text-base text-gray-600">New User This Month</p>
+              </div>
+              <div className="bg-blue-900 rounded-lg p-3">
+                <Users className="w-6 h-6 text-white" />
+              </div>
+            </div>
+          </div>
+
+          <div className="bg-white rounded-lg shadow-sm p-6">
+            <div className="flex items-start justify-between">
+              <div>
+                <h2 className="text-4xl font-semibold text-gray-900 mb-2">
+                  {userStats ? formatNumber(userStats.activeUsers) : "0"}
+                </h2>
+                <p className="text-base text-gray-600">Active Users</p>
+              </div>
+              <div className="bg-blue-900 rounded-lg p-3">
+                <Users className="w-6 h-6 text-white" />
+              </div>
+            </div>
+          </div>
+
+          <div className="bg-white rounded-lg shadow-sm p-6">
+            <div className="flex items-start justify-between">
+              <div>
+                <h2 className="text-4xl font-semibold text-gray-900 mb-2">
+                  {userStats ? formatNumber(userStats.suspendedUsers) : "0"}
+                </h2>
+                <p className="text-base text-gray-600">Suspended Users</p>
               </div>
               <div className="bg-blue-900 rounded-lg p-3">
                 <Users className="w-6 h-6 text-white" />
@@ -268,7 +199,7 @@ export default async function UserTable({
       <div className="space-y-4">
         <PageHeading
           title="User Management"
-          query={query.q || ""}
+          query={searchTerm || ""}
           placeholder="Search"
         />
 
@@ -290,24 +221,32 @@ export default async function UserTable({
           </TableHeader>
 
           <TableBody>
-            {paginatedUsers.map((user) => (
-              <TableRow key={user.id}>
-                <TableBodyItem>{user.name}</TableBodyItem>
-                <TableBodyItem>{user.email}</TableBodyItem>
-                <TableBodyItem>{user.orderedBook}</TableBodyItem>
-                <TableBodyItem className="capitalize">
-                  {user.ongoingOrder}
-                </TableBodyItem>
-                <TableBodyItem>
-                  <Link
-                    href={`/dashboard/user-management/${user.id}`}
-                    className="text-blue-600 hover:underline"
-                  >
-                    View Profile
-                  </Link>
+            {users.length === 0 ? (
+              <TableRow>
+                <TableBodyItem colSpan={5} className="text-center py-8">
+                  No users found
                 </TableBodyItem>
               </TableRow>
-            ))}
+            ) : (
+              users.map((user) => (
+                <TableRow key={user.id}>
+                  <TableBodyItem>{user.name}</TableBodyItem>
+                  <TableBodyItem>{user.email}</TableBodyItem>
+                  <TableBodyItem>{user.orderedBook}</TableBodyItem>
+                  <TableBodyItem className="capitalize">
+                    {user.ongoingOrder}
+                  </TableBodyItem>
+                  <TableBodyItem>
+                    <Link
+                      href={`/dashboard/user-management/${user.id}`}
+                      className="text-blue-600 hover:underline"
+                    >
+                      View Profile
+                    </Link>
+                  </TableBodyItem>
+                </TableRow>
+              ))
+            )}
           </TableBody>
         </Table>
 
@@ -315,6 +254,7 @@ export default async function UserTable({
           totalPages={meta.totalPages}
           currentPage={meta.page}
           pageSize={meta.limit}
+          totalItems={meta.total}
         />
       </div>
     </TableProvider>

@@ -1,5 +1,6 @@
 import React from "react";
-import { ShoppingCart, DollarSign, Percent, Users } from "lucide-react";
+import { ShoppingCart, DollarSign, Percent, Users, TrendingUp } from "lucide-react";
+import { getDashboardStats } from "../actions/get-dashboard-stats";
 
 // Types
 type StatCardData = {
@@ -11,48 +12,57 @@ type StatCardData = {
   iconColor: string;
 };
 
-type OverviewStatsProps = {
-  data?: StatCardData[];
-};
+// Server Component
+export default async function OverviewStats() {
+  const stats = await getDashboardStats();
 
-// Server Component (simulated with default export)
-// In your actual Next.js app, this would be an async server component
-export default function OverviewStats({ data }: OverviewStatsProps) {
-  // This would come from your server action/database
-  const statsData: StatCardData[] = data || [
+  // Map API data to stat cards
+  const statsData: StatCardData[] = [
     {
-      id: "total-orders",
-      label: "Total Orders",
-      value: "1200",
-      icon: <ShoppingCart className="w-5 h-5" />,
+      id: "total-users",
+      label: "Total Users",
+      value: stats?.totalUsers ?? 0,
+      icon: <Users className="w-5 h-5" />,
       iconBgColor: "bg-blue-50",
       iconColor: "text-blue-600",
     },
     {
-      id: "total-order-value",
-      label: "Total Order Value",
-      value: "220000",
-      icon: <DollarSign className="w-5 h-5" />,
+      id: "total-orders",
+      label: "Total Orders",
+      value: stats?.totalOrders ?? 0,
+      icon: <ShoppingCart className="w-5 h-5" />,
       iconBgColor: "bg-green-50",
       iconColor: "text-green-600",
     },
     {
-      id: "total-commission",
-      label: "Total Commission",
-      value: "55000",
-      icon: <Percent className="w-5 h-5" />,
+      id: "total-revenue",
+      label: "Total Revenue",
+      value: stats?.totalRevenue ?? 0,
+      icon: <DollarSign className="w-5 h-5" />,
       iconBgColor: "bg-purple-50",
       iconColor: "text-purple-600",
     },
-    {
-      id: "service-providers",
-      label: "Service Provider",
-      value: "1000",
-      icon: <Users className="w-5 h-5" />,
-      iconBgColor: "bg-slate-50",
-      iconColor: "text-slate-600",
-    },
+    // {
+    //   id: "new-users-this-month",
+    //   label: "New Users This Month",
+    //   value: stats?.newUsersThisMonth ?? 0,
+    //   icon: <TrendingUp className="w-5 h-5" />,
+    //   iconBgColor: "bg-slate-50",
+    //   iconColor: "text-slate-600",
+    // },
   ];
+
+  // Add average order value if it exists
+  if (stats?.averageOrderValue !== undefined) {
+    statsData.push({
+      id: "average-order-value",
+      label: "Average Order Value",
+      value: stats.averageOrderValue,
+      icon: <Percent className="w-5 h-5" />,
+      iconBgColor: "bg-orange-50",
+      iconColor: "text-orange-600",
+    });
+  }
 
   return (
     <section className="w-full @container">
@@ -108,38 +118,3 @@ function StatCard({ stat }: StatCardProps) {
     </article>
   );
 }
-// Example usage with server action (for your Next.js app)
-/*
-// app/dashboard/page.tsx
-import { getOverviewStats } from "@/lib/actions/stats";
-
-export default async function DashboardPage() {
-  const stats = await getOverviewStats();
-  
-  return (
-    <div className="container mx-auto p-6">
-      <OverviewStats data={stats} />
-    </div>
-  );
-}
-
-// lib/actions/stats.ts
-"use server";
-
-export async function getOverviewStats() {
-  // Your database query here
-  const data = await db.query.stats.findMany();
-  
-  return [
-    {
-      id: "total-orders",
-      label: "Total Orders",
-      value: data.totalOrders,
-      icon: <ShoppingCart size={20} />,
-      iconBgColor: "bg-blue-50",
-      iconColor: "text-blue-600",
-    },
-    // ... other stats
-  ];
-}
-*/

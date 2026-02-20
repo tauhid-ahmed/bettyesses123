@@ -1,41 +1,34 @@
-import DetailsContainer from "@/features/admin/components/DetailsContainer";
-import DetailsHeading from "@/features/admin/components/DetailsHeading";
 import { getUserDetails } from "@/features/admin/users/actions/get-user-details";
-import { SuspendUserButton } from "@/features/admin/users/components/SuspendUserButton";
-import { UserDetailsSection } from "@/features/admin/users/components/UserDetailsSection";
-import { UserInfoSection } from "@/features/admin/users/components/UserInfoSection";
 import { notFound } from "next/navigation";
+import UserDetailsClient from "./UserDetailsClient";
+
+// Force dynamic rendering
+export const dynamic = "force-dynamic";
 
 type PageProps = {
-  params: Promise<{ userId: string }>;
+  params: Promise<{ id: string }>;
 };
 
 export default async function UserDetailsPage({ params }: PageProps) {
-  const { userId } = await params;
-  const userData = await getUserDetails(userId);
+  const { id } = await params;
+
+  // Fetch user details from API
+  const userData = await getUserDetails(id);
 
   if (!userData) {
     notFound();
   }
 
+  const userName = `${userData.firstName} ${userData.lastName}`.trim();
+
   return (
-    <DetailsContainer>
-      {/* Title */}
-      <DetailsHeading
-        title="User Details"
-        description="See The full info On a User"
-      />
-
-      {/* Content Sections */}
-      <div className="space-y-6">
-        <UserInfoSection data={userData} />
-        <UserDetailsSection data={userData.moveDetails} />
-
-        {/* Suspend Button */}
-        <div className="flex justify-end pt-4">
-          <SuspendUserButton userId={userId} />
-        </div>
-      </div>
-    </DetailsContainer>
+    <UserDetailsClient
+      userId={userData.id}
+      userName={userName}
+      email={userData.email}
+      role={userData.role}
+      ongoingOrders={userData.ongoingOrders || []}
+      suspendedUntil={userData.suspendedUntil}
+    />
   );
 }

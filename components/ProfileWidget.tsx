@@ -4,11 +4,14 @@ import { Button } from "@/components/ui/button";
 import {
   DropdownMenu,
   DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { signOut } from "next-auth/react";
 import { useRouter } from "next/navigation";
 import Image from "next/image";
+import Link from "next/link";
 import { UserProfile } from "@/types/user-profile";
 
 type Props = {
@@ -24,6 +27,9 @@ const role = {
 export function ProfileWidget({ user }: Props) {
   const name = user?.firstName + " " + user?.lastName;
   console.log(user);
+
+  const isAdmin = user?.role === "ADMIN" || user?.role === "SUPERADMIN";
+  const isUser = user?.role === "USER";
 
   return (
     <DropdownMenu>
@@ -42,8 +48,34 @@ export function ProfileWidget({ user }: Props) {
           </span>
         </Button>
       </DropdownMenuTrigger>
-      <DropdownMenuContent className="w-40" align="center">
-        <SignOutButton />
+      <DropdownMenuContent className="w-40 rounded-lg" align="center">
+        {isAdmin ? (
+          <>
+            <DropdownMenuItem asChild>
+              <Link href="/dashboard" className="cursor-pointer">
+                Dashboard
+              </Link>
+            </DropdownMenuItem>
+            <DropdownMenuSeparator />
+            <SignOutButton />
+          </>
+        ) : isUser ? (
+          <>
+            <DropdownMenuItem asChild>
+              <Link href="/profile" className="cursor-pointer ">
+                My Account
+              </Link>
+            </DropdownMenuItem>
+            <DropdownMenuSeparator />
+            <DropdownMenuItem asChild>
+              <Link href="/orders" className="cursor-pointer">
+                My Order
+              </Link>
+            </DropdownMenuItem>
+            <DropdownMenuSeparator />
+            <SignOutButton />
+          </>
+        ) : null}
       </DropdownMenuContent>
     </DropdownMenu>
   );
@@ -79,8 +111,12 @@ function SignOutButton() {
     router.push("/");
   };
   return (
-    <Button className="w-full" onClick={handleSignOut} variant="destructive">
-      Sign out
-    </Button>
+    <DropdownMenuItem
+      onClick={handleSignOut}
+      className="cursor-pointer"
+      variant="destructive"
+    >
+      Log Out
+    </DropdownMenuItem>
   );
 }

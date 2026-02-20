@@ -4,7 +4,6 @@ export const STEP_ORDER: StepId[] = [
   "child_details",
   "book_preview",
   "book_details",
-  "pricing",
 ];
 
 export const LANGUAGES: Language[] = ["English", "Spanish", "French"];
