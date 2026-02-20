@@ -19,7 +19,7 @@ export async function uploadProfileImage(formData: FormData) {
     const result = await res.json();
 
     if (res.ok) {
-      revalidateTag("profile");
+      revalidateTag("profile", '');
     }
 
     return result;

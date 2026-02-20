@@ -37,8 +37,8 @@ const EditPrivacyPolicy = ({ type, initialPolicies }: EditPrivacyPolicyProps) =>
   const [deleteId, setDeleteId] = useState<string | null>(null);
   const [isPending, startTransition] = useTransition();
 
-  const form = useForm<CreateLegalPageSchema>({
-    resolver: zodResolver(createLegalPageSchema),
+  const form: any = useForm<CreateLegalPageSchema>({
+    resolver: zodResolver(createLegalPageSchema) as any,
     defaultValues: {
       title: type === "privacy" ? "New Security Standards" : "New Feature unlocked",
       policyNumber: 1,
@@ -80,7 +80,7 @@ const EditPrivacyPolicy = ({ type, initialPolicies }: EditPrivacyPolicyProps) =>
       } else {
         // Create new
         const payload = {
-            type: apiType,
+            type: apiType as any,
             title: data.title,
             policyNumber: data.policyNumber,
             features: data.features,
@@ -257,7 +257,7 @@ const EditPrivacyPolicy = ({ type, initialPolicies }: EditPrivacyPolicyProps) =>
                 <div key={policy.id} className="pt-6">
                 <div className="bg-gray-50 rounded-lg p-2 lg:p-0 md:p-2 ">
                     <h3 className="text-lg font-semibold mb-4">
-                    {pageTitle} {policy.policyNo}
+                    {pageTitle} {policy.policyNumber}
                     </h3>
 
                     <div className="bg-white rounded-lg p-6">

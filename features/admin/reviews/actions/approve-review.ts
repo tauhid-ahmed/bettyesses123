@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 "use server";
 
 import { auth } from "@/auth";
@@ -47,9 +48,9 @@ export async function approveReview(id: string): Promise<SingleReviewResponse> {
       };
     }
 
-    revalidateTag("reviews");
-    revalidateTag("public-reviews");
-    revalidateTag("review-stats");
+    revalidateTag("reviews", "");
+    revalidateTag("public-reviews",'');
+    revalidateTag("review-stats" , '');
 
     return result;
   } catch (error) {

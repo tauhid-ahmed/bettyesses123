@@ -106,7 +106,7 @@ export default function EditPromoCodeForm({ initialData }: EditPromoCodeFormProp
             placeholder="Enter promo code"
           />
           {form.formState.errors.code && (
-            <p className="text-red-500 text-sm mt-1">{form.formState.errors.code.message}</p>
+            <p className="text-red-500 text-sm mt-1">{String(form.formState.errors.code.message)}</p>
           )}
         </div>
 
@@ -121,7 +121,7 @@ export default function EditPromoCodeForm({ initialData }: EditPromoCodeFormProp
             placeholder="Enter discount percentage"
           />
            {form.formState.errors.discountPercentage && (
-            <p className="text-red-500 text-sm mt-1">{form.formState.errors.discountPercentage.message}</p>
+            <p className="text-red-500 text-sm mt-1">{String(form.formState.errors.discountPercentage.message)}</p>
           )}
         </div>
 
@@ -158,7 +158,7 @@ export default function EditPromoCodeForm({ initialData }: EditPromoCodeFormProp
             )}
           </div>
            {form.formState.errors.useLimit && (
-            <p className="text-red-500 text-sm mt-1">{form.formState.errors.useLimit.message}</p>
+            <p className="text-red-500 text-sm mt-1">{String(form.formState.errors.useLimit.message)}</p>
           )}
         </div>
 
@@ -173,7 +173,7 @@ export default function EditPromoCodeForm({ initialData }: EditPromoCodeFormProp
             placeholder="Enter minimum order amount"
           />
            {form.formState.errors.minOrderAmount && (
-            <p className="text-red-500 text-sm mt-1">{form.formState.errors.minOrderAmount.message}</p>
+            <p className="text-red-500 text-sm mt-1">{String(form.formState.errors.minOrderAmount.message)}</p>
           )}
         </div>
 
@@ -187,7 +187,7 @@ export default function EditPromoCodeForm({ initialData }: EditPromoCodeFormProp
             className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-400 focus:border-transparent text-gray-700"
           />
            {form.formState.errors.startTime && (
-            <p className="text-red-500 text-sm mt-1">{form.formState.errors.startTime.message}</p>
+            <p className="text-red-500 text-sm mt-1">{String(form.formState.errors.startTime.message)}</p>
           )}
         </div>
 
@@ -201,7 +201,7 @@ export default function EditPromoCodeForm({ initialData }: EditPromoCodeFormProp
             className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-400 focus:border-transparent text-gray-700"
           />
            {form.formState.errors.endTime && (
-            <p className="text-red-500 text-sm mt-1">{form.formState.errors.endTime.message}</p>
+            <p className="text-red-500 text-sm mt-1">{String(form.formState.errors.endTime.message)}</p>
           )}
         </div>
 

@@ -2,7 +2,7 @@
 
 import { auth } from "@/auth";
 import { BACKEND_API_URL } from "@/constants";
-import { revalidateTag } from "next/cache";
+import { revalidatePath } from "next/cache";
 
 export async function uploadProfileImage(formData: FormData) {
   const session = await auth();
@@ -26,8 +26,8 @@ export async function uploadProfileImage(formData: FormData) {
     const result = await res.json();
 
     if (res.ok) {
-        // Revalidate any relevant tags
-        revalidateTag("/dashboard/settings");
+        // Revalidate any relevant paths
+        revalidatePath("/dashboard/settings");
     }
 
     return result;

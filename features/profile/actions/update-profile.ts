@@ -21,7 +21,7 @@ export async function updateProfile(payload: UpdateProfilePayload): Promise<Prof
     const result = await res.json();
 
     if (res.ok) {
-      revalidateTag("profile");
+      revalidateTag("profile", '');
     }
 
     return result;

@@ -25,9 +25,9 @@ export async function deleteReview(id: string) {
       };
     }
 
-    revalidateTag("reviews");
-    revalidateTag("public-reviews");
-    revalidateTag("review-stats");
+    revalidateTag("reviews", "");
+    revalidateTag("public-reviews", "");
+    revalidateTag("review-stats", "" );
 
     return {
       success: true,

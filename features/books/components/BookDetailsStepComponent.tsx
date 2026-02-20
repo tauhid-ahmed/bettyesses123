@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { useForm } from "react-hook-form";
 import { useBookForm } from "../context/CreateBookContext";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -42,7 +43,7 @@ export default function BookDetailsStepComponent() {
     watch,
     formState: { errors },
   } = useForm<FormValues>({
-    resolver: zodResolver(schema),
+    resolver: zodResolver(schema) as any,
     defaultValues: {
       name: state.bookDetails.name,
       description: state.bookDetails.description,

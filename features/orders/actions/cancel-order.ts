@@ -27,7 +27,7 @@ export async function cancelOrder(orderId: string) {
     const result = await res.json();
 
     if (res.ok) {
-      revalidateTag("my-orders");
+      revalidateTag("my-orders", ' ');
     }
 
     return result;
